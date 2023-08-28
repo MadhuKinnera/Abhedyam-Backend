@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.madhu.dto.GeneralResponse;
 import com.madhu.entity.Product;
 import com.madhu.exception.ProductException;
+import com.madhu.exception.VillageException;
 import com.madhu.service.ProductService;
 
 @RestController
@@ -78,7 +79,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/getProductByRank")
-	ResponseEntity<GeneralResponse> getProductByRankHandler() {
+	ResponseEntity<GeneralResponse> getProductByRankHandler() throws VillageException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Products Found By Ranks ");

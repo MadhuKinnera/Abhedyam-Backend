@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.madhu.dto.RecordResponseModel;
@@ -18,35 +19,53 @@ import com.madhu.exception.ProductException;
 import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
 import com.madhu.exception.VillageException;
+import com.madhu.repository.RecordRepo;
+import com.madhu.utils.CommonUtils;
+import com.madhu.utils.Constants;
 
 import jakarta.transaction.TransactionalException;
 
 @Service
 public class RecordServiceImpl implements RecordService {
 
+	@Autowired
+	private RecordRepo recordRepo;
+
+	@Autowired
+	private CommonUtils utils;
+
 	@Override
 	public SaleRecord addRecord(SaleRecord saleRecord) throws RecordException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return recordRepo.save(saleRecord);
 	}
 
 	@Override
 	public SaleRecord updateRecord(Integer recordId, SaleRecord saleRecord) throws RecordException {
-		// TODO Auto-generated method stub
-		return null;
+
+		if (!utils.isRecordExist(recordId))
+			throw new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId);
+
+		return recordRepo.save(saleRecord);
 	}
 
 	@Override
-	public RecordResponseModel getRecordResponseModelByRecordId(Integer recordId) throws RecordException {
-		// TODO Auto-generated method stub
-		return null;
+	public SaleRecord getRecordByRecordId(Integer recordId) throws RecordException {
+
+		return recordRepo.findById(recordId)
+				.orElseThrow(() -> new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId));
 	}
 
 	@Override
-	public List<RecordResponseModel> getRecordResponseModelByCustomerId(Integer customerId)
-			throws CustomerException, RecordException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<SaleRecord> getRecordByCustomerId(Integer customerId) throws CustomerException, RecordException {
+
+		List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customerId);
+
+		if (records.isEmpty())
+			throw new RecordException(Constants.NO_RECORDS_FOUND_WITH_CUSTOMER_ID + customerId);
+
+		return records;
+
 	}
 
 	@Override
