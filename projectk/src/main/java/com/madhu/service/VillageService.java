@@ -23,17 +23,9 @@ public interface VillageService {
 
 	Village deleteVillage(Integer villageId) throws VillageException;
 
-	List<SaleRecord> getRecordsByVillageId(Integer villageId) throws RecordException, VillageException;
-
-	List<Customer> getCustomersByVillageId(Integer villageId) throws CustomerException, VillageException;
-	
-	List<Transaction> getTransactionByVillageId(Integer villageId)  throws TransactionException,VillageException;
-	
 	List<Village> getVillagesByRank()throws VillageException;
 	
 	List<Address> getAddressByVillageId(Integer villageId)throws VillageException,AddressException;
-	
-	Village getVillageByCustomerId(Integer customerId)throws CustomerException,VillageException;
 	
 	Village getVillageByCustomerName(String customerName)throws CustomerException,VillageException;
 	

@@ -3,8 +3,8 @@ package com.madhu.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.Address;
+import com.madhu.entity.Customer;
 import com.madhu.entity.Product;
 import com.madhu.entity.Remainder;
 import com.madhu.entity.SaleRecord;
@@ -15,9 +15,8 @@ import com.madhu.exception.CustomerException;
 import com.madhu.exception.ProductException;
 import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
+import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
-
-import jakarta.transaction.TransactionalException;
 
 public interface RecordService {
 
@@ -29,13 +28,16 @@ public interface RecordService {
 
 	List<SaleRecord> getRecordByCustomerId(Integer customerId) throws CustomerException, RecordException;
 
-	List<RecordResponseModel> getRecordRecordResponseByRank() throws RecordException;
+	List<SaleRecord> getRecordRecordResponseByRank() throws RecordException;
 
 	// ==============================
 
 	SaleRecord deleteRecordByRecordId(Integer recordId) throws RecordException;
 
-	List<SaleRecord> getRecordsBetweenTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate, Integer customerId)
+	List<SaleRecord> getRecordsBetweenStartDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
+			throws CustomerException, RecordException;
+	
+	List<SaleRecord> getRecordsBetweenEndDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
 			throws CustomerException, RecordException;
 
 	List<SaleRecord> getRecordsByVillageId(Integer villageId) throws VillageException, RecordException;
@@ -50,13 +52,13 @@ public interface RecordService {
 
 	List<SaleRecord> getRecordsByCustomerId(Integer customerId) throws CustomerException, RecordException;
 
-	List<Transaction> getTransactionsByRecordId(Integer recordId) throws RecordException, TransactionalException;
+	List<Transaction> getTransactionsByRecordId(Integer recordId) throws RecordException, TransactionException;
 
-	List<Transaction> getRecordsByProductId(Integer productId) throws RecordException, ProductException;
+	List<SaleRecord> getRecordsByProductId(Integer productId) throws RecordException, ProductException;
 
-	List<Transaction> getRecordsByProductName(String productName) throws RecordException, ProductException;
+	List<SaleRecord> getRecordsByProductName(String productName) throws RecordException, ProductException;
 
-	List<Remainder> getRemaindersByRecordId(String recordId) throws RemainderException, RecordException;
+	List<Remainder> getRemaindersByRecordId(Integer recordId) throws RemainderException, RecordException;
 
 	List<SaleRecord> getRecordsByEmail(String email) throws CustomerException, RecordException;
 
@@ -67,5 +69,7 @@ public interface RecordService {
 	Address getAddressByRecordId(Integer recordId) throws AddressException, RecordException;
 
 	Product getProductByRecordId(Integer recordId) throws ProductException, RecordException;
+	
+	Customer getCustomerByRecordId(Integer recordId) throws  RecordException;
 
 }

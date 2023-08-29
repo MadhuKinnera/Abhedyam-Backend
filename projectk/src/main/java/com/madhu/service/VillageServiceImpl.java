@@ -2,93 +2,99 @@ package com.madhu.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.madhu.entity.Address;
-import com.madhu.entity.Customer;
-import com.madhu.entity.SaleRecord;
-import com.madhu.entity.Transaction;
 import com.madhu.entity.Village;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
-import com.madhu.exception.RecordException;
-import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
+import com.madhu.repository.VillageRepo;
+import com.madhu.utils.CommonUtils;
+import com.madhu.utils.Constants;
 
 @Service
-public class VillageServiceImpl implements VillageService{
+public class VillageServiceImpl implements VillageService {
+
+	@Autowired
+	private VillageRepo villageRepo;
+
+	@Autowired
+	private CommonUtils utils;
 
 	@Override
 	public Village addVillage(Village village) throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return villageRepo.save(village);
 	}
 
 	@Override
 	public Village getVillageByVillageId(Integer villageId) throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return villageRepo.findById(villageId)
+				.orElseThrow(() -> new VillageException(Constants.VILLAGE_ID_NOT_FOUND + villageId));
 	}
 
 	@Override
 	public Village updateVillage(Integer villageId, Village village) throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
+		if (!utils.isVillageExist(villageId))
+			throw new VillageException(Constants.VILLAGE_ID_NOT_FOUND + villageId);
+
+		village.setVillageId(villageId);
+
+		return villageRepo.save(village);
 	}
 
 	@Override
 	public Village deleteVillage(Integer villageId) throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public List<SaleRecord> getRecordsByVillageId(Integer villageId) throws RecordException, VillageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Village village = getVillageByVillageId(villageId);
 
-	@Override
-	public List<Customer> getCustomersByVillageId(Integer villageId) throws CustomerException, VillageException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		villageRepo.delete(village);
 
-	@Override
-	public List<Transaction> getTransactionByVillageId(Integer villageId)
-			throws TransactionException, VillageException {
-		// TODO Auto-generated method stub
-		return null;
+		return village;
 	}
 
 	@Override
 	public List<Village> getVillagesByRank() throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<Village> villages = villageRepo.findAll();
+
+		if (villages.isEmpty())
+			throw new VillageException("No Villages Found ");
+
+		return villages;
 	}
 
 	@Override
 	public List<Address> getAddressByVillageId(Integer villageId) throws VillageException, AddressException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Village getVillageByCustomerId(Integer customerId) throws CustomerException, VillageException {
-		// TODO Auto-generated method stub
-		return null;
+		Village village = getVillageByVillageId(villageId);
+
+		if (village.getAddresses().isEmpty())
+			throw new AddressException(" No Addresses Found with Village Id " + villageId);
+
+		return village.getAddresses();
 	}
 
 	@Override
 	public Village getVillageByCustomerName(String customerName) throws CustomerException, VillageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		return villageRepo.findTopByAddressesInCustomerCustomerName(customerName)
+				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Name " + customerName));
 	}
 
 	@Override
 	public List<Village> getVillagesByPincode(Integer pincode) throws VillageException {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<Village> villages = villageRepo.findByPincode(pincode);
+
+		if (villages.isEmpty())
+			throw new VillageException("Villages Not Found with Pincode " + pincode);
+
+		return villages;
+
 	}
 
 }

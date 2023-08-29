@@ -7,6 +7,7 @@ import com.madhu.repository.AddressRepo;
 import com.madhu.repository.CustomerRepo;
 import com.madhu.repository.ProductRepo;
 import com.madhu.repository.RecordRepo;
+import com.madhu.repository.RemainderRepo;
 import com.madhu.repository.TransactionRepo;
 import com.madhu.repository.VillageRepo;
 
@@ -27,6 +28,9 @@ public class CommonUtils {
 	
 	@Autowired
 	private ProductRepo productRepo;
+	
+	@Autowired
+	private RemainderRepo remainderRepo;
 
 	@Autowired
 	private TransactionRepo transactionRepo;
@@ -61,6 +65,10 @@ public class CommonUtils {
 	
 	public boolean isProductExist(Integer productId) {
 		return productRepo.findById(productId).isPresent();
+	}
+	
+	public boolean isRemainderExist(Integer remainderId) {
+		return remainderRepo.findById(remainderId).isPresent();
 	}
 
 }

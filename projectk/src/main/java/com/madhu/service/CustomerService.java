@@ -55,6 +55,8 @@ public interface CustomerService {
 	List<CustomerResponseModel> getCustomersByRank()throws CustomerException;
 	
 	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException; 
+	
+	
 
 	
 }

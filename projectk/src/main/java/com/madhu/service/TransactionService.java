@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.util.List;
 
 import com.madhu.dto.RecordResponseModel;
+import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.RecordException;
@@ -20,7 +21,7 @@ public interface TransactionService {
 
 	List<Transaction> getAllTransactionsByCustomerId(Integer customerId) throws CustomerException, TransactionException;
 
-	RecordResponseModel getRecordByTransactionId(Integer transactionId) throws TransactionException, RecordException;
+	SaleRecord getRecordByTransactionId(Integer transactionId) throws TransactionException, RecordException;
 
 	List<Transaction> getAllTransactionsByRank() throws TransactionException;
 
