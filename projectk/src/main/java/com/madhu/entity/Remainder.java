@@ -1,12 +1,11 @@
 package com.madhu.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.madhu.enums.OccasionType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,13 +22,17 @@ public class Remainder {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer remainderId;
 
-	private LocalDateTime defaultDate;
+	private LocalDateTime createdTimestamp;
 
-	@Enumerated(EnumType.STRING)
-	private OccasionType occasion;
+	private LocalDate remainderDate;
+	
+	private String remainderMessage;
+	
+	private LocalDateTime remainderDateTime;
 	private String description;
 
 	@ManyToOne
+	@JsonBackReference
 	private SaleRecord saleRecord;
 
 }

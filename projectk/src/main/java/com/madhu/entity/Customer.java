@@ -3,6 +3,7 @@ package com.madhu.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.madhu.enums.Color;
 
 import jakarta.persistence.CascadeType;
@@ -14,6 +15,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
@@ -39,13 +41,22 @@ public class Customer {
 	@Enumerated(EnumType.STRING)
 	private Color flag;
 
+	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "customer")
 	private Address address = new Address();
+	
+	@ManyToOne
+	@JsonBackReference
+	private User user;
 
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
 	private List<SaleRecord> saleRecords = new ArrayList<>();
 
 	@ElementCollection
 	private List<String> keywords = new ArrayList<>();
+	
+	
+	
 
 }

@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
+import com.madhu.dto.RecordDTO;
 import com.madhu.entity.SaleRecord;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.ProductException;
 import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
+import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
 import com.madhu.service.RecordService;
 
@@ -33,7 +35,7 @@ public class RecordController {
 	private RecordService recordService;
 
 	@PostMapping("/addRecord")
-	ResponseEntity<GeneralResponse> addRecordHandler(@RequestBody SaleRecord saleRecord) throws RecordException {
+	ResponseEntity<GeneralResponse> addRecordHandler(@RequestBody RecordDTO saleRecord) throws RecordException, CustomerException, ProductException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Record Added ");
@@ -58,7 +60,7 @@ public class RecordController {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Record Found with Id ");
-		generalResponse.setData(recordService.getRecordResponseModelByRecordId(recordId));
+		generalResponse.setData(recordService.getRecordByRecordId(recordId));
 
 		return ResponseEntity.ok(generalResponse);
 	}
@@ -96,15 +98,28 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRecordBetweenTimes/{fromDate}/{toDate}/{customerId}")
-	ResponseEntity<GeneralResponse> getRecordsBetweenTimeStampsAndCustomerId(@PathVariable LocalDate fromDate,
-			@PathVariable LocalDate toDate, @PathVariable Integer customerId)
+	@GetMapping("/getRecordBetweenStartDates/{fromDate}/{toDate}")
+	ResponseEntity<GeneralResponse> getRecordsBetweenStartDatesTimeStamps(@PathVariable LocalDate fromDate,
+			@PathVariable LocalDate toDate)
 			throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse
-				.setMessage("Records Found between " + fromDate + " and " + toDate + " for customer Id " + customerId);
-		generalResponse.setData(recordService.getRecordsBetweenTimeStampsAndCustomerId(fromDate, toDate, customerId));
+				.setMessage("Records Found between " + fromDate + " and " + toDate );
+		generalResponse.setData(recordService.getRecordsBetweenStartDateTimeStamps(fromDate, toDate));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+	@GetMapping("/getRecordBetweenEndDates/{fromDate}/{toDate}")
+	ResponseEntity<GeneralResponse> getRecordsBetweenEndDatesTimeStamps(@PathVariable LocalDate fromDate,
+			@PathVariable LocalDate toDate)
+			throws CustomerException, RecordException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse
+				.setMessage("Records Found between " + fromDate + " and " + toDate );
+		generalResponse.setData(recordService.getRecordsBetweenEndDateTimeStamps(fromDate, toDate));
 
 		return ResponseEntity.ok(generalResponse);
 	}
@@ -177,7 +192,7 @@ public class RecordController {
 
 	@GetMapping("/getTransactionsByRecordId/{recordId}")
 	ResponseEntity<GeneralResponse> getTransactionsByRecordId(@PathVariable Integer recordId)
-			throws RecordException, TransactionalException {
+			throws RecordException, TransactionalException, TransactionException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Transactions Found By Record Id " + recordId);
@@ -209,7 +224,7 @@ public class RecordController {
 	}
 
 	@GetMapping("/getRemaindersByRecordId/{recordId}")
-	ResponseEntity<GeneralResponse> getRemaindersByRecordId(@PathVariable String recordId)
+	ResponseEntity<GeneralResponse> getRemaindersByRecordId(@PathVariable Integer recordId)
 			throws RemainderException, RecordException {
 		var generalResponse = new GeneralResponse();
 

@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.madhu.dto.RecordDTO;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
 import com.madhu.entity.Product;
@@ -20,7 +21,7 @@ import com.madhu.exception.VillageException;
 
 public interface RecordService {
 
-	SaleRecord addRecord(SaleRecord saleRecord) throws RecordException;
+	SaleRecord addRecord(RecordDTO dto) throws RecordException,CustomerException,ProductException;
 
 	SaleRecord updateRecord(Integer recordId, SaleRecord saleRecord) throws RecordException;
 
@@ -34,10 +35,10 @@ public interface RecordService {
 
 	SaleRecord deleteRecordByRecordId(Integer recordId) throws RecordException;
 
-	List<SaleRecord> getRecordsBetweenStartDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
+	List<SaleRecord> getRecordsBetweenStartDateTimeStamps(LocalDate fromDate, LocalDate toDate)
 			throws CustomerException, RecordException;
 	
-	List<SaleRecord> getRecordsBetweenEndDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
+	List<SaleRecord> getRecordsBetweenEndDateTimeStamps(LocalDate fromDate, LocalDate toDate)
 			throws CustomerException, RecordException;
 
 	List<SaleRecord> getRecordsByVillageId(Integer villageId) throws VillageException, RecordException;

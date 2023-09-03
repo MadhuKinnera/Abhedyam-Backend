@@ -1,11 +1,13 @@
 package com.madhu.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.madhu.dto.RecordDTO;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
 import com.madhu.entity.Product;
@@ -20,6 +22,8 @@ import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
 import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
+import com.madhu.repository.CustomerRepo;
+import com.madhu.repository.ProductRepo;
 import com.madhu.repository.RecordRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
@@ -29,13 +33,58 @@ public class RecordServiceImpl implements RecordService {
 
 	@Autowired
 	private RecordRepo recordRepo;
+	
+	
+	@Autowired
+	private CustomerRepo customerRepo;
+	
+	
+	@Autowired
+	private ProductRepo productRepo;
 
 	@Autowired
 	private CommonUtils utils;
 
 	@Override
-	public SaleRecord addRecord(SaleRecord saleRecord) throws RecordException {
+	public SaleRecord addRecord(RecordDTO dto) throws RecordException,ProductException,CustomerException {
+		
+		var saleRecord = new SaleRecord();
+		
+		
+		Product product = productRepo.findById(dto.getProductId())
+				.orElseThrow(()->new ProductException(Constants.PRODUCT_ID_NOT_FOUND+dto.getProductId()));
+		
+		Customer customer = customerRepo.findById(dto.getCustomerId())
+				.orElseThrow(()->new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND+dto.getCustomerId()));
+		
+		
+		saleRecord.setCustomer(customer);
+		saleRecord.setProduct(product);
+		
+		
+		saleRecord.setQuantity((dto.getQuantity()==null|| dto.getQuantity()==0) ? 1 : dto.getQuantity());
 
+		
+		
+		
+		
+		saleRecord.setTotalAmount((dto.getTotalAmount()==null || dto.getTotalAmount()==0)  ? product.getSellingPrice()*dto.getQuantity() : dto.getTotalAmount()*dto.getQuantity());
+
+		
+		
+		
+		saleRecord.setStartDate(LocalDate.now());
+		saleRecord.setTimestamp(LocalDateTime.now());
+		
+		saleRecord.setDueAmount(saleRecord.getTotalAmount());
+		
+	
+		saleRecord.setOccasion(dto.getOccasion());
+		saleRecord.setEndDate(dto.getEndDate());
+
+		saleRecord.setDescription(dto.getDescription());
+	
+		
 		return recordRepo.save(saleRecord);
 	}
 
@@ -87,7 +136,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	public List<SaleRecord> getRecordsByVillageId(Integer villageId) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByAddressVillageVillageId(villageId);
+		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageId(villageId);
 
 		if (records.isEmpty())
 			throw new VillageException("No Records Found with Village Id " + villageId);
@@ -97,7 +146,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	public List<SaleRecord> getRecordsByVillageName(String villageName) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByAddressVillageVillageName(villageName);
+		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageName(villageName);
 
 		if (records.isEmpty())
 			throw new VillageException("No Records Found with Village Name " + villageName);
@@ -107,7 +156,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	public List<SaleRecord> getRecordsByMandal(String mandal) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByAddressVillageMandal(mandal);
+		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageMandal(mandal);
 
 		if (records.isEmpty())
 			throw new VillageException("No Records Found with Mandal  " + mandal);
@@ -117,7 +166,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	public List<SaleRecord> getRecordsByPincode(Integer pincode) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByAddressVillagePincode(pincode);
+		List<SaleRecord> records = recordRepo.findByCustomerAddressVillagePincode(pincode);
 
 		if (records.isEmpty())
 			throw new VillageException("No Records Found with Pincode " + pincode);
@@ -127,7 +176,7 @@ public class RecordServiceImpl implements RecordService {
 
 	@Override
 	public List<SaleRecord> getRecordsByDistrict(String district) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByAddressVillageDistrict(district);
+		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageDistrict(district);
 
 		if (records.isEmpty())
 			throw new VillageException("No Records Found with District " + district);
@@ -217,14 +266,14 @@ public class RecordServiceImpl implements RecordService {
 
 		SaleRecord record = getRecordByRecordId(recordId);
 
-		return record.getAddress().getVillage();
+		return record.getCustomer().getAddress().getVillage();
 	}
 
 	@Override
 	public Address getAddressByRecordId(Integer recordId) throws AddressException, RecordException {
 		SaleRecord record = getRecordByRecordId(recordId);
 
-		return record.getAddress();
+		return record.getCustomer().getAddress();
 	}
 
 	@Override
@@ -235,7 +284,7 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public List<SaleRecord> getRecordsBetweenStartDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
+	public List<SaleRecord> getRecordsBetweenStartDateTimeStamps(LocalDate fromDate, LocalDate toDate)
 			throws CustomerException, RecordException {
 		List<SaleRecord> records = recordRepo.findByStartDateBetween(fromDate, toDate);
 
@@ -246,7 +295,7 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public List<SaleRecord> getRecordsBetweenEndDateTimeStampsAndCustomerId(LocalDate fromDate, LocalDate toDate)
+	public List<SaleRecord> getRecordsBetweenEndDateTimeStamps(LocalDate fromDate, LocalDate toDate)
 			throws CustomerException, RecordException {
 		List<SaleRecord> records = recordRepo.findByEndDateBetween(fromDate, toDate);
 

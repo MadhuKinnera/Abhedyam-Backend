@@ -1,5 +1,6 @@
 package com.madhu.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.madhu.dto.AddressDTO;
+import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
 import com.madhu.entity.Address;
@@ -16,16 +19,20 @@ import com.madhu.entity.Product;
 import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
 import com.madhu.entity.Village;
+import com.madhu.enums.Color;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.ProductException;
-import com.madhu.exception.RecordException;
+import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.CustomerRepo;
 import com.madhu.repository.ProductRepo;
+import com.madhu.repository.RecordRepo;
 import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -42,22 +49,68 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private VillageRepo villageRepo;
 
+	@Autowired
+	private RecordRepo recordRepo;
+
+	private Integer userId;
+
+	@PostConstruct
+	public void assignUserId() throws UserException {
+
+		this.userId = utils.getUserIdFromContext();
+
+	}
+
 	@Override
-	public Customer addCustomer(Customer customer) {
+	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException {
+
+		var customer = new Customer();
+
+		Address address = null;
+
+		customer.setUser(utils.getUserFromContext());
+
+		customer.setAge(dto.getAge());
+		customer.setCustomerName(dto.getCustomerName());
+		customer.setDescription(dto.getDescription());
+		customer.setEmail(dto.getEmail());
+		customer.setFlag(Color.GREEN);
+		customer.setProfession(dto.getProfession());
+		customer.setMobileNo(dto.getMobileNo());
+
+		customer.setKeywords(dto.getKeywords());
+
+		if (dto.getAddressDto() != null) {
+			address = new Address();
+
+			Village village = villageRepo.findByVillageNameAndUserUserId(dto.getAddressDto().getVillageName(), userId)
+					.orElseThrow(() -> new CustomerException("Invalid Village Name Provided"));
+
+			address.setCustomer(customer);
+			address.setDescription(dto.getAddressDto().getDescription());
+			address.setStreet(dto.getAddressDto().getStreet());
+			address.setLandmark(dto.getAddressDto().getLandmark());
+			address.setVillage(village);
+			customer.setAddress(address);
+		}
 
 		return customerRepo.save(customer);
 
 	}
 
 	@Override
-	public Customer getCustomerById(Integer customerId) throws CustomerException {
+	public Customer getCustomerById(Integer customerId) throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
 
 		return customerRepo.findById(customerId)
 				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + customerId));
 	}
 
 	@Override
-	public Customer updateCustomer(Integer customerId, Customer customer) throws CustomerException {
+	public Customer updateCustomer(Integer customerId, Customer customer) throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
 
 		if (!utils.isCustomerExist(customerId))
 			throw new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + customerId);
@@ -67,7 +120,9 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer deleteCustomerById(Integer customerId) throws CustomerException {
+	public Customer deleteCustomerById(Integer customerId) throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
 
 		Customer customer = getCustomerById(customerId);
 
@@ -77,23 +132,30 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException {
+	public Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException, UserException {
 
-		return customerRepo.findByMobileNo(phoneNumber)
+		Customer customer = customerRepo.findByMobileNoAndUserUserId(phoneNumber, userId)
 				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_PHONE_NOT_FOUND + phoneNumber));
 
+		utils.isAuthorizedForCustomer(customer.getCustomerId());
+
+		return customer;
 	}
 
 	@Override
-	public Customer getCustomerByEmail(String email) throws CustomerException {
-		return customerRepo.findByEmail(email)
+	public Customer getCustomerByEmail(String email) throws CustomerException, UserException {
+		Customer customer = customerRepo.findByEmailAndUserUserId(email, userId)
 				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_EMAIL_NOT_FOUND + email));
+
+		utils.isAuthorizedForCustomer(customer.getCustomerId());
+
+		return customer;
 	}
 
 	@Override
 	public List<Customer> getCustomersByKeyword(String keyword) throws CustomerException {
 
-		List<Customer> customerList = customerRepo.findByKeywordsContaining(keyword);
+		List<Customer> customerList = customerRepo.findByKeywordsContainingAndUserUserId(keyword, userId);
 
 		if (customerList.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -104,7 +166,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomersByAddressId(Integer addressId) throws CustomerException, AddressException {
 
-		return customerRepo.findByAddressAddressId(addressId)
+		return customerRepo.findByAddressAddressIdAndUserUserId(addressId, userId)
 				.orElseThrow(() -> new AddressException(Constants.ADDRESS_ID_NOT_FOUND + addressId));
 	}
 
@@ -114,7 +176,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isVillageExist(villageId))
 			throw new VillageException(Constants.VILLAGE_ID_NOT_FOUND + villageId);
 
-		List<Customer> customers = customerRepo.findByAddressVillageVillageId(villageId);
+		List<Customer> customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.NO_CUSTOMERS_IN_THE_VILLAGE + villageId);
@@ -130,7 +192,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isVillageExistByName(villageName))
 			throw new VillageException(Constants.VILLAGE_NAME_NOT_FOUND + villageName);
 
-		List<Customer> customers = customerRepo.findByAddressVillageVillageName(villageName);
+		List<Customer> customers = customerRepo.findByAddressVillageVillageNameAndUserUserId(villageName, userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -144,7 +206,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isPincodeExist(pincode))
 			throw new VillageException(Constants.PINCODE_NOT_FOUND + pincode);
 
-		List<Customer> customers = customerRepo.findByAddressVillagePincode(pincode);
+		List<Customer> customers = customerRepo.findByAddressVillagePincodeAndUserUserId(pincode, userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -154,23 +216,9 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<SaleRecord> getRecordsByCustomerId(Integer customerId) throws CustomerException, RecordException {
-
-		if (!utils.isCustomerExist(customerId))
-			throw new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + customerId);
-
-		Customer customer = getCustomerById(customerId);
-
-		if (!customer.getSaleRecords().isEmpty())
-			throw new RecordException(Constants.NO_RECORDS_FOUND_WITH_CUSTOMER_ID + customerId);
-
-		return customer.getSaleRecords();
-	}
-
-	@Override
 	public List<Customer> getAllCustomersAgeGreaterThan(Integer age) throws CustomerException {
 
-		List<Customer> customers = customerRepo.findByAgeGreaterThan(age);
+		List<Customer> customers = customerRepo.findByAgeGreaterThanAndUserUserId(age, userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException("No Customers Found With Age Greater Than " + age);
@@ -181,7 +229,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<Customer> getAllCustomersAgeLessThan(Integer age) throws CustomerException {
-		List<Customer> customers = customerRepo.findByAgeLessThan(age);
+		List<Customer> customers = customerRepo.findByAgeLessThanAndUserUserId(age, userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException("No Customers Found With Age Less Than " + age);
@@ -190,7 +238,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<CustomerResponseModel> getCustomersByRank() throws CustomerException {
+	public List<CustomerResponseModel> getAllCustomersByRank() throws CustomerException {
 
 		List<Customer> customers = customerRepo.findAll();
 
@@ -213,9 +261,11 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+
 			List<Transaction> transactions = new ArrayList<>();
 
-			for (SaleRecord record : customer.getSaleRecords()) {
+			for (SaleRecord record : records) {
 				Product product = record.getProduct();
 				products.add(product);
 				totalProducts += record.getQuantity();
@@ -230,6 +280,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 			model.setRecordStatus(totalProducts != 0);
 
+			model.setTotalProducts(totalProducts);
+
 			model.setTotalAmount(totalAmount);
 
 			model.setTotalRemaininAmount(totalDueAmount);
@@ -237,6 +289,8 @@ public class CustomerServiceImpl implements CustomerService {
 			model.setTotalPaidAmount(totalAmount - totalDueAmount);
 
 			model.setTransactions(transactions);
+
+			model.setSaleRecords(records);
 
 			customerResponseModels.add(model);
 
@@ -250,17 +304,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = new Customer();
 
-		Product product = productRepo.findByProductName(firstCustomer.getProductName()).orElseThrow(
-				() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + firstCustomer.getCustomerName()));
+		Product product = productRepo.findByProductNameAndUserUserId(firstCustomer.getProductName(), userId)
+				.orElseThrow(
+						() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + firstCustomer.getCustomerName()));
 
-		Village village = villageRepo.findByVillageName(firstCustomer.getVillageName()).orElseThrow(
-				() -> new VillageException(Constants.VILLAGE_NAME_NOT_FOUND + firstCustomer.getVillageName()));
+		Village village = villageRepo.findByVillageNameAndUserUserId(firstCustomer.getVillageName(), userId)
+				.orElseThrow(
+						() -> new VillageException(Constants.VILLAGE_NAME_NOT_FOUND + firstCustomer.getVillageName()));
 
 		customer.getAddress().setVillage(village);
 
 		SaleRecord record = new SaleRecord();
 
-		record.setAddress(customer.getAddress());
 		record.setCustomer(customer);
 		record.setTotalAmount(firstCustomer.getAmount());
 		record.setDueAmount(firstCustomer.getAmount());
@@ -276,19 +331,140 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer updateProfilePicture(MultipartFile file) throws CustomerException {
-		// TODO Auto-generated method stub
-		return null;
+	public Customer updateProfilePicture(Integer customerId, MultipartFile file) throws CustomerException, IOException, UserException {
+
+		Customer customer = getCustomerById(customerId);
+
+		String imageURL = utils.convertImageToUrl(file);
+
+		customer.setProfileImageUrl(imageURL);
+
+		return customerRepo.save(customer);
 	}
 
 	@Override
-	public Address getAddressOfCustomer(Integer customerId) throws AddressException, CustomerException {
+	public Address getAddressOfCustomer(Integer customerId) throws AddressException, CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
+
 		Customer customer = getCustomerById(customerId);
 
 		if (customer.getAddress().getAddressId() == null)
 			throw new AddressException("Address Not Found with the Customer Id  " + customerId);
 
 		return customer.getAddress();
+	}
+
+	@Override
+	public Customer updateAddressToACustomer(AddressDTO dto, Integer customerId)
+			throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
+
+		Customer customer = getCustomerById(customerId);
+
+		var address = new Address();
+
+		Village village = villageRepo.findByVillageNameAndUserUserId(dto.getVillageName(), userId)
+				.orElseThrow(() -> new CustomerException("Village Not Found with Name " + dto.getVillageName()));
+		address.setCustomer(customer);
+		address.setDescription(dto.getDescription());
+		address.setLandmark(dto.getLandmark());
+		address.setStreet(dto.getStreet());
+		address.setVillage(village);
+
+		customer.setAddress(address);
+
+		return customerRepo.save(customer);
+	}
+
+	@Override
+	public Customer updateFlagOfACustomer(Integer customerId, Color flag) throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
+
+		Customer customer = getCustomerById(customerId);
+
+		customer.setFlag(flag);
+
+		return customerRepo.save(customer);
+	}
+
+	@Override
+	public Customer addKeywordsToCustomer(Integer customerId, List<String> keywords)
+			throws CustomerException, UserException {
+
+		utils.isAuthorizedForCustomer(customerId);
+
+		Customer customer = getCustomerById(customerId);
+
+		customer.getKeywords().addAll(keywords);
+
+		return customerRepo.save(customer);
+	}
+
+	@Override
+	public List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException {
+
+		Integer userId = utils.getUserIdFromContext();
+
+		List<Customer> customers = customerRepo.findByUserUserId(userId);
+
+		if (customers.isEmpty())
+			throw new CustomerException(" No Customers Found with the user Id " + userId);
+
+		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
+
+		for (Customer customer : customers) {
+
+			CustomerResponseModel model = new CustomerResponseModel();
+
+			model.setCustomer(customer);
+			model.setCustomerFlag(customer.getFlag());
+			model.setDescription(customer.getDescription());
+
+			List<Product> products = new ArrayList<>();
+
+			Integer totalProducts = 0;
+			Integer totalAmount = 0;
+			Integer totalDueAmount = 0;
+
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+			List<Transaction> transactions = new ArrayList<>();
+
+			for (SaleRecord record : records) {
+				Product product = record.getProduct();
+				products.add(product);
+				totalProducts += record.getQuantity();
+				totalAmount += record.getTotalAmount();
+				totalDueAmount += record.getDueAmount();
+
+				transactions.addAll(record.getTransactions());
+
+			}
+
+			model.setProducts(products);
+
+			model.setRecordStatus(totalProducts != 0);
+
+			model.setTotalProducts(totalProducts);
+
+			model.setTotalAmount(totalAmount);
+
+			model.setTotalRemaininAmount(totalDueAmount);
+
+			model.setTotalPaidAmount(totalAmount - totalDueAmount);
+
+			model.setTransactions(transactions);
+
+			model.setSaleRecords(records);
+
+			customerResponseModels.add(model);
+
+		}
+
+		return customerResponseModels;
 	}
 
 }

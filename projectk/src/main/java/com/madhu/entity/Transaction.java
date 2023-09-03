@@ -2,6 +2,8 @@ package com.madhu.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class Transaction {
 	private String description;
 
 	@ManyToOne
+	@JsonBackReference
 	private SaleRecord saleRecord;
 	
 	private String referenceImage;

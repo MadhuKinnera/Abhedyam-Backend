@@ -9,12 +9,12 @@ import com.madhu.entity.Village;
 
 public interface VillageRepo extends JpaRepository<Village, Integer> {
 
-	Optional<Village> findByVillageName(String villageName);
+	Optional<Village> findByVillageNameAndUserUserId(String villageName,Integer userId);
 
-	Optional<Village> findByAddressesInCustomerCustomerId(Integer customerId);
+	Optional<Village> findByAddressesCustomerCustomerIdAndUserUserId(Integer customerId,Integer userId);
 
-	Optional<Village> findTopByAddressesInCustomerCustomerName(String customerName);
+	Optional<Village> findTopByAddressesCustomerCustomerNameAndUserUserId(String customerName,Integer userId);
 
-	List<Village> findByPincode(Integer pincode);
+	List<Village> findByPincodeAndUserUserId(Integer pincode,Integer userId);
 
 }

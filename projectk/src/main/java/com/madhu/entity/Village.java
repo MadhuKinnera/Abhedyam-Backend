@@ -3,11 +3,14 @@ package com.madhu.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +34,11 @@ public class Village {
 	
 	private Integer amountGoal;
 	
-	
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "village")
 	private List<Address> addresses = new ArrayList<>();
 
+	@ManyToOne
+	@JsonBackReference
+	private User user;
 }

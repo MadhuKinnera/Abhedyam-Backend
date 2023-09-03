@@ -2,10 +2,16 @@ package com.madhu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
+import com.madhu.dto.TransactionDTO;
 import com.madhu.entity.Transaction;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.RecordException;
@@ -19,7 +25,9 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
-	ResponseEntity<GeneralResponse> addTransaction(Transaction transaction) throws TransactionException {
+	
+	@PostMapping("/addTransaction")
+	ResponseEntity<GeneralResponse> addTransaction(@RequestBody TransactionDTO transaction) throws TransactionException, RecordException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Transaction Added ");
@@ -28,7 +36,8 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	ResponseEntity<GeneralResponse> getTransactionById(Integer transactionId) throws TransactionException {
+	@GetMapping("/getTransaction/{transactionId}")
+	ResponseEntity<GeneralResponse> getTransactionById(@PathVariable Integer transactionId) throws TransactionException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -48,7 +57,8 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	ResponseEntity<GeneralResponse> deleteTransactioById(Integer transactionId) throws TransactionException{
+	@DeleteMapping("/deleteTransaction/{transactionId}")
+	ResponseEntity<GeneralResponse> deleteTransactioById(@PathVariable Integer transactionId) throws TransactionException{
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Transaction Deleted By Id "+transactionId);
@@ -57,7 +67,9 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	ResponseEntity<GeneralResponse> getAllTransactionsByCustomerId(Integer customerId)
+	
+	@GetMapping("/getTransactionsByCustomerId/{customerId}")
+	ResponseEntity<GeneralResponse> getTransactionsByCustomerId(@PathVariable Integer customerId)
 			throws CustomerException, TransactionException {
 		var generalResponse = new GeneralResponse();
 		generalResponse.setMessage("Transactions Found By Customer Id "+customerId);
@@ -66,7 +78,8 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	ResponseEntity<GeneralResponse> getRecordByTransactionId(Integer transactionId)
+	@GetMapping("/getRecordByTransactionId/{transactionId}")
+	ResponseEntity<GeneralResponse> getRecordByTransactionId(@PathVariable Integer transactionId)
 			throws TransactionException, RecordException {
 		var generalResponse = new GeneralResponse();
 
@@ -76,6 +89,7 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
+	@GetMapping("/getTransactions")
 	ResponseEntity<GeneralResponse> getAllTransactionsByRank() throws TransactionException {
 		var generalResponse = new GeneralResponse();
 

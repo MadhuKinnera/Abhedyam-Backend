@@ -2,20 +2,17 @@ package com.madhu.service;
 
 import java.util.List;
 
+import com.madhu.dto.VillageDTO;
 import com.madhu.entity.Address;
-import com.madhu.entity.Customer;
-import com.madhu.entity.SaleRecord;
-import com.madhu.entity.Transaction;
 import com.madhu.entity.Village;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
-import com.madhu.exception.RecordException;
-import com.madhu.exception.TransactionException;
+import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 
 public interface VillageService {
 
-	Village addVillage(Village village) throws VillageException;
+	Village addVillage(VillageDTO village) throws VillageException,UserException;
 
 	Village getVillageByVillageId(Integer villageId) throws VillageException;
 
@@ -26,6 +23,9 @@ public interface VillageService {
 	List<Village> getVillagesByRank()throws VillageException;
 	
 	List<Address> getAddressByVillageId(Integer villageId)throws VillageException,AddressException;
+	
+	Village getVillageByCustomerId(Integer customerId)throws CustomerException,VillageException;
+	
 	
 	Village getVillageByCustomerName(String customerName)throws CustomerException,VillageException;
 	

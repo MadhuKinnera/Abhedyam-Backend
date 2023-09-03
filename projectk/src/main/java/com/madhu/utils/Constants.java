@@ -33,5 +33,12 @@ public interface Constants {
 	String PRODUCT_NAME_NOT_FOUND= " Product Not Found with Product Name ";
 	
 	String NO_PRODUCTS_FOUND = " Products Not Found ";
+	
+	
+	String UN_AUTHORIZED_USER_FOR_CUSTOMER = "User Not Authorized For Customer ";
+	
+	String UN_AUTHORIZED_USER_FOR_PRODUCT = "User Not Authorized For Product ";
+	
+	String UN_AUTHORIZED_USER_FOR_VILLAGE = "User Not Authorized For Village ";
 
 }

@@ -1,5 +1,7 @@
 package com.madhu.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class Address {
 	private String description;
 	
 	@OneToOne
+	@JsonBackReference
     private Customer customer;
 	
 	@ManyToOne

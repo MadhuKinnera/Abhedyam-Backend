@@ -5,14 +5,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.madhu.dto.VillageDTO;
 import com.madhu.entity.Address;
 import com.madhu.entity.Village;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
+import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class VillageServiceImpl implements VillageService {
@@ -23,8 +27,29 @@ public class VillageServiceImpl implements VillageService {
 	@Autowired
 	private CommonUtils utils;
 
+	private Integer userId;
+
+	@PostConstruct
+	private void assignUserId() throws UserException {
+		this.userId = utils.getUserIdFromContext();
+	}
+
 	@Override
-	public Village addVillage(Village village) throws VillageException {
+	public Village addVillage(VillageDTO dto) throws VillageException, UserException {
+
+		var village = new Village();
+
+		village.setUser(utils.getUserFromContext());
+
+		village.setVillageName(dto.getVillageName());
+		village.setAmountGoal(dto.getAmountGoal());
+		if (dto.getDistrict() == null)
+			village.setDistrict("Telangana");
+		village.setDistrict(dto.getDistrict());
+		village.setMandal(dto.getMandal());
+		village.setPincode(dto.getPincode());
+		village.setProductGoal(dto.getProductGoal());
+		village.setState(dto.getState());
 
 		return villageRepo.save(village);
 	}
@@ -81,20 +106,26 @@ public class VillageServiceImpl implements VillageService {
 	@Override
 	public Village getVillageByCustomerName(String customerName) throws CustomerException, VillageException {
 
-		return villageRepo.findTopByAddressesInCustomerCustomerName(customerName)
+		return villageRepo.findTopByAddressesCustomerCustomerNameAndUserUserId(customerName, userId)
 				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Name " + customerName));
 	}
 
 	@Override
 	public List<Village> getVillagesByPincode(Integer pincode) throws VillageException {
 
-		List<Village> villages = villageRepo.findByPincode(pincode);
+		List<Village> villages = villageRepo.findByPincodeAndUserUserId(pincode, userId);
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found with Pincode " + pincode);
 
 		return villages;
 
+	}
+
+	@Override
+	public Village getVillageByCustomerId(Integer customerId) throws CustomerException, VillageException {
+		return villageRepo.findByAddressesCustomerCustomerIdAndUserUserId(customerId, userId)
+				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Id " + customerId));
 	}
 
 }

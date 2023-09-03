@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.madhu.enums.OccasionType;
 
 import jakarta.persistence.CascadeType;
@@ -41,13 +42,12 @@ public class SaleRecord {
 	private List<Transaction> transactions = new ArrayList<>();
 	
 	@ManyToOne
+	@JsonBackReference
 	private Customer customer;
 	
 	@ManyToOne
 	private Product product;
 
-	@ManyToOne
-	private Address address;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "saleRecord")
 	private List<Remainder> remainders = new ArrayList<>();

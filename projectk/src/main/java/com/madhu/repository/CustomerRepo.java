@@ -9,22 +9,25 @@ import com.madhu.entity.Customer;
 
 public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
-	Optional<Customer> findByMobileNo(String mobileNumber);
+	Optional<Customer> findByMobileNoAndUserUserId(String mobileNumber,Integer userId);
 
-	Optional<Customer> findByEmail(String email);
+	Optional<Customer> findByEmailAndUserUserId(String email,Integer userId);
 
-	List<Customer> findByKeywordsContaining(String keyword);
+	List<Customer> findByKeywordsContainingAndUserUserId(String keyword,Integer UserId);
 
-	Optional<Customer> findByAddressAddressId(Integer addressId);
+	Optional<Customer> findByAddressAddressIdAndUserUserId(Integer addressId,Integer userId);
 
-	List<Customer> findByAddressVillageVillageId(Integer villageId);
+	List<Customer> findByAddressVillageVillageIdAndUserUserId(Integer villageId,Integer userId);
 
-	List<Customer> findByAddressVillageVillageName(String villageName);
+	List<Customer> findByAddressVillageVillageNameAndUserUserId(String villageName,Integer userId);
 
-	List<Customer> findByAddressVillagePincode(Integer pincode);
+	List<Customer> findByAddressVillagePincodeAndUserUserId(Integer pincode,Integer userId);
 
-	List<Customer> findByAgeGreaterThan(int age);
+	List<Customer> findByAgeGreaterThanAndUserUserId(int age,Integer userId);
 
-	List<Customer> findByAgeLessThan(int age);
+	List<Customer> findByAgeLessThanAndUserUserId(int age,Integer userId);
+	
+	
+	List<Customer> findByUserUserId(Integer userId);
 
 }
