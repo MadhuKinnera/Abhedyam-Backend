@@ -246,12 +246,14 @@ public class RecordController {
 	}
 
 	@GetMapping("/getRecordsByCustomerName/{customerName}")
-	ResponseEntity<GeneralResponse> getRecordsByCustomerName(@PathVariable String name)
+	ResponseEntity<GeneralResponse> getRecordsByCustomerName(@PathVariable String customerName)
 			throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
+		
+		System.out.println(customerName);
 
-		generalResponse.setMessage("Records Found By Customer Name " + name);
-		generalResponse.setData(recordService.getRecordsByCustomerName(name));
+		generalResponse.setMessage("Records Found By Customer Name " + customerName);
+		generalResponse.setData(recordService.getRecordsByCustomerName(customerName));
 
 		return ResponseEntity.ok(generalResponse);
 	}

@@ -9,21 +9,26 @@ import com.madhu.dto.UserDTO;
 import com.madhu.entity.User;
 import com.madhu.exception.UserException;
 import com.madhu.repository.UserRepo;
+import com.madhu.utils.CommonUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	
+	@Autowired
+	private CommonUtils utils;
 
 	@Override
-	public User addUser(UserDTO dto) throws UserException {
+	public User addUser(UserDTO dto) throws Exception {
 
 		var user = new User();
 
 		user.setEmail(dto.getEmail());
 		user.setFullName(dto.getFullName());
-		user.setPassword(dto.getPassword());
+		user.setPassword(utils.encrypt(dto.getPassword()));
 
 		return userRepo.save(user);
 

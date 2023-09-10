@@ -8,7 +8,7 @@ import com.madhu.exception.UserException;
 
 public interface UserService {
 	
-	User addUser(UserDTO dto) throws UserException ;
+	User addUser(UserDTO dto) throws Exception ;
 	
 	User deleteUser(Integer userId) throws UserException;
 	

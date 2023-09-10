@@ -1,5 +1,7 @@
 package com.madhu.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.RemainderDTO;
 import com.madhu.entity.Remainder;
+import com.madhu.exception.CustomerException;
 import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
+import com.madhu.exception.UserException;
 import com.madhu.service.RemainderService;
 
 @RestController
@@ -26,7 +30,8 @@ public class RemainderController {
 	private RemainderService remainderService;
 
 	@PostMapping("/addRemainder")
-	ResponseEntity<GeneralResponse> addRemainder(@RequestBody RemainderDTO remainder) throws RemainderException, RecordException {
+	ResponseEntity<GeneralResponse> addRemainder(@RequestBody RemainderDTO remainder)
+			throws RemainderException, RecordException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Remainder Added ");
@@ -46,7 +51,7 @@ public class RemainderController {
 	}
 
 	@PutMapping("/updateRemainder/{remainderId}")
-	ResponseEntity<GeneralResponse> updateRemainder(@PathVariable Integer remainderId,@RequestBody Remainder remainder)
+	ResponseEntity<GeneralResponse> updateRemainder(@PathVariable Integer remainderId, @RequestBody Remainder remainder)
 			throws RemainderException {
 		var generalResponse = new GeneralResponse();
 
@@ -62,6 +67,52 @@ public class RemainderController {
 
 		generalResponse.setMessage("Remainder Deleted with Remainder Id " + remainderId);
 		generalResponse.setData(remainderService.deleteRemainderById(remainderId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRemaindersByRecordId/{recordId}")
+	ResponseEntity<GeneralResponse> getRemaindersByRecordId(@PathVariable Integer recordId)
+			throws RecordException, RemainderException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Remainders Found with Record Id  " + recordId);
+		generalResponse.setData(remainderService.getRemaindersByRecordId(recordId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRemaindersByUserId/{userId}")
+	ResponseEntity<GeneralResponse> getRemaindersByUserId(@PathVariable Integer userId)
+			throws UserException, RemainderException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Remainders Found with User Id " + userId);
+		generalResponse.setData(remainderService.getRemaindersByUserId(userId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRemaindersByUserIdAndBetween/{userId}/{startDate}/{endDate}")
+	ResponseEntity<GeneralResponse> getRemainderByDateAndUserId(@PathVariable LocalDate startDate,
+			@PathVariable LocalDate endDate, @PathVariable Integer userId) throws RemainderException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse
+				.setMessage("Remainders Found with User Id " + userId + " and  between " + startDate + " " + endDate);
+		generalResponse.setData(remainderService.getRemainderByDateAndUserId(startDate, endDate, userId));
+
+		return ResponseEntity.ok(generalResponse);
+
+	}
+
+	@GetMapping("/getRemaindersByCustomerId/{customerId}")
+	ResponseEntity<GeneralResponse> getRemaindersByCustomerId(@PathVariable Integer customerId)
+			throws RemainderException, CustomerException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Remainders Found with Customer Id " + customerId);
+		generalResponse.setData(remainderService.getRemaindersByCustomerId(customerId));
 
 		return ResponseEntity.ok(generalResponse);
 	}

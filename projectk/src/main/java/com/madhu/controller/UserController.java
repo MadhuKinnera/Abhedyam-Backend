@@ -25,7 +25,7 @@ public class UserController {
 	private UserService userService;
 
 	@PostMapping("/addUser")
-	ResponseEntity<GeneralResponse> addUser(@RequestBody UserDTO dto) throws UserException {
+	ResponseEntity<GeneralResponse> addUser(@RequestBody UserDTO dto) throws Exception {
 
 		var generalResponse = new GeneralResponse();
 

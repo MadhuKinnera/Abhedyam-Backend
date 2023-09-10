@@ -1,7 +1,14 @@
 package com.madhu.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,6 +65,10 @@ public class CommonUtils {
 	private Cloudinary cloudinary;
 
 	private Integer userId;
+
+	private static final String ALGORITHM = "AES";
+
+	private static final String key = "Madhu123Madhu123";
 
 	@PostConstruct
 	private void assignUserId() throws UserException {
@@ -144,18 +155,25 @@ public class CommonUtils {
 
 		// get user from context
 
-		String email = "admin2@gmail.com";
+		String email = "user2@gmail.com";
 
-		User user = userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In "));
+		List<User> users = userRepo.findAll();
 
-		return user;
+		if (!users.isEmpty())
+			return userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In "));
+
+		return null;
+		
 	}
 
 	public Integer getUserIdFromContext() throws UserException {
 
 		User user = getUserFromContext();
 
+		if(user!=null)
 		return user.getUserId();
+		
+		return -1;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -164,7 +182,32 @@ public class CommonUtils {
 
 		return data.get("secure_url").toString();
 	}
-	
-	
+
+	public static String encrypt(String plainText) throws Exception {
+
+		Cipher cipher = Cipher.getInstance(ALGORITHM);
+
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+
+		cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+		byte[] encryptedText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+		return Base64.getEncoder().encodeToString(encryptedText);
+	}
+
+	public static String decrypt(String encryptedText) throws Exception {
+
+		Cipher cipher = Cipher.getInstance(ALGORITHM);
+
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+		cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+		byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText.getBytes());
+
+		byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+		return new String(decryptedBytes, StandardCharsets.UTF_8);
+
+	}
 
 }
