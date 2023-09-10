@@ -1,6 +1,7 @@
 package com.madhu.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,18 +34,14 @@ public class CustomerRequestController {
 	private ObjectMapper mapper;
 
 	@PostMapping("/addCustomerRequest")
-	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image") MultipartFile file,
+	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image[]") List<MultipartFile> files,
 			@RequestParam("data") String dtoData) throws CustomerException, CustomerRequestException, IOException {
 		var generalResponse = new GeneralResponse();
-
-		System.out.println("image is " + file.getOriginalFilename());
-
-		System.out.println("data is " + dtoData);
 
 		CustomerRequestDTO dto = mapper.readValue(dtoData, CustomerRequestDTO.class);
 
 		generalResponse.setMessage("Customer Request Added ");
-		generalResponse.setData(customerRequestService.addCustomerRequest(file, dto));
+		generalResponse.setData(customerRequestService.addCustomerRequest(files, dto));
 
 		return ResponseEntity.ok(generalResponse);
 	}

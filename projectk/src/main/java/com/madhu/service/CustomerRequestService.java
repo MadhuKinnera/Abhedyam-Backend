@@ -12,7 +12,7 @@ import com.madhu.exception.CustomerRequestException;
 
 public interface CustomerRequestService {
 
-	CustomerRequest addCustomerRequest(MultipartFile file, CustomerRequestDTO dto) throws CustomerException,CustomerRequestException,IOException;
+	CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto) throws CustomerException,CustomerRequestException,IOException;
 	
 	CustomerRequest updateCustomerRequest(Integer customerRequestId,CustomerRequestDTO dto) throws CustomerRequestException;
 	

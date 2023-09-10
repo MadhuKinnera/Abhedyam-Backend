@@ -2,6 +2,7 @@ package com.madhu.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 	private CommonUtils utils;
 
 	@Override
-	public CustomerRequest addCustomerRequest(MultipartFile file, CustomerRequestDTO dto)
+	public CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto)
 			throws CustomerException, IOException, CustomerRequestException {
 
 		Customer customer = customerRepo.findById(dto.getCustomerId())
@@ -43,7 +44,19 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 		request.setMessage(dto.getMessage());
 		request.setTimestamp(LocalDateTime.now());
 
-		request.setReferenceImages(utils.convertImageToUrl(file));
+		// request.setReferenceImages(utils.convertImageToUrl(file));
+
+		List<String> refereceImagesURLs = new ArrayList<>();
+
+		for (MultipartFile file : files) {
+
+			String url = utils.convertImageToUrl(file);
+
+			refereceImagesURLs.add(url);
+
+		}
+
+		request.setReferenceImages(refereceImagesURLs);
 
 		return customerRequestRepo.save(request);
 	}
@@ -81,7 +94,8 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 			throws CustomerException, CustomerRequestException {
 
 		List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customerId);
-
+		
+		
 		if (requests.isEmpty())
 			throw new CustomerRequestException("No Requests Found with Customer Id " + customerId);
 

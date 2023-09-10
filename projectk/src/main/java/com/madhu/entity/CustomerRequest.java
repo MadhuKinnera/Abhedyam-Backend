@@ -1,7 +1,9 @@
 package com.madhu.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +24,8 @@ public class CustomerRequest {
 	private LocalDateTime timestamp;
 
 	private String message;
-
-	private String referenceImages;
+	@ElementCollection
+	private List<String> referenceImages;
 
 	@ManyToOne
 	private Customer customer;

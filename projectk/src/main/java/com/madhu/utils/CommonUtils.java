@@ -64,6 +64,8 @@ public class CommonUtils {
 	@Autowired
 	private Cloudinary cloudinary;
 
+//	private String email;
+
 	private Integer userId;
 
 	private static final String ALGORITHM = "AES";
@@ -111,6 +113,10 @@ public class CommonUtils {
 		return remainderRepo.findById(remainderId).isPresent();
 	}
 
+	public boolean isUserExist(String email) {
+		return userRepo.findByEmail(email).isPresent();
+	}
+
 	public boolean isAuthorizedForCustomer(Integer customerId) throws CustomerException, UserException {
 
 		Customer customer = customerRepo.findById(customerId)
@@ -155,7 +161,7 @@ public class CommonUtils {
 
 		// get user from context
 
-		String email = "user2@gmail.com";
+		String email = "user1@gmail.com";
 
 		List<User> users = userRepo.findAll();
 
@@ -163,16 +169,16 @@ public class CommonUtils {
 			return userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In "));
 
 		return null;
-		
+
 	}
 
 	public Integer getUserIdFromContext() throws UserException {
 
 		User user = getUserFromContext();
 
-		if(user!=null)
-		return user.getUserId();
-		
+		if (user != null)
+			return user.getUserId();
+
 		return -1;
 	}
 
@@ -183,7 +189,7 @@ public class CommonUtils {
 		return data.get("secure_url").toString();
 	}
 
-	public static String encrypt(String plainText) throws Exception {
+	public String encrypt(String plainText) throws Exception {
 
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 
@@ -195,7 +201,7 @@ public class CommonUtils {
 		return Base64.getEncoder().encodeToString(encryptedText);
 	}
 
-	public static String decrypt(String encryptedText) throws Exception {
+	public String decrypt(String encryptedText) throws Exception {
 
 		Cipher cipher = Cipher.getInstance(ALGORITHM);
 
@@ -209,5 +215,17 @@ public class CommonUtils {
 		return new String(decryptedBytes, StandardCharsets.UTF_8);
 
 	}
+
+//	public void assignEmail(String email) throws UserException{
+//		
+//		if(!isUserExist(email))
+//			throw new UserException("user not found with email "+email);
+//	
+//
+//		this.email = email;
+//
+//		System.out.println("email " + email + " assinged sucessfully.");
+//
+//	}
 
 }
