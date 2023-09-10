@@ -22,9 +22,6 @@ import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
 import com.madhu.service.CustomerRequestService;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.websocket.server.PathParam;
-
 @RestController
 @RequestMapping("/customerRequest")
 public class CustomerRequestController {
