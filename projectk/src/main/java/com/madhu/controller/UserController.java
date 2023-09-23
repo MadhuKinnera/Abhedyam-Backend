@@ -2,6 +2,7 @@ package com.madhu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +18,17 @@ import com.madhu.dto.UserDTO;
 import com.madhu.exception.UserException;
 import com.madhu.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/user")
 public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	
 
 	@PostMapping("/addUser")
 	ResponseEntity<GeneralResponse> addUser(@RequestBody UserDTO dto) throws Exception {

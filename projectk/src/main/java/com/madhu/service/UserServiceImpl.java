@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.madhu.dto.UserDTO;
@@ -16,10 +17,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
-	
+
 	@Autowired
-	private CommonUtils utils;
+	private PasswordEncoder passwordEncoder;
+
 
 	@Override
 	public User addUser(UserDTO dto) throws Exception {
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
 		user.setEmail(dto.getEmail());
 		user.setFullName(dto.getFullName());
-		user.setPassword(utils.encrypt(dto.getPassword()));
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		return userRepo.save(user);
 
@@ -43,10 +44,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updatePassword(Integer userId,String password) throws UserException {
-		
+	public User updatePassword(Integer userId, String password) throws UserException {
+
 		User user = getUserById(userId);
-		
+
 		user.setPassword(password);
 		return userRepo.save(user);
 	}

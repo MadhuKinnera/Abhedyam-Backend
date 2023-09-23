@@ -3,6 +3,7 @@ package com.madhu.dto;
 import java.util.List;
 
 import com.madhu.entity.Customer;
+import com.madhu.entity.CustomerRequest;
 import com.madhu.entity.Product;
 import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
@@ -25,6 +26,11 @@ public class CustomerResponseModel {
 
 	private List<Transaction> transactions;
 
+	private List<CustomerRequest> customerRequests ;
+	
+	
+	private Integer totalCustomerRequests;
+	
 	private boolean recordStatus;
 
 	private Integer totalPaidAmount;

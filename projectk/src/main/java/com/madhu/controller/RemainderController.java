@@ -22,6 +22,10 @@ import com.madhu.exception.RemainderException;
 import com.madhu.exception.UserException;
 import com.madhu.service.RemainderService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/remainder")
 public class RemainderController {

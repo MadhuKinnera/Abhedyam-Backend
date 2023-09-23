@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,10 @@ import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.service.CustomerService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+
+@CrossOrigin(origins = "*",allowedHeaders = "*")
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
@@ -246,6 +251,8 @@ public class CustomerController {
 	ResponseEntity<GeneralResponse> getCustomersByRankAndUserId()
 			throws CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
+		
+		System.out.println("Inside get customers rank controller method");
 
 		generalResponse.setMessage("Customer Found By Rank ");
 		generalResponse.setData(customerService.getCustomersByRank());
@@ -270,6 +277,18 @@ public class CustomerController {
 
 		generalResponse.setMessage("Customer Profile Picture Updated");
 		generalResponse.setData(customerService.updateProfilePicture(customerId, file));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+
+	@GetMapping("/getPlainCustomers")
+	ResponseEntity<GeneralResponse> getPlainCustomers() throws UserException{
+		
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Plain Customers Found");
+		generalResponse.setData(customerService.getPlainCustomers());
 
 		return ResponseEntity.ok(generalResponse);
 	}

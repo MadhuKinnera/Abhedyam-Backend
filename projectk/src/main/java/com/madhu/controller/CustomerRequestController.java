@@ -23,6 +23,9 @@ import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
 import com.madhu.service.CustomerRequestService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/customerRequest")
 public class CustomerRequestController {

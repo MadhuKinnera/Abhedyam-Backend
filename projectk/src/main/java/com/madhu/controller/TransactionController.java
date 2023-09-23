@@ -18,6 +18,10 @@ import com.madhu.exception.RecordException;
 import com.madhu.exception.TransactionException;
 import com.madhu.service.TransactionService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/transaction")
 public class TransactionController {

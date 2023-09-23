@@ -25,8 +25,10 @@ import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
 import com.madhu.service.RecordService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.TransactionalException;
 
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/record")
 public class RecordController {

@@ -13,8 +13,10 @@ import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
+import com.madhu.dto.PlainCustomer;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
+import com.madhu.entity.CustomerRequest;
 import com.madhu.entity.Product;
 import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
@@ -26,6 +28,7 @@ import com.madhu.exception.ProductException;
 import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.CustomerRepo;
+import com.madhu.repository.CustomerRequestRepo;
 import com.madhu.repository.ProductRepo;
 import com.madhu.repository.RecordRepo;
 import com.madhu.repository.VillageRepo;
@@ -51,6 +54,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private RecordRepo recordRepo;
+
+	@Autowired
+	private CustomerRequestRepo customerRequestRepo;
 
 	private Integer userId;
 
@@ -331,7 +337,8 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer updateProfilePicture(Integer customerId, MultipartFile file) throws CustomerException, IOException, UserException {
+	public Customer updateProfilePicture(Integer customerId, MultipartFile file)
+			throws CustomerException, IOException, UserException {
 
 		Customer customer = getCustomerById(customerId);
 
@@ -408,6 +415,8 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Integer userId = utils.getUserIdFromContext();
 
+		System.out.println("The user Id of logged in User is " + userId);
+
 		List<Customer> customers = customerRepo.findByUserUserId(userId);
 
 		if (customers.isEmpty())
@@ -460,11 +469,46 @@ public class CustomerServiceImpl implements CustomerService {
 
 			model.setSaleRecords(records);
 
+			List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+			model.setCustomerRequests(requests);
+
+			model.setTotalCustomerRequests(requests.size());
+
 			customerResponseModels.add(model);
 
 		}
 
 		return customerResponseModels;
+	}
+
+	@Override
+	public List<PlainCustomer> getPlainCustomers() throws UserException {
+
+		Integer userId = utils.getUserIdFromContext();
+
+		List<Customer> customers = customerRepo.findByUserUserId(userId);
+
+		if (customers.isEmpty())
+			throw new UserException("User Not Have Any Customers");
+
+		List<PlainCustomer> plainCustomers = new ArrayList<>();
+
+		customers.stream().forEach(c -> {
+			var p = new PlainCustomer();
+			p.setCustomerId(c.getCustomerId());
+			p.setAge(c.getAge());
+			p.setCustomerName(c.getCustomerName());
+			p.setDescription(c.getDescription());
+			p.setEmail(c.getEmail());
+			p.setFlag(c.getFlag());
+			p.setMobileNo(c.getMobileNo());
+			p.setProfession(c.getProfession());
+			p.setProfileImageUrl(c.getProfileImageUrl());
+			plainCustomers.add(p);
+		});
+
+		return plainCustomers;
 	}
 
 }

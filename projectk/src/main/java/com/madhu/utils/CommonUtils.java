@@ -11,6 +11,13 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,11 +67,12 @@ public class CommonUtils {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	PasswordEncoder encoder;
 
 	@Autowired
 	private Cloudinary cloudinary;
-
-//	private String email;
 
 	private Integer userId;
 
@@ -160,15 +168,38 @@ public class CommonUtils {
 	public User getUserFromContext() throws UserException {
 
 		// get user from context
+		
+	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	
+	   System.out.println("auth object is "+auth); 
+	   
+	   if(auth!=null)
+	   System.out.println("principal "+auth.getPrincipal());
+	   
+	   if(auth!=null)
+	   System.out.println("email "+auth.getName());
 
-		String email = "user1@gmail.com";
+	   System.out.println("the user1pass in bcrypt is "+encoder.encode("madhu")); 
+	   
+		String email = "user2@gmail.com";
+		
+		if(auth!=null && !(auth instanceof AnonymousAuthenticationToken))
+			email = auth.getName();
+		
+		
+		System.out.println("The email is "+email);
 
 		List<User> users = userRepo.findAll();
+		
+		if(users.isEmpty())
+			throw new UserException("No Users Exist");
 
-		if (!users.isEmpty())
-			return userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In "));
 
-		return null;
+			User user = userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In with Email "));
+
+			System.out.println("The user is "+user);
+			
+			return user;
 
 	}
 
@@ -215,17 +246,5 @@ public class CommonUtils {
 		return new String(decryptedBytes, StandardCharsets.UTF_8);
 
 	}
-
-//	public void assignEmail(String email) throws UserException{
-//		
-//		if(!isUserExist(email))
-//			throw new UserException("user not found with email "+email);
-//	
-//
-//		this.email = email;
-//
-//		System.out.println("email " + email + " assinged sucessfully.");
-//
-//	}
 
 }

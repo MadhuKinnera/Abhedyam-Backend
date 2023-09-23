@@ -16,6 +16,9 @@ import com.madhu.entity.Address;
 import com.madhu.exception.AddressException;
 import com.madhu.service.AddressService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/address")
 public class AddressController {
