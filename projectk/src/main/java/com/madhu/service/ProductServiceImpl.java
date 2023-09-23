@@ -25,8 +25,6 @@ import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -39,13 +37,7 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private CommonUtils utils;
 	
-	private Integer userId;
-	
-	
-	@PostConstruct
-	private void assignUserId() throws UserException {
-		this.userId= utils.getUserIdFromContext();
-	}
+
 
 	@Override
 	public Product addProduct(ProductDTO dto) throws ProductException, UserException {
@@ -95,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getProductByName(String productName) throws ProductException {
 
-		return productRepo.findByProductNameAndUserUserId(productName,userId)
+		return productRepo.findByProductNameAndUserUserId(productName,utils.userId)
 				.orElseThrow(() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + productName));
 	}
 

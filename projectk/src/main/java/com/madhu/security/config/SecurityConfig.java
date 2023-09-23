@@ -40,10 +40,10 @@ public class SecurityConfig {
 //
 //
 //		
-//		http.csrf(t -> t.disable());
+		http.csrf(t -> t.disable());
 //
 //
-//		http.cors(t -> t.disable());
+		http.cors(t -> t.disable());
 //
 //		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //

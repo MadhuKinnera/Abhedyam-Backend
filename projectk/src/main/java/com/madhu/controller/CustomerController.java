@@ -33,7 +33,7 @@ import com.madhu.service.CustomerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 
-@CrossOrigin(origins = "*",allowedHeaders = "*")
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {

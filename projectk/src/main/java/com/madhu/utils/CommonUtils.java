@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -39,7 +40,6 @@ import com.madhu.repository.TransactionRepo;
 import com.madhu.repository.UserRepo;
 import com.madhu.repository.VillageRepo;
 
-import jakarta.annotation.PostConstruct;
 
 @Component
 public class CommonUtils {
@@ -67,23 +67,18 @@ public class CommonUtils {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
 	private Cloudinary cloudinary;
 
-	private Integer userId;
+	public  Integer userId;
 
 	private static final String ALGORITHM = "AES";
 
 	private static final String key = "Madhu123Madhu123";
-
-	@PostConstruct
-	private void assignUserId() throws UserException {
-		this.userId = getUserIdFromContext();
-	}
 
 	public boolean isCustomerExist(Integer customerId) {
 		return customerRepo.findById(customerId).isPresent();
@@ -168,38 +163,35 @@ public class CommonUtils {
 	public User getUserFromContext() throws UserException {
 
 		// get user from context
-		
-	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	
-	   System.out.println("auth object is "+auth); 
-	   
-	   if(auth!=null)
-	   System.out.println("principal "+auth.getPrincipal());
-	   
-	   if(auth!=null)
-	   System.out.println("email "+auth.getName());
+		User user = null;
 
-	   System.out.println("the user1pass in bcrypt is "+encoder.encode("madhu")); 
-	   
-		String email = "user2@gmail.com";
-		
-		if(auth!=null && !(auth instanceof AnonymousAuthenticationToken))
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		System.out.println("auth object is " + auth);
+
+		if (auth != null)
+			System.out.println("principal " + auth.getPrincipal());
+
+		if (auth != null)
+			System.out.println("email " + auth.getName());
+
+		String email = null;
+
+		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
 			email = auth.getName();
-		
-		
-		System.out.println("The email is "+email);
+		else
+			throw new UserException("User Need To Login First");
 
-		List<User> users = userRepo.findAll();
-		
-		if(users.isEmpty())
-			throw new UserException("No Users Exist");
+		System.out.println("The email is " + email);
 
+		Optional<User> opt = userRepo.findByEmail(email);
 
-			User user = userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In with Email "));
+		if (opt.isPresent())
+			user = opt.get();
 
-			System.out.println("The user is "+user);
-			
-			return user;
+		System.out.println("The user is " + user);
+
+		return user;
 
 	}
 

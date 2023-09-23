@@ -58,14 +58,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerRequestRepo customerRequestRepo;
 
-	private Integer userId;
-
-	@PostConstruct
-	public void assignUserId() throws UserException {
-
-		this.userId = utils.getUserIdFromContext();
-
-	}
 
 	@Override
 	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException {
@@ -89,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (dto.getAddressDto() != null) {
 			address = new Address();
 
-			Village village = villageRepo.findByVillageNameAndUserUserId(dto.getAddressDto().getVillageName(), userId)
+			Village village = villageRepo.findByVillageNameAndUserUserId(dto.getAddressDto().getVillageName(), utils.userId)
 					.orElseThrow(() -> new CustomerException("Invalid Village Name Provided"));
 
 			address.setCustomer(customer);
@@ -140,7 +132,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException, UserException {
 
-		Customer customer = customerRepo.findByMobileNoAndUserUserId(phoneNumber, userId)
+		Customer customer = customerRepo.findByMobileNoAndUserUserId(phoneNumber, utils.userId)
 				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_PHONE_NOT_FOUND + phoneNumber));
 
 		utils.isAuthorizedForCustomer(customer.getCustomerId());
@@ -150,7 +142,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Customer getCustomerByEmail(String email) throws CustomerException, UserException {
-		Customer customer = customerRepo.findByEmailAndUserUserId(email, userId)
+		Customer customer = customerRepo.findByEmailAndUserUserId(email, utils.userId)
 				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_EMAIL_NOT_FOUND + email));
 
 		utils.isAuthorizedForCustomer(customer.getCustomerId());
@@ -161,7 +153,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> getCustomersByKeyword(String keyword) throws CustomerException {
 
-		List<Customer> customerList = customerRepo.findByKeywordsContainingAndUserUserId(keyword, userId);
+		List<Customer> customerList = customerRepo.findByKeywordsContainingAndUserUserId(keyword, utils.userId);
 
 		if (customerList.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -172,7 +164,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Customer getCustomersByAddressId(Integer addressId) throws CustomerException, AddressException {
 
-		return customerRepo.findByAddressAddressIdAndUserUserId(addressId, userId)
+		return customerRepo.findByAddressAddressIdAndUserUserId(addressId, utils.userId)
 				.orElseThrow(() -> new AddressException(Constants.ADDRESS_ID_NOT_FOUND + addressId));
 	}
 
@@ -182,7 +174,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isVillageExist(villageId))
 			throw new VillageException(Constants.VILLAGE_ID_NOT_FOUND + villageId);
 
-		List<Customer> customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, userId);
+		List<Customer> customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.NO_CUSTOMERS_IN_THE_VILLAGE + villageId);
@@ -198,7 +190,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isVillageExistByName(villageName))
 			throw new VillageException(Constants.VILLAGE_NAME_NOT_FOUND + villageName);
 
-		List<Customer> customers = customerRepo.findByAddressVillageVillageNameAndUserUserId(villageName, userId);
+		List<Customer> customers = customerRepo.findByAddressVillageVillageNameAndUserUserId(villageName, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -212,7 +204,7 @@ public class CustomerServiceImpl implements CustomerService {
 		if (!utils.isPincodeExist(pincode))
 			throw new VillageException(Constants.PINCODE_NOT_FOUND + pincode);
 
-		List<Customer> customers = customerRepo.findByAddressVillagePincodeAndUserUserId(pincode, userId);
+		List<Customer> customers = customerRepo.findByAddressVillagePincodeAndUserUserId(pincode, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(Constants.CUSTOMERS_NOT_FOUND);
@@ -224,7 +216,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> getAllCustomersAgeGreaterThan(Integer age) throws CustomerException {
 
-		List<Customer> customers = customerRepo.findByAgeGreaterThanAndUserUserId(age, userId);
+		List<Customer> customers = customerRepo.findByAgeGreaterThanAndUserUserId(age, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException("No Customers Found With Age Greater Than " + age);
@@ -235,7 +227,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<Customer> getAllCustomersAgeLessThan(Integer age) throws CustomerException {
-		List<Customer> customers = customerRepo.findByAgeLessThanAndUserUserId(age, userId);
+		List<Customer> customers = customerRepo.findByAgeLessThanAndUserUserId(age, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException("No Customers Found With Age Less Than " + age);
@@ -310,11 +302,11 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = new Customer();
 
-		Product product = productRepo.findByProductNameAndUserUserId(firstCustomer.getProductName(), userId)
+		Product product = productRepo.findByProductNameAndUserUserId(firstCustomer.getProductName(), utils.userId)
 				.orElseThrow(
 						() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + firstCustomer.getCustomerName()));
 
-		Village village = villageRepo.findByVillageNameAndUserUserId(firstCustomer.getVillageName(), userId)
+		Village village = villageRepo.findByVillageNameAndUserUserId(firstCustomer.getVillageName(), utils.userId)
 				.orElseThrow(
 						() -> new VillageException(Constants.VILLAGE_NAME_NOT_FOUND + firstCustomer.getVillageName()));
 
@@ -372,7 +364,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		var address = new Address();
 
-		Village village = villageRepo.findByVillageNameAndUserUserId(dto.getVillageName(), userId)
+		Village village = villageRepo.findByVillageNameAndUserUserId(dto.getVillageName(), utils.userId)
 				.orElseThrow(() -> new CustomerException("Village Not Found with Name " + dto.getVillageName()));
 		address.setCustomer(customer);
 		address.setDescription(dto.getDescription());
@@ -413,14 +405,12 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException {
 
-		Integer userId = utils.getUserIdFromContext();
+	
 
-		System.out.println("The user Id of logged in User is " + userId);
-
-		List<Customer> customers = customerRepo.findByUserUserId(userId);
+		List<Customer> customers = customerRepo.findByUserUserId(utils.userId);
 
 		if (customers.isEmpty())
-			throw new CustomerException(" No Customers Found with the user Id " + userId);
+			throw new CustomerException(" No Customers Found with the user Id " + utils.userId);
 
 		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
 
@@ -485,9 +475,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<PlainCustomer> getPlainCustomers() throws UserException {
 
-		Integer userId = utils.getUserIdFromContext();
+		
 
-		List<Customer> customers = customerRepo.findByUserUserId(userId);
+		List<Customer> customers = customerRepo.findByUserUserId(utils.userId);
 
 		if (customers.isEmpty())
 			throw new UserException("User Not Have Any Customers");

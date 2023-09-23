@@ -16,8 +16,6 @@ import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class VillageServiceImpl implements VillageService {
 
@@ -27,12 +25,8 @@ public class VillageServiceImpl implements VillageService {
 	@Autowired
 	private CommonUtils utils;
 
-	private Integer userId;
 
-	@PostConstruct
-	private void assignUserId() throws UserException {
-		this.userId = utils.getUserIdFromContext();
-	}
+
 
 	@Override
 	public Village addVillage(VillageDTO dto) throws VillageException, UserException {
@@ -106,14 +100,14 @@ public class VillageServiceImpl implements VillageService {
 	@Override
 	public Village getVillageByCustomerName(String customerName) throws CustomerException, VillageException {
 
-		return villageRepo.findTopByAddressesCustomerCustomerNameAndUserUserId(customerName, userId)
+		return villageRepo.findTopByAddressesCustomerCustomerNameAndUserUserId(customerName, utils.userId)
 				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Name " + customerName));
 	}
 
 	@Override
 	public List<Village> getVillagesByPincode(Integer pincode) throws VillageException {
 
-		List<Village> villages = villageRepo.findByPincodeAndUserUserId(pincode, userId);
+		List<Village> villages = villageRepo.findByPincodeAndUserUserId(pincode, utils.userId);
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found with Pincode " + pincode);
@@ -124,7 +118,7 @@ public class VillageServiceImpl implements VillageService {
 
 	@Override
 	public Village getVillageByCustomerId(Integer customerId) throws CustomerException, VillageException {
-		return villageRepo.findByAddressesCustomerCustomerIdAndUserUserId(customerId, userId)
+		return villageRepo.findByAddressesCustomerCustomerIdAndUserUserId(customerId, utils.userId)
 				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Id " + customerId));
 	}
 

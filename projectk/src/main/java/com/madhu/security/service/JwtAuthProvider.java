@@ -60,14 +60,14 @@ public class JwtAuthProvider {
 
 	}
 
-	public String generateToken(String phoneNumber) {
+	public String generateToken(String email) {
 
 
 		Key key = Keys.hmacShaKeyFor(jwtSecretKey.getBytes());
 
 		Date expire = new Date(new Date().getTime() + jwtExpiration);
 
-		return Jwts.builder().setSubject(phoneNumber).setIssuedAt(new Date()).setExpiration(expire).signWith(key)
+		return Jwts.builder().setSubject(email).setIssuedAt(new Date()).setExpiration(expire).signWith(key)
 				.compact();
 
 	}

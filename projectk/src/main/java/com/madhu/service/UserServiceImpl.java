@@ -10,7 +10,6 @@ import com.madhu.dto.UserDTO;
 import com.madhu.entity.User;
 import com.madhu.exception.UserException;
 import com.madhu.repository.UserRepo;
-import com.madhu.utils.CommonUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
