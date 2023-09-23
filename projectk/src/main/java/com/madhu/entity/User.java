@@ -3,6 +3,9 @@ package com.madhu.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +25,8 @@ public class User {
 	private Integer userId;
 
 	private String email;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	private String fullName;
 	

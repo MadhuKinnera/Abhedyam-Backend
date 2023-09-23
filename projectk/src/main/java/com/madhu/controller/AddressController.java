@@ -16,6 +16,9 @@ import com.madhu.entity.Address;
 import com.madhu.exception.AddressException;
 import com.madhu.service.AddressService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/address")
 public class AddressController {
@@ -51,7 +54,7 @@ public class AddressController {
 
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Address Updated ");
+		generalResponse.setMessage("Address Deleted with address Id "+addressId);
 		generalResponse.setData(addressService.deleteAddress(addressId));
 
 		return ResponseEntity.ok(generalResponse);
@@ -76,7 +79,7 @@ public class AddressController {
 
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Address Updated ");
+		generalResponse.setMessage("Address Found with Village Name "+villageName);
 		generalResponse.setData(addressService.getAddressesByVillageName(villageName));
 
 		return ResponseEntity.ok(generalResponse);
@@ -87,7 +90,7 @@ public class AddressController {
 
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Address Updated ");
+		generalResponse.setMessage("Address Found with Village Id "+villageId);
 		generalResponse.setData(addressService.getAddressesByVillageId(villageId));
 
 		return ResponseEntity.ok(generalResponse);

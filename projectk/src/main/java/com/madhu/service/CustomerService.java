@@ -9,6 +9,7 @@ import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
+import com.madhu.dto.PlainCustomer;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
 import com.madhu.enums.Color;
@@ -32,6 +33,7 @@ public interface CustomerService {
 	
 	Customer deleteCustomerById(Integer customerId) throws CustomerException,UserException;
 	
+	List<PlainCustomer> getPlainCustomers() throws UserException;
 	
 	Customer addKeywordsToCustomer(Integer customerId,List<String> keywords) throws CustomerException,UserException;
 	

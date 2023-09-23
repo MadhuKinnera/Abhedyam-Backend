@@ -26,6 +26,18 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(CustomerRequestException.class)
+	ResponseEntity<ErrorDetails> customerRequestExceptionHandler(CustomerRequestException e, WebRequest req) {
+
+		var err = new ErrorDetails();
+
+		err.setTimestamp(LocalDateTime.now());
+		err.setMessage(e.getMessage());
+		err.setDescription(req.getDescription(false));
+
+		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+	}
+	
 
 	@ExceptionHandler(CustomerException.class)
 	ResponseEntity<ErrorDetails> customerExceptionHandler(CustomerException e, WebRequest req) {

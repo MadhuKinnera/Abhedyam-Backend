@@ -68,7 +68,7 @@ public class RecordServiceImpl implements RecordService {
 		
 		
 		
-		saleRecord.setTotalAmount((dto.getTotalAmount()==null || dto.getTotalAmount()==0)  ? product.getSellingPrice()*dto.getQuantity() : dto.getTotalAmount()*dto.getQuantity());
+		saleRecord.setTotalAmount((dto.getTotalAmount()==null || dto.getTotalAmount()==0)  ? product.getSellingPrice()* (dto.getQuantity()==0 ? 1 :dto.getQuantity()): dto.getTotalAmount()*dto.getQuantity());
 
 		
 		

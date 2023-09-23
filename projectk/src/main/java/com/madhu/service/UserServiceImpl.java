@@ -3,12 +3,14 @@ package com.madhu.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.madhu.dto.UserDTO;
 import com.madhu.entity.User;
 import com.madhu.exception.UserException;
 import com.madhu.repository.UserRepo;
+import com.madhu.utils.CommonUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,14 +18,18 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepo userRepo;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+
 	@Override
-	public User addUser(UserDTO dto) throws UserException {
+	public User addUser(UserDTO dto) throws Exception {
 
 		var user = new User();
 
 		user.setEmail(dto.getEmail());
 		user.setFullName(dto.getFullName());
-		user.setPassword(dto.getPassword());
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		return userRepo.save(user);
 
@@ -38,10 +44,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updatePassword(Integer userId,String password) throws UserException {
-		
+	public User updatePassword(Integer userId, String password) throws UserException {
+
 		User user = getUserById(userId);
-		
+
 		user.setPassword(password);
 		return userRepo.save(user);
 	}

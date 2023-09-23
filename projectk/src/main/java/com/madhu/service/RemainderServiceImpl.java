@@ -2,6 +2,7 @@ package com.madhu.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.madhu.dto.RemainderDTO;
 import com.madhu.entity.Remainder;
 import com.madhu.entity.SaleRecord;
+import com.madhu.exception.CustomerException;
 import com.madhu.exception.RecordException;
 import com.madhu.exception.RemainderException;
+import com.madhu.exception.UserException;
 import com.madhu.repository.RecordRepo;
 import com.madhu.repository.RemainderRepo;
 import com.madhu.utils.CommonUtils;
@@ -71,6 +74,52 @@ public class RemainderServiceImpl implements RemainderService {
 		remainderRepo.delete(remainder);
 
 		return remainder;
+	}
+
+	@Override
+	public List<Remainder> getRemaindersByRecordId(Integer recordId) throws RecordException, RemainderException {
+
+		List<Remainder> remainders = remainderRepo.findBySaleRecordRecordId(recordId);
+
+		if (remainders.isEmpty())
+			throw new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId);
+
+		return remainders;
+	}
+
+	@Override
+	public List<Remainder> getRemaindersByUserId(Integer userId) throws UserException, RemainderException {
+
+		List<Remainder> remainders = remainderRepo.findBySaleRecordCustomerUserUserId(userId);
+
+		if (remainders.isEmpty())
+			throw new UserException("Remainders Not Found with User Id" + userId);
+
+		return remainders;
+
+	}
+
+	@Override
+	public List<Remainder> getRemainderByDateAndUserId(LocalDate startDate, LocalDate endDate, Integer userId)
+			throws RemainderException {
+		List<Remainder> remainders = remainderRepo.findByRemainderDateBetweenAndSaleRecordCustomerUserUserId(startDate,
+				endDate, userId);
+
+		if (remainders.isEmpty())
+			throw new RemainderException(
+					"Remainders Not Found with User Id " + userId + " Between " + startDate + " and " + endDate);
+
+		return remainders;
+	}
+
+	@Override
+	public List<Remainder> getRemaindersByCustomerId(Integer customerId) throws RemainderException, CustomerException {
+		List<Remainder> remainders = remainderRepo.findBySaleRecordCustomerCustomerId(customerId);
+
+		if (remainders.isEmpty())
+			throw new RemainderException("Remainders Not Found with Customer Id " + customerId);
+
+		return remainders;
 	}
 
 }

@@ -40,5 +40,8 @@ public interface Constants {
 	String UN_AUTHORIZED_USER_FOR_PRODUCT = "User Not Authorized For Product ";
 	
 	String UN_AUTHORIZED_USER_FOR_VILLAGE = "User Not Authorized For Village ";
+	
+	
+	String USER_NOT_FOUND_WITH_ID = "User Not Found with User Id ";
 
 }

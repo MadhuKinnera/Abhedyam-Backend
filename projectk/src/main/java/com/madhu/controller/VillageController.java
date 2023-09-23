@@ -20,6 +20,9 @@ import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.service.VillageService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/village")
 public class VillageController {

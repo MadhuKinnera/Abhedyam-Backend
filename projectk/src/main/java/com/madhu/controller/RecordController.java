@@ -25,8 +25,10 @@ import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
 import com.madhu.service.RecordService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.TransactionalException;
 
+@SecurityRequirement(name = "scheme1")
 @RestController
 @RequestMapping("/record")
 public class RecordController {
@@ -246,12 +248,14 @@ public class RecordController {
 	}
 
 	@GetMapping("/getRecordsByCustomerName/{customerName}")
-	ResponseEntity<GeneralResponse> getRecordsByCustomerName(@PathVariable String name)
+	ResponseEntity<GeneralResponse> getRecordsByCustomerName(@PathVariable String customerName)
 			throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
+		
+		System.out.println(customerName);
 
-		generalResponse.setMessage("Records Found By Customer Name " + name);
-		generalResponse.setData(recordService.getRecordsByCustomerName(name));
+		generalResponse.setMessage("Records Found By Customer Name " + customerName);
+		generalResponse.setData(recordService.getRecordsByCustomerName(customerName));
 
 		return ResponseEntity.ok(generalResponse);
 	}

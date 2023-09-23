@@ -1,9 +1,23 @@
 package com.madhu.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,11 +67,18 @@ public class CommonUtils {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	PasswordEncoder encoder;
 
 	@Autowired
 	private Cloudinary cloudinary;
 
 	private Integer userId;
+
+	private static final String ALGORITHM = "AES";
+
+	private static final String key = "Madhu123Madhu123";
 
 	@PostConstruct
 	private void assignUserId() throws UserException {
@@ -98,6 +119,10 @@ public class CommonUtils {
 
 	public boolean isRemainderExist(Integer remainderId) {
 		return remainderRepo.findById(remainderId).isPresent();
+	}
+
+	public boolean isUserExist(String email) {
+		return userRepo.findByEmail(email).isPresent();
 	}
 
 	public boolean isAuthorizedForCustomer(Integer customerId) throws CustomerException, UserException {
@@ -143,19 +168,49 @@ public class CommonUtils {
 	public User getUserFromContext() throws UserException {
 
 		// get user from context
+		
+	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	
+	   System.out.println("auth object is "+auth); 
+	   
+	   if(auth!=null)
+	   System.out.println("principal "+auth.getPrincipal());
+	   
+	   if(auth!=null)
+	   System.out.println("email "+auth.getName());
 
-		String email = "admin2@gmail.com";
+	   System.out.println("the user1pass in bcrypt is "+encoder.encode("madhu")); 
+	   
+		String email = "user2@gmail.com";
+		
+		if(auth!=null && !(auth instanceof AnonymousAuthenticationToken))
+			email = auth.getName();
+		
+		
+		System.out.println("The email is "+email);
 
-		User user = userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In "));
+		List<User> users = userRepo.findAll();
+		
+		if(users.isEmpty())
+			throw new UserException("No Users Exist");
 
-		return user;
+
+			User user = userRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Logged In with Email "));
+
+			System.out.println("The user is "+user);
+			
+			return user;
+
 	}
 
 	public Integer getUserIdFromContext() throws UserException {
 
 		User user = getUserFromContext();
 
-		return user.getUserId();
+		if (user != null)
+			return user.getUserId();
+
+		return -1;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -164,7 +219,32 @@ public class CommonUtils {
 
 		return data.get("secure_url").toString();
 	}
-	
-	
+
+	public String encrypt(String plainText) throws Exception {
+
+		Cipher cipher = Cipher.getInstance(ALGORITHM);
+
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+
+		cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+		byte[] encryptedText = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+		return Base64.getEncoder().encodeToString(encryptedText);
+	}
+
+	public String decrypt(String encryptedText) throws Exception {
+
+		Cipher cipher = Cipher.getInstance(ALGORITHM);
+
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+		cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
+		byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText.getBytes());
+
+		byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+
+		return new String(decryptedBytes, StandardCharsets.UTF_8);
+
+	}
 
 }
