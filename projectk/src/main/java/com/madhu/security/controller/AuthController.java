@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.madhu.dto.JwtResponse;
 import com.madhu.entity.User;
 import com.madhu.exception.UserException;
 import com.madhu.repository.UserRepo;
@@ -36,7 +36,7 @@ public class AuthController {
 	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/login")
-	public String loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request) throws UserException {
+	public JwtResponse loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request) throws UserException {
 
 		String email = request.getEmail();
 
@@ -45,7 +45,7 @@ public class AuthController {
 		System.out.println("user loaded " + userDetails);
 
 		if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-			return "Password Not Matched try madhu";
+			return new JwtResponse("Password Not Matched try madhu");
 		}
 
 		User user = uRepo.findByEmail(email)
@@ -57,7 +57,7 @@ public class AuthController {
 
 		String jwt = jwtAuthProvider.generateToken(email);
 
-		return jwt;
+		return new JwtResponse(jwt);
 	}
 
 	@GetMapping("/hello")
