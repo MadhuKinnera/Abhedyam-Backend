@@ -1,7 +1,5 @@
 package com.madhu.exception;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,152 +8,151 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.madhu.dto.GeneralResponse;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	
-	
+
 	@ExceptionHandler(UserException.class)
-	ResponseEntity<ErrorDetails> userExceptionHandler(UserException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> userExceptionHandler(UserException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(CustomerRequestException.class)
-	ResponseEntity<ErrorDetails> customerRequestExceptionHandler(CustomerRequestException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> customerRequestExceptionHandler(CustomerRequestException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
-	
 
 	@ExceptionHandler(CustomerException.class)
-	ResponseEntity<ErrorDetails> customerExceptionHandler(CustomerException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> customerExceptionHandler(CustomerException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ProductException.class)
-	ResponseEntity<ErrorDetails> productExceptionHandler(ProductException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> productExceptionHandler(ProductException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(VillageException.class)
-	ResponseEntity<ErrorDetails> villageExceptionHandler(VillageException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> villageExceptionHandler(VillageException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(RecordException.class)
-	ResponseEntity<ErrorDetails> recordExceptionHandler(RecordException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> recordExceptionHandler(RecordException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
-
+		err.setData(req.getDescription(false));
+		
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(RemainderException.class)
-	ResponseEntity<ErrorDetails> remainderExceptionHandler(RemainderException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> remainderExceptionHandler(RemainderException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(TransactionException.class)
-	ResponseEntity<ErrorDetails> transactionExceptionHandler(TransactionException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> transactionExceptionHandler(TransactionException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(AddressException.class)
-	ResponseEntity<ErrorDetails> addressExceptionHandler(AddressException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> addressExceptionHandler(AddressException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
-
+		err.setData(req.getDescription(false));
+		
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	ResponseEntity<ErrorDetails> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e,
+	ResponseEntity<GeneralResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e,
 			WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
-		err.setDescription(e.getBindingResult().getFieldError().getField());
-		err.setMessage("Validation Exception");
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
+		err.setMessage("Validation Error");
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NoHandlerFoundException.class)
-	ResponseEntity<ErrorDetails> noHandlerFoundExceptionHandler(NoHandlerFoundException e, WebRequest req) {
+	ResponseEntity<GeneralResponse> noHandlerFoundExceptionHandler(NoHandlerFoundException e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
-
+		err.setData(req.getDescription(false));
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)
-	ResponseEntity<ErrorDetails> ExceptionHandler(Exception e, WebRequest req) {
+	ResponseEntity<GeneralResponse> ExceptionHandler(Exception e, WebRequest req) {
 
-		var err = new ErrorDetails();
+		var err = new GeneralResponse();
 
-		err.setTimestamp(LocalDateTime.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
 		err.setMessage(e.getMessage());
-		err.setDescription(req.getDescription(false));
+		err.setData(req.getDescription(false));
 
 		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
 	}

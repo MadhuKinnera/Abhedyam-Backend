@@ -36,7 +36,8 @@ public class AuthController {
 	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/login")
-	public JwtResponse loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request) throws UserException {
+	public JwtResponse loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request)
+			throws UserException {
 
 		String email = request.getEmail();
 
@@ -48,14 +49,15 @@ public class AuthController {
 			return new JwtResponse("Password Not Matched try madhu");
 		}
 
-		User user = uRepo.findByEmail(email)
-				.orElseThrow(() -> new UserException("User Not Found with Email " + email));
+		User user = uRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Found with Email " + email));
 
 		utils.userId = user.getUserId();
-		
+
 		System.out.println("generating jwt token");
 
 		String jwt = jwtAuthProvider.generateToken(email);
+
+		System.out.println("the token is " + jwt);
 
 		return new JwtResponse(jwt);
 	}
