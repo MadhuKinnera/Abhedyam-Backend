@@ -27,13 +27,14 @@ public class AuthController {
 	private LoadUserImpl loadUser;
 
 	@Autowired
-	private CommonUtils utils;
-
-	@Autowired
 	private UserRepo uRepo;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	
+	@Autowired
+	private CommonUtils utils;
 
 	@GetMapping("/login")
 	public JwtResponse loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request)
@@ -51,13 +52,17 @@ public class AuthController {
 
 		User user = uRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Found with Email " + email));
 
+		System.out.println("setting common utils user id to "+user.getUserId());
+	
 		utils.userId = user.getUserId();
-
+	
 		System.out.println("generating jwt token");
 
 		String jwt = jwtAuthProvider.generateToken(email);
 
 		System.out.println("the token is " + jwt);
+		
+		
 
 		return new JwtResponse(jwt);
 	}

@@ -2,6 +2,7 @@ package com.madhu.dto;
 
 import com.madhu.entity.Customer;
 import com.madhu.entity.Remainder;
+import com.madhu.entity.SaleRecord;
 
 import lombok.Data;
 
@@ -12,6 +13,6 @@ public class RemainderResponseModel {
 
 	private Customer customer;
 
-	private Record record;
+	private SaleRecord record;
 
 }

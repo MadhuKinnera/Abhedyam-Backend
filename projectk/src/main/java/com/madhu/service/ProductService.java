@@ -26,8 +26,8 @@ public interface ProductService {
 	
 	Product uploadProductImage(Integer productId,MultipartFile productFile) throws ProductException, IOException;
 	
-	List<ProductResponseModel> getProductByRank() throws VillageException,ProductException;  
+	List<ProductResponseModel> getProductResponseModels() throws VillageException,ProductException;  
 	
-	List<ProductResponseModel> getProductByRankAndUserId(Integer userId) throws VillageException,ProductException;  
+	ProductResponseModel getProductResponseModelByProductId(Integer productId) throws VillageException,ProductException;  
 
 }

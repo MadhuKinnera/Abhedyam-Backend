@@ -1,5 +1,7 @@
 package com.madhu.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.VillageDTO;
+import com.madhu.dto.VillageResponseModel;
 import com.madhu.entity.Village;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
@@ -123,4 +126,27 @@ public class VillageController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
+	
+	
+	@GetMapping("/getVillageWiseData")
+	ResponseEntity<GeneralResponse> getVillageWiseData() throws VillageException{
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Found Village Wise Data ");
+		generalResponse.setData(villageService.getVillageWiseData());
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getVillageWiseDataByVillageId/{villageId}")
+	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageId(@PathVariable Integer villageId) throws VillageException{
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Village Wise Data Found With Village Id "+villageId );
+		generalResponse.setData(villageService.getVillageWiseDataByVillageId(villageId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+	
 }

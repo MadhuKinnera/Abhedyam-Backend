@@ -14,11 +14,11 @@ public class ProductResponseModel {
 	
 	private Integer productSellCount;
 	
-	private Integer pendingAmount;
+	private Integer totalSelledAmount;
 	
 	private Integer collectedAmount;
 	
-	private Integer totalSelledAmount;
+	private Integer pendingAmount;
 	
 	private List<VillageResponseDTO> villageWiseCount;
 	 

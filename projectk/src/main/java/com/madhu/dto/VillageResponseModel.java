@@ -13,26 +13,27 @@ public class VillageResponseModel {
 
 	private Village village;
 
+	private Integer totalCustomersCount;
+	
 	private Integer totalActiveCustomers;
 
-	private Integer totalCustomersCount;
-
 	private List<Customer> activeCustomers;
-
-	private List<SaleRecord> activeRecords;
-
-	private Integer pendingRecords;
-
-	private Integer completedRecords;
+	
 
 	private Integer totalRecordsCount;
+	private Integer completedRecords;
 
+	private Integer totalActiveRecords;
+	
+	private List<SaleRecord> activeRecords; 
+
+	
+	private Integer totalAmountFromVillage;
+	
 	private Integer pendingAmount;
 
 	private Integer collectedAmount;
-
-	private Integer totalAmountFromVillage;
-
+	
 	private Integer totalProductSellCount;
 
 	private String goalStatus;

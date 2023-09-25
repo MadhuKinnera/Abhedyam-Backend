@@ -88,22 +88,22 @@ public class ProductController {
 	}
 
 	@GetMapping("/getAllProductsByRank")
-	ResponseEntity<GeneralResponse> getProductByRankHandler() throws VillageException, ProductException {
+	ResponseEntity<GeneralResponse> getProductResponseModelsHandler() throws VillageException, ProductException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Products Found By Ranks ");
-		generalResponse.setData(productService.getProductByRank());
+		generalResponse.setData(productService.getProductResponseModels());
 
 		return ResponseEntity.ok(generalResponse);
 
 	}
 	
-	@GetMapping("/getProductsByRankAndUser/{userId}")
-	ResponseEntity<GeneralResponse> getProductByRankAndUserId( @PathVariable Integer userId) throws VillageException,ProductException{  
+	@GetMapping("/getProductByRank/{productId}")
+	ResponseEntity<GeneralResponse> getProductResponseModelByProductId( @PathVariable Integer productId) throws VillageException,ProductException{  
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Products Found By Ranks with User Id "+userId);
-		generalResponse.setData(productService.getProductByRankAndUserId(userId));
+		generalResponse.setMessage("Products Found By Ranks with Product Id "+productId);
+		generalResponse.setData(productService.getProductResponseModelByProductId(productId));
 
 		return ResponseEntity.ok(generalResponse);
 	}

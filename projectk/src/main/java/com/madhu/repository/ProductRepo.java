@@ -17,5 +17,7 @@ public interface ProductRepo extends JpaRepository<Product, Integer>{
 	
 	List<Product> findByUserUserId(Integer userId);
 	
+	Optional<Product> findByProductIdAndUserUserId(Integer productId,Integer userId);
+	
 }
 
