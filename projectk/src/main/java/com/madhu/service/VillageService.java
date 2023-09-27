@@ -35,4 +35,6 @@ public interface VillageService {
 
 	VillageResponseModel getVillageWiseDataByVillageId(Integer villageId) throws VillageException;
 
+	List<VillageResponseModel> getVillageWiseDataByVillageNameContaining(String villageName) throws VillageException;
+
 }

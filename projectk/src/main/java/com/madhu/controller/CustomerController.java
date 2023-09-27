@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
+import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
 import com.madhu.dto.GeneralResponse;
 import com.madhu.entity.Customer;
@@ -236,28 +237,53 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getAllCustomersByRank")
+	@GetMapping("/getAllCustomerResponseModels")
 	ResponseEntity<GeneralResponse> getCustomerByRank() throws CustomerException, UserException{
 
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("All Customer Found By Rank ");
+		generalResponse.setMessage("All Customer Response Models Found ");
 		generalResponse.setData(customerService.getAllCustomersByRank());
 
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getCustomersByRank")
+	@GetMapping("/getCustomerResponseModels")
 	ResponseEntity<GeneralResponse> getCustomersByRankAndUserId()
 			throws CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
 		
 		System.out.println("Inside get customers rank controller method");
 
-		generalResponse.setMessage("Customer Found By Rank ");
+		generalResponse.setMessage("Customer Response Models  Found ");
 		generalResponse.setData(customerService.getCustomersByRank());
 
 		return ResponseEntity.ok(generalResponse);
+	}
+	
+	@GetMapping("/getCustomerResponseModelByCustomerId/{customerId}")
+	ResponseEntity<GeneralResponse> getCustomerResponseModelByCustomerId(@PathVariable Integer customerId)throws UserException,CustomerException{
+		
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Customer Response Model Found By Customer Id "+customerId);
+		generalResponse.setData(customerService.getCustomerResponseModelByCustomerId(customerId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+	
+	@GetMapping("/getCustomersByCustomerNameContains/{customerName}")
+	ResponseEntity<GeneralResponse> getCustomersByCustomerNameContaining(@PathVariable String customerName)
+			throws CustomerException, UserException{
+		
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Customer Response Model Found By Customer Name "+customerName);
+		generalResponse.setData(customerService.getCustomersByCustomerNameContaining(customerName));
+
+		return ResponseEntity.ok(generalResponse);
+		
 	}
 
 	@PostMapping("/addFirstTimeCustomer")
@@ -292,5 +318,9 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
+	
+	
+	
+	
 
 }

@@ -35,8 +35,6 @@ import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -57,7 +55,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private CustomerRequestRepo customerRequestRepo;
-
 
 	@Override
 	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException {
@@ -81,7 +78,8 @@ public class CustomerServiceImpl implements CustomerService {
 		if (dto.getAddressDto() != null) {
 			address = new Address();
 
-			Village village = villageRepo.findByVillageNameAndUserUserId(dto.getAddressDto().getVillageName(), utils.userId)
+			Village village = villageRepo
+					.findByVillageNameAndUserUserId(dto.getAddressDto().getVillageName(), utils.userId)
 					.orElseThrow(() -> new CustomerException("Invalid Village Name Provided"));
 
 			address.setCustomer(customer);
@@ -405,8 +403,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException {
 
-	
-
 		List<Customer> customers = customerRepo.findByUserUserId(utils.userId);
 
 		if (customers.isEmpty())
@@ -475,8 +471,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<PlainCustomer> getPlainCustomers() throws UserException {
 
-		
-
 		List<Customer> customers = customerRepo.findByUserUserId(utils.userId);
 
 		if (customers.isEmpty())
@@ -501,6 +495,130 @@ public class CustomerServiceImpl implements CustomerService {
 		return plainCustomers;
 	}
 
+	@Override
+	public CustomerResponseModel getCustomerResponseModelByCustomerId(Integer customerId)
+			throws UserException, CustomerException {
 
+		var customer = customerRepo.findByCustomerIdAndUserUserId(customerId, utils.userId)
+				.orElseThrow(()->new CustomerException("Customer Not Found With Customer Id "+customerId));
+		var model = new CustomerResponseModel();
+
+		model.setCustomer(customer);
+		model.setCustomerFlag(customer.getFlag());
+		model.setDescription(customer.getDescription());
+
+		List<Product> products = new ArrayList<>();
+
+		Integer totalProducts = 0;
+		Integer totalAmount = 0;
+		Integer totalDueAmount = 0;
+
+		List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+		List<Transaction> transactions = new ArrayList<>();
+
+		for (SaleRecord record : records) {
+			Product product = record.getProduct();
+			products.add(product);
+			totalProducts += record.getQuantity();
+			totalAmount += record.getTotalAmount();
+			totalDueAmount += record.getDueAmount();
+
+			transactions.addAll(record.getTransactions());
+
+		}
+
+		model.setProducts(products);
+
+		model.setRecordStatus(totalProducts != 0);
+
+		model.setTotalProducts(totalProducts);
+
+		model.setTotalAmount(totalAmount);
+
+		model.setTotalRemaininAmount(totalDueAmount);
+
+		model.setTotalPaidAmount(totalAmount - totalDueAmount);
+
+		model.setTransactions(transactions);
+
+		model.setSaleRecords(records);
+
+		List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+		model.setCustomerRequests(requests);
+
+		model.setTotalCustomerRequests(requests.size());
+
+		return model;
+	}
+
+	@Override
+	public List<CustomerResponseModel> getCustomersByCustomerNameContaining(String customerName)
+			throws CustomerException, UserException {
+		List<Customer> customers = customerRepo.findByCustomerNameContainingAndUserUserId(customerName,utils.userId);
+
+		if (customers.isEmpty())
+			throw new CustomerException(" No Customers Found with the user Id " + utils.userId);
+
+		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
+
+		for (Customer customer : customers) {
+
+			CustomerResponseModel model = new CustomerResponseModel();
+
+			model.setCustomer(customer);
+			model.setCustomerFlag(customer.getFlag());
+			model.setDescription(customer.getDescription());
+
+			List<Product> products = new ArrayList<>();
+
+			Integer totalProducts = 0;
+			Integer totalAmount = 0;
+			Integer totalDueAmount = 0;
+
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+			List<Transaction> transactions = new ArrayList<>();
+
+			for (SaleRecord record : records) {
+				Product product = record.getProduct();
+				products.add(product);
+				totalProducts += record.getQuantity();
+				totalAmount += record.getTotalAmount();
+				totalDueAmount += record.getDueAmount();
+
+				transactions.addAll(record.getTransactions());
+
+			}
+
+			model.setProducts(products);
+
+			model.setRecordStatus(totalProducts != 0);
+
+			model.setTotalProducts(totalProducts);
+
+			model.setTotalAmount(totalAmount);
+
+			model.setTotalRemaininAmount(totalDueAmount);
+
+			model.setTotalPaidAmount(totalAmount - totalDueAmount);
+
+			model.setTransactions(transactions);
+
+			model.setSaleRecords(records);
+
+			List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+			model.setCustomerRequests(requests);
+
+			model.setTotalCustomerRequests(requests.size());
+
+			customerResponseModels.add(model);
+
+		}
+
+		return customerResponseModels;
+	}
 
 }

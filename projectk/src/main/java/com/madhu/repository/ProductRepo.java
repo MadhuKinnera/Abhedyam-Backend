@@ -11,13 +11,13 @@ public interface ProductRepo extends JpaRepository<Product, Integer>{
 
 	
 	Optional<Product> findByProductNameAndUserUserId(String productName,Integer userId);
-	
-	
+	 	
 	List<Product> findBySaleRecordsCustomerAddressVillageVillageIdAndUserUserId(Integer villageId , Integer userId );
 	
 	List<Product> findByUserUserId(Integer userId);
 	
 	Optional<Product> findByProductIdAndUserUserId(Integer productId,Integer userId);
 	
+	List<Product> findByProductNameContainingAndUserUserId(String productName,Integer userId);
 }
 

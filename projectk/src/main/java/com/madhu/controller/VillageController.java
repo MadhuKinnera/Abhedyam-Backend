@@ -148,5 +148,18 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 	
+	@GetMapping("/getVillageWiseDataByVillageName/{villageName}")
+	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageName(@PathVariable String villageName) throws VillageException{
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Village Wise Data Found With Village Name "+villageName );
+		generalResponse.setData(villageService.getVillageWiseDataByVillageNameContaining(villageName));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+	
+
+	
 	
 }

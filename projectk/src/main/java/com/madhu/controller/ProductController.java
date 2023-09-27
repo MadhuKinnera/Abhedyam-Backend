@@ -1,6 +1,7 @@
 package com.madhu.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,8 @@ public class ProductController {
 	private ProductService productService;
 
 	@PostMapping("/addProduct")
-	ResponseEntity<GeneralResponse> addProductHandler(@RequestBody ProductDTO product) throws ProductException, UserException {
+	ResponseEntity<GeneralResponse> addProductHandler(@RequestBody ProductDTO product)
+			throws ProductException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -44,7 +46,7 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getProduct/{productId}")
+	@GetMapping("/getProductByProductId/{productId}")
 	ResponseEntity<GeneralResponse> getProductByProductIdHandler(@PathVariable Integer productId)
 			throws ProductException {
 		var generalResponse = new GeneralResponse();
@@ -87,29 +89,55 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getAllProductsByRank")
+	@GetMapping("/getProducts")
+	ResponseEntity<GeneralResponse> getProducts() throws ProductException {
+
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Products Found ");
+		generalResponse.setData(productService.getProducts());
+
+		return ResponseEntity.ok(generalResponse);
+
+	}
+
+	@GetMapping("/getProductResponseModels")
 	ResponseEntity<GeneralResponse> getProductResponseModelsHandler() throws VillageException, ProductException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Products Found By Ranks ");
+		generalResponse.setMessage("Product Response Models Found By Ranks ");
 		generalResponse.setData(productService.getProductResponseModels());
 
 		return ResponseEntity.ok(generalResponse);
 
 	}
-	
-	@GetMapping("/getProductByRank/{productId}")
-	ResponseEntity<GeneralResponse> getProductResponseModelByProductId( @PathVariable Integer productId) throws VillageException,ProductException{  
+
+	@GetMapping("/getProductResponseModelByRank/{productId}")
+	ResponseEntity<GeneralResponse> getProductResponseModelByProductId(@PathVariable Integer productId)
+			throws VillageException, ProductException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Products Found By Ranks with Product Id "+productId);
+		generalResponse.setMessage("Product Response Model Found By Ranks with Product Id " + productId);
 		generalResponse.setData(productService.getProductResponseModelByProductId(productId));
 
 		return ResponseEntity.ok(generalResponse);
+
 	}
-	
+
+	@GetMapping("/getProductContainingProductName/{productName}")
+	ResponseEntity<GeneralResponse> getProductsContainingProductName(@PathVariable String productName)
+			throws ProductException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Products Found that Contain " + productName);
+		generalResponse.setData(productService.getProductsContainingProductName(productName));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
 	@PutMapping("/uploadProductImage/{productId}")
-	ResponseEntity<GeneralResponse> uploadProductImage(@PathVariable Integer productId,@RequestParam("image") MultipartFile productFile) throws ProductException, IOException{
+	ResponseEntity<GeneralResponse> uploadProductImage(@PathVariable Integer productId,
+			@RequestParam("image") MultipartFile productFile) throws ProductException, IOException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Product Image Updated ");

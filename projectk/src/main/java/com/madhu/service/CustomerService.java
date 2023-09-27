@@ -21,55 +21,58 @@ import com.madhu.exception.VillageException;
 
 public interface CustomerService {
 
-	Customer addCustomer(CustomerDTO dto) throws CustomerException,UserException;
+	Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException;
 
-	Customer getCustomerById(Integer customerId) throws CustomerException,UserException;
+	Customer getCustomerById(Integer customerId) throws CustomerException, UserException;
 
-	Customer updateCustomer(Integer customerId,Customer customer) throws CustomerException,UserException;
-	
-	Customer updateAddressToACustomer(AddressDTO dto , Integer customerId) throws CustomerException,UserException;
+	Customer updateCustomer(Integer customerId, Customer customer) throws CustomerException, UserException;
 
-	Customer updateFlagOfACustomer(Integer customerId,Color flag) throws CustomerException,UserException;
-	
-	Customer deleteCustomerById(Integer customerId) throws CustomerException,UserException;
-	
+	Customer updateAddressToACustomer(AddressDTO dto, Integer customerId) throws CustomerException, UserException;
+
+	Customer updateFlagOfACustomer(Integer customerId, Color flag) throws CustomerException, UserException;
+
+	Customer deleteCustomerById(Integer customerId) throws CustomerException, UserException;
+
 	List<PlainCustomer> getPlainCustomers() throws UserException;
-	
-	Customer addKeywordsToCustomer(Integer customerId,List<String> keywords) throws CustomerException,UserException;
-	
-	Customer updateProfilePicture(Integer customerId,MultipartFile file) throws UserException, IOException, CustomerException,UserException;
 
-	Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException,UserException;
+	Customer addKeywordsToCustomer(Integer customerId, List<String> keywords) throws CustomerException, UserException;
 
-	Customer getCustomerByEmail(String email) throws CustomerException,UserException;
+	Customer updateProfilePicture(Integer customerId, MultipartFile file)
+			throws UserException, IOException, CustomerException, UserException;
 
-	List<Customer> getCustomersByKeyword(String keyword) throws CustomerException,UserException;
+	Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException, UserException;
 
-	Customer getCustomersByAddressId(Integer addressId) throws CustomerException, AddressException,UserException;
+	Customer getCustomerByEmail(String email) throws CustomerException, UserException;
+
+	List<Customer> getCustomersByKeyword(String keyword) throws CustomerException, UserException;
+
+	Customer getCustomersByAddressId(Integer addressId) throws CustomerException, AddressException, UserException;
 
 	List<Customer> getCustomersByAddressVillageId(Integer villageId)
-			throws CustomerException, VillageException,UserException;
+			throws CustomerException, VillageException, UserException;
 
 	List<Customer> getCustomersByAddressVillageName(String villageName)
-			throws CustomerException, VillageException,UserException;
+			throws CustomerException, VillageException, UserException;
 
-	List<Customer> getCustomersByAddressPincode(Integer pincode) throws CustomerException, VillageException,UserException;
+	List<Customer> getCustomersByAddressPincode(Integer pincode)
+			throws CustomerException, VillageException, UserException;
 
-	List<Customer> getAllCustomersAgeGreaterThan(Integer age) throws CustomerException,UserException;
+	List<Customer> getAllCustomersAgeGreaterThan(Integer age) throws CustomerException, UserException;
 
-	List<Customer> getAllCustomersAgeLessThan(Integer age) throws CustomerException,UserException;
-	
-	Address getAddressOfCustomer(Integer customerId)throws AddressException,CustomerException,UserException;
+	List<Customer> getAllCustomersAgeLessThan(Integer age) throws CustomerException, UserException;
 
-	
-	List<CustomerResponseModel> getAllCustomersByRank()throws CustomerException,UserException,UserException;
-	
-	
-	List<CustomerResponseModel> getCustomersByRank() throws CustomerException,UserException;
-	
-	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException,UserException; 
-	
-	
+	Address getAddressOfCustomer(Integer customerId) throws AddressException, CustomerException, UserException;
 
-	
+	List<CustomerResponseModel> getAllCustomersByRank() throws CustomerException, UserException, UserException;
+
+	List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException;
+
+	List<CustomerResponseModel> getCustomersByCustomerNameContaining(String customerName)
+			throws CustomerException, UserException;
+
+	CustomerResponseModel getCustomerResponseModelByCustomerId(Integer customerId)
+			throws UserException, CustomerException;
+
+	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException, UserException;
+
 }

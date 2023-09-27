@@ -19,4 +19,7 @@ public interface VillageRepo extends JpaRepository<Village, Integer> {
 
 	List<Village> findByUserUserId(Integer userId);
 
+	Optional<Village> findByVillageIdAndUserUserId(Integer villageId, Integer userId);
+
+	List<Village> findByVillageNameContainingAndUserUserId(String villageName,Integer userId);
 }

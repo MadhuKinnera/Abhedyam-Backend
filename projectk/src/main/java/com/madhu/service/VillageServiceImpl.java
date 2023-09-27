@@ -33,7 +33,6 @@ public class VillageServiceImpl implements VillageService {
 	@Autowired
 	private CustomerRepo customerRepo;
 
-
 	@Override
 	public Village addVillage(VillageDTO dto) throws VillageException, UserException {
 
@@ -85,9 +84,8 @@ public class VillageServiceImpl implements VillageService {
 	public List<Village> getVillagesByRank() throws VillageException {
 
 		List<Village> villages = villageRepo.findByUserUserId(utils.userId);
-		
-		
-		System.out.println("the user id is "+utils.userId);
+
+		System.out.println("the user id is " + utils.userId);
 
 		if (villages.isEmpty())
 			throw new VillageException("No Villages Found ");
@@ -137,10 +135,10 @@ public class VillageServiceImpl implements VillageService {
 		var villageWiseData = new ArrayList<VillageResponseModel>();
 
 		var villages = villageRepo.findByUserUserId(utils.userId);
-		
-		System.out.println("The user id is "+utils.userId);
-		
-		if(villages.isEmpty())
+
+		System.out.println("The user id is " + utils.userId);
+
+		if (villages.isEmpty())
 			throw new VillageException("No Villages Found ");
 
 		for (Village v : villages) {
@@ -175,10 +173,10 @@ public class VillageServiceImpl implements VillageService {
 					totalAmount += r.getTotalAmount();
 
 					totalProductCount += r.getQuantity();
-					
+
 					pendingAmount += r.getDueAmount();
-					
-					System.out.println("pending amount is "+pendingAmount);
+
+					System.out.println("pending amount is " + pendingAmount);
 
 					if (r.getDueAmount() > 0) {
 						activeRecords.add(r);
@@ -192,7 +190,7 @@ public class VillageServiceImpl implements VillageService {
 			}
 
 			villageData.setVillage(v);
-			
+
 			villageData.setActiveCustomers(activeCustomers);
 			villageData.setTotalActiveCustomers(activeCustomers.size());
 
@@ -222,12 +220,11 @@ public class VillageServiceImpl implements VillageService {
 
 	@Override
 	public VillageResponseModel getVillageWiseDataByVillageId(Integer villageId) throws VillageException {
-		
-		
+
 		var villageData = new VillageResponseModel();
-		
+
 		var village = villageRepo.findById(villageId)
-				.orElseThrow(()-> new VillageException("Village Not Found with Village Id "+villageId));
+				.orElseThrow(() -> new VillageException("Village Not Found with Village Id " + villageId));
 
 		var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, utils.userId);
 
@@ -257,10 +254,10 @@ public class VillageServiceImpl implements VillageService {
 				totalAmount += r.getTotalAmount();
 
 				totalProductCount += r.getQuantity();
-				
+
 				pendingAmount += r.getDueAmount();
-				
-				System.out.println("pending amount is "+pendingAmount);
+
+				System.out.println("pending amount is " + pendingAmount);
 
 				if (r.getDueAmount() > 0) {
 					activeRecords.add(r);
@@ -273,9 +270,8 @@ public class VillageServiceImpl implements VillageService {
 
 		}
 
-
 		villageData.setVillage(village);
-		
+
 		villageData.setActiveCustomers(activeCustomers);
 		villageData.setTotalActiveCustomers(activeCustomers.size());
 
@@ -295,9 +291,98 @@ public class VillageServiceImpl implements VillageService {
 				(village.getAmountGoal() <= totalAmount && village.getProductGoal() <= totalProductCount) ? "COMPLETED"
 						: "NOT COMPLETED");
 
-		
 		return villageData;
-		
+
+	}
+
+	@Override
+	public List<VillageResponseModel> getVillageWiseDataByVillageNameContaining(String villageName)
+			throws VillageException {
+
+		var villageWiseData = new ArrayList<VillageResponseModel>();
+
+		var villages = villageRepo.findByVillageNameContainingAndUserUserId(villageName, utils.userId);
+
+		System.out.println("The user id is " + utils.userId);
+
+		if (villages.isEmpty())
+			throw new VillageException("No Villages Found ");
+
+		for (Village v : villages) {
+
+			var villageData = new VillageResponseModel();
+
+			var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(v.getVillageId(), utils.userId);
+
+			villageData.setTotalCustomersCount(customers.size());
+
+			var activeCustomers = new ArrayList<Customer>();
+
+			var activeRecords = new ArrayList<SaleRecord>();
+
+			var totalRecords = 0;
+
+			var totalAmount = 0;
+			var pendingAmount = 0;
+
+			var totalProductCount = 0;
+
+			for (var c : customers) {
+
+				var records = c.getSaleRecords();
+
+				totalRecords += records.size();
+
+				boolean isActive = false;
+
+				for (var r : records) {
+
+					totalAmount += r.getTotalAmount();
+
+					totalProductCount += r.getQuantity();
+
+					pendingAmount += r.getDueAmount();
+
+					System.out.println("pending amount is " + pendingAmount);
+
+					if (r.getDueAmount() > 0) {
+						activeRecords.add(r);
+						isActive = true;
+					}
+				}
+
+				if (isActive)
+					activeCustomers.add(c);
+
+			}
+
+			villageData.setVillage(v);
+
+			villageData.setActiveCustomers(activeCustomers);
+			villageData.setTotalActiveCustomers(activeCustomers.size());
+
+			villageData.setActiveRecords(activeRecords);
+			villageData.setTotalActiveRecords(activeRecords.size());
+
+			villageData.setTotalRecordsCount(totalRecords);
+			villageData.setCompletedRecords(totalRecords - activeRecords.size());
+
+			villageData.setTotalAmountFromVillage(totalAmount);
+			villageData.setPendingAmount(pendingAmount);
+			villageData.setCollectedAmount(totalAmount - pendingAmount);
+
+			villageData.setTotalProductSellCount(totalProductCount);
+
+			villageData.setGoalStatus(
+					(v.getAmountGoal() <= totalAmount && v.getProductGoal() <= totalProductCount) ? "COMPLETED"
+							: "NOT COMPLETED");
+
+			villageWiseData.add(villageData);
+
+		}
+
+		return villageWiseData;
+
 	}
 
 }

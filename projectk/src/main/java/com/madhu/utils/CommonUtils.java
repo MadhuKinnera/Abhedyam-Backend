@@ -3,7 +3,6 @@ package com.madhu.utils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -12,21 +11,15 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
-import com.madhu.entity.Customer;
-import com.madhu.entity.Product;
 import com.madhu.entity.User;
-import com.madhu.entity.Village;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.ProductException;
 import com.madhu.exception.UserException;
@@ -39,7 +32,6 @@ import com.madhu.repository.RemainderRepo;
 import com.madhu.repository.TransactionRepo;
 import com.madhu.repository.UserRepo;
 import com.madhu.repository.VillageRepo;
-
 
 @Component
 public class CommonUtils {
@@ -74,7 +66,7 @@ public class CommonUtils {
 	@Autowired
 	private Cloudinary cloudinary;
 
-	public  Integer userId;
+	public Integer userId;
 
 	private static final String ALGORITHM = "AES";
 
@@ -109,7 +101,7 @@ public class CommonUtils {
 	}
 
 	public boolean isProductExist(Integer productId) {
-		return productRepo.findById(productId).isPresent();
+		return productRepo.findByProductIdAndUserUserId(productId, userId).isPresent();
 	}
 
 	public boolean isRemainderExist(Integer remainderId) {
@@ -122,42 +114,20 @@ public class CommonUtils {
 
 	public boolean isAuthorizedForCustomer(Integer customerId) throws CustomerException, UserException {
 
-		Customer customer = customerRepo.findById(customerId)
-				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + customerId));
+		return customerRepo.findByCustomerIdAndUserUserId(customerId, userId).isPresent();
 
-		User user = getUserFromContext();
-
-		if (!customer.getUser().getUserId().equals(user.getUserId()))
-			throw new UserException(Constants.UN_AUTHORIZED_USER_FOR_CUSTOMER + customerId);
-
-		return true;
 	}
 
 	public boolean isAuthorizedForProduct(Integer productId) throws UserException, ProductException {
 
-		Product product = productRepo.findById(productId)
-				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
-
-		User user = getUserFromContext();
-
-		if (!product.getUser().getUserId().equals(user.getUserId()))
-			throw new UserException(Constants.UN_AUTHORIZED_USER_FOR_PRODUCT + productId);
-
-		return true;
+		return productRepo.findByProductIdAndUserUserId(productId, userId).isPresent();
 
 	}
 
 	public boolean isAuthorizedForVillage(Integer villageId) throws UserException, VillageException {
 
-		Village village = villageRepo.findById(villageId)
-				.orElseThrow(() -> new VillageException(Constants.VILLAGE_ID_NOT_FOUND + villageId));
+		return villageRepo.findByVillageIdAndUserUserId(villageId, userId).isPresent();
 
-		User user = getUserFromContext();
-
-		if (!village.getUser().getUserId().equals(user.getUserId()))
-			throw new VillageException(Constants.UN_AUTHORIZED_USER_FOR_VILLAGE + villageId);
-
-		return true;
 	}
 
 	public User getUserFromContext() throws UserException {

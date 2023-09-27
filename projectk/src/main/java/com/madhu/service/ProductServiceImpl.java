@@ -33,9 +33,6 @@ public class ProductServiceImpl implements ProductService {
 	private ProductRepo productRepo;
 
 	@Autowired
-	private VillageRepo villageRepo;
-
-	@Autowired
 	private CommonUtils utils;
 
 	@Override
@@ -56,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getProductByProductId(Integer productId) throws ProductException {
 
-		return productRepo.findById(productId)
+		return productRepo.findByProductIdAndUserUserId(productId,utils.userId)
 				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
 
 	}
@@ -217,5 +214,78 @@ public class ProductServiceImpl implements ProductService {
 		return productResponse;
 
 	}
+
+	@Override
+	public List<Product> getProducts() throws ProductException {
+		
+		List<Product> products = productRepo.findByUserUserId(utils.userId);
+		
+		if(products.isEmpty())
+			throw new ProductException("No Products Found ");
+		
+		return products;
+	}
+
+	@Override
+	public List<ProductResponseModel> getProductsContainingProductName(String productName) throws ProductException {
+		
+		List<ProductResponseModel> productResponseModels = new ArrayList<>();
+
+		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName,utils.userId);
+
+		if (products.isEmpty())
+			throw new ProductException(Constants.NO_PRODUCTS_FOUND);
+
+		for (var p : products) {
+
+			var productResponse = new ProductResponseModel();
+
+			productResponse.setProduct(p);
+
+			int productSellCount = 0;
+
+			int totalSelledAmount = 0;
+
+			int totalPendingAmount = 0;
+
+			Map<String, Integer> villageMap = new HashMap<String, Integer>();
+
+			for (var r : p.getSaleRecords()) {
+				productSellCount += r.getQuantity();
+				totalSelledAmount += r.getTotalAmount();
+				totalPendingAmount += r.getDueAmount();
+
+				var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
+
+				var productQuantity = r.getQuantity();
+
+				villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
+			}
+
+			productResponse.setPendingAmount(totalPendingAmount);
+			productResponse.setTotalSelledAmount(totalSelledAmount);
+			productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
+			productResponse.setProductSellCount(productSellCount);
+
+			var villageWiseDto = new ArrayList<VillageResponseDTO>();
+
+			for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
+
+				var villageDto = new VillageResponseDTO();
+
+				villageDto.setVillageName(villageWiseMap.getKey());
+				villageDto.setCount(villageWiseMap.getValue());
+
+				villageWiseDto.add(villageDto);
+			}
+
+			productResponse.setVillageWiseCount(villageWiseDto);
+
+			productResponseModels.add(productResponse);
+
+		}
+
+		return productResponseModels;
+	} 
 
 }

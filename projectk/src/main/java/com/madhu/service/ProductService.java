@@ -14,20 +14,25 @@ import com.madhu.exception.VillageException;
 
 public interface ProductService {
 
-	Product addProduct(ProductDTO dto) throws ProductException,UserException;
+	Product addProduct(ProductDTO dto) throws ProductException, UserException;
 
 	Product getProductByProductId(Integer productId) throws ProductException;
 
-	Product updateProduct(Integer productId,Product product) throws ProductException;
+	Product updateProduct(Integer productId, Product product) throws ProductException;
 
 	Product deleteProduct(Integer productId) throws ProductException;
-	 
+
 	Product getProductByName(String productName) throws ProductException;
-	
-	Product uploadProductImage(Integer productId,MultipartFile productFile) throws ProductException, IOException;
-	
-	List<ProductResponseModel> getProductResponseModels() throws VillageException,ProductException;  
-	
-	ProductResponseModel getProductResponseModelByProductId(Integer productId) throws VillageException,ProductException;  
+
+	Product uploadProductImage(Integer productId, MultipartFile productFile) throws ProductException, IOException;
+
+	List<Product> getProducts() throws ProductException;
+	 
+	List<ProductResponseModel> getProductsContainingProductName(String productName) throws ProductException;
+
+	List<ProductResponseModel> getProductResponseModels() throws VillageException, ProductException;
+
+	ProductResponseModel getProductResponseModelByProductId(Integer productId)
+			throws VillageException, ProductException;
 
 }
