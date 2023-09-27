@@ -17,7 +17,9 @@ import io.swagger.v3.oas.annotations.servers.Server;
 	        version = "1.0",
 	        description = "API documentation for Project-K Application",
 	        license = @License(name = "Your License")
-	    )
+	    ),
+	    servers = @Server(url = "/",description = "Default Server URL")
+	    
 	)
 @SecurityScheme(
 	    name = "scheme1",
@@ -25,7 +27,6 @@ import io.swagger.v3.oas.annotations.servers.Server;
 	    scheme = "bearer",
 	    bearerFormat = "JWT"
 	)
-@Server(url = "https://project-k-production.up.railway.app")
 public class ProjectkApplication {
 
 	public static void main(String[] args) {
