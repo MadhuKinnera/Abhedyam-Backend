@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 @SpringBootApplication
 @OpenAPIDefinition(
@@ -24,6 +25,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 	    scheme = "bearer",
 	    bearerFormat = "JWT"
 	)
+@Server(url = "https://project-k-production.up.railway.app")
 public class ProjectkApplication {
 
 	public static void main(String[] args) {
