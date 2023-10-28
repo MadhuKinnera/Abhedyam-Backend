@@ -12,17 +12,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.ProductDTO;
 import com.madhu.dto.ProductResponseModel;
-import com.madhu.dto.VillageDTO;
 import com.madhu.dto.VillageResponseDTO;
 import com.madhu.entity.Product;
-import com.madhu.entity.SaleRecord;
-import com.madhu.entity.Transaction;
-import com.madhu.entity.Village;
 import com.madhu.exception.ProductException;
 import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.ProductRepo;
-import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 
