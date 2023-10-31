@@ -257,7 +257,7 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 
@@ -424,7 +424,7 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 
@@ -513,7 +513,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Integer totalAmount = 0;
 		Integer totalDueAmount = 0;
 
-		List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+		List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
 
 		List<Transaction> transactions = new ArrayList<>();
 
@@ -577,7 +577,7 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 

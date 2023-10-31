@@ -1,6 +1,7 @@
 package com.madhu.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.RecordDTO;
+import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.SaleRecord;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
@@ -37,7 +39,8 @@ public class RecordController {
 	private RecordService recordService;
 
 	@PostMapping("/addRecord")
-	ResponseEntity<GeneralResponse> addRecordHandler(@RequestBody RecordDTO saleRecord) throws RecordException, CustomerException, ProductException {
+	ResponseEntity<GeneralResponse> addRecordHandler(@RequestBody RecordDTO saleRecord)
+			throws RecordException, CustomerException, ProductException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Record Added ");
@@ -47,8 +50,8 @@ public class RecordController {
 	}
 
 	@PutMapping("/updateRecord/{recordId}")
-	ResponseEntity<GeneralResponse> updateRecordHandler(@PathVariable Integer recordId, @RequestBody SaleRecord saleRecord)
-			throws RecordException {
+	ResponseEntity<GeneralResponse> updateRecordHandler(@PathVariable Integer recordId,
+			@RequestBody SaleRecord saleRecord) throws RecordException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Record Updated with Id " + recordId);
@@ -102,25 +105,21 @@ public class RecordController {
 
 	@GetMapping("/getRecordBetweenStartDates/{fromDate}/{toDate}")
 	ResponseEntity<GeneralResponse> getRecordsBetweenStartDatesTimeStamps(@PathVariable LocalDate fromDate,
-			@PathVariable LocalDate toDate)
-			throws CustomerException, RecordException {
+			@PathVariable LocalDate toDate) throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse
-				.setMessage("Records Found between " + fromDate + " and " + toDate );
+		generalResponse.setMessage("Records Found between " + fromDate + " and " + toDate);
 		generalResponse.setData(recordService.getRecordsBetweenStartDateTimeStamps(fromDate, toDate));
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
+
 	@GetMapping("/getRecordBetweenEndDates/{fromDate}/{toDate}")
 	ResponseEntity<GeneralResponse> getRecordsBetweenEndDatesTimeStamps(@PathVariable LocalDate fromDate,
-			@PathVariable LocalDate toDate)
-			throws CustomerException, RecordException {
+			@PathVariable LocalDate toDate) throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse
-				.setMessage("Records Found between " + fromDate + " and " + toDate );
+		generalResponse.setMessage("Records Found between " + fromDate + " and " + toDate);
 		generalResponse.setData(recordService.getRecordsBetweenEndDateTimeStamps(fromDate, toDate));
 
 		return ResponseEntity.ok(generalResponse);
@@ -251,7 +250,7 @@ public class RecordController {
 	ResponseEntity<GeneralResponse> getRecordsByCustomerName(@PathVariable String customerName)
 			throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
-		
+
 		System.out.println(customerName);
 
 		generalResponse.setMessage("Records Found By Customer Name " + customerName);
@@ -289,6 +288,29 @@ public class RecordController {
 
 		generalResponse.setMessage("Product Found By Record Id " + recordId);
 		generalResponse.setData(recordService.getProductByRecordId(recordId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRecordResponseModels")
+	ResponseEntity<GeneralResponse> getRecordResponseModels() throws RecordException {
+
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Record Response Models Found");
+		generalResponse.setData(recordService.getRecordResponseModels());
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRecordResponeModelByRecordId/{recordId}")
+	ResponseEntity<GeneralResponse> getRecordResponseModelByrecordId(@PathVariable Integer recordId)
+			throws RecordException {
+
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Record Response Model Found By Record Id " + recordId);
+		generalResponse.setData(recordService.getRecordResponseModelByrecordId(recordId));
 
 		return ResponseEntity.ok(generalResponse);
 	}

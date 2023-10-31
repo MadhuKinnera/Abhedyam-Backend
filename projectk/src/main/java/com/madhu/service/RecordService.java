@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.madhu.dto.RecordDTO;
+import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
 import com.madhu.entity.Product;
@@ -73,4 +74,11 @@ public interface RecordService {
 	
 	Customer getCustomerByRecordId(Integer recordId) throws  RecordException;
 
+	//record response models
+	List<RecordResponseModel> getRecordResponseModels() throws RecordException;
+	
+	RecordResponseModel getRecordResponseModelByrecordId(Integer recordId) throws RecordException;
+	
+	
+	
 }

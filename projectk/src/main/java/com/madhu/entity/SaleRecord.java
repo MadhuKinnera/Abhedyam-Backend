@@ -41,8 +41,8 @@ public class SaleRecord {
 	@OneToMany(cascade = CascadeType.ALL,mappedBy = "saleRecord")
 	private List<Transaction> transactions = new ArrayList<>();
 	
-	@ManyToOne
 	@JsonBackReference
+	@ManyToOne
 	private Customer customer;
 	
 	@ManyToOne
