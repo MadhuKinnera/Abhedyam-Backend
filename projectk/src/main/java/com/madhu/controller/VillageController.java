@@ -1,7 +1,5 @@
 package com.madhu.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.VillageDTO;
-import com.madhu.dto.VillageResponseModel;
 import com.madhu.entity.Village;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
