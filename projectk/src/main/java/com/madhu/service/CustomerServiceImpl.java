@@ -57,14 +57,18 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerRequestRepo customerRequestRepo;
 
 	@Override
-	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException {
+	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException, IOException {
 
 		var customer = new Customer();
 
 		Address address = null;
 
 		customer.setUser(utils.getUserFromContext());
-
+		
+		
+		String imageUrl = utils.convertImageToUrl(dto.getProfileImage());
+		
+		customer.setProfileImageUrl(imageUrl);
 		customer.setAge(dto.getAge());
 		customer.setCustomerName(dto.getCustomerName());
 		customer.setDescription(dto.getDescription());

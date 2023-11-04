@@ -21,7 +21,7 @@ import com.madhu.exception.VillageException;
 
 public interface CustomerService {
 
-	Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException;
+	Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException,IOException;
 
 	Customer getCustomerById(Integer customerId) throws CustomerException, UserException;
 

@@ -3,6 +3,8 @@ package com.madhu.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -10,6 +12,7 @@ public class CustomerDTO {
 	
 	
 	private String customerName;
+	private MultipartFile profileImage;
 	private Integer age;
 	private String profession;
 	private String mobileNo;

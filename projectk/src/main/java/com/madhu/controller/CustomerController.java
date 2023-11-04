@@ -42,7 +42,7 @@ public class CustomerController {
 
 	@PostMapping("/addCustomer")
 	ResponseEntity<GeneralResponse> addCustomer(@RequestBody CustomerDTO customer)
-			throws CustomerException, UserException {
+			throws CustomerException, UserException, IOException {
 
 		var generalResponse = new GeneralResponse();
 
