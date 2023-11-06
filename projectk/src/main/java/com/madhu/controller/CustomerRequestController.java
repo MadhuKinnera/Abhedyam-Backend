@@ -21,6 +21,7 @@ import com.madhu.dto.CustomerRequestDTO;
 import com.madhu.dto.GeneralResponse;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
+import com.madhu.exception.UserException;
 import com.madhu.service.CustomerRequestService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -38,7 +39,7 @@ public class CustomerRequestController {
 
 	@PostMapping("/addCustomerRequest")
 	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image[]") List<MultipartFile> files,
-			@RequestParam("data") String dtoData) throws CustomerException, CustomerRequestException, IOException {
+			@RequestParam("data") String dtoData) throws CustomerRequestException, IOException, UserException {
 		var generalResponse = new GeneralResponse();
 
 		CustomerRequestDTO dto = mapper.readValue(dtoData, CustomerRequestDTO.class);
@@ -85,13 +86,13 @@ public class CustomerRequestController {
 
 	}
 
-	@GetMapping("/getCustomerRequestsByCustomerId/{customerId}")
-	ResponseEntity<GeneralResponse> getCustomerRequestsByCustomerId(@PathVariable Integer customerId)
-			throws CustomerException, CustomerRequestException {
+	@GetMapping("/getCustomerRequestsByUserId/{userId}")
+	ResponseEntity<GeneralResponse> getCustomerRequestsByCustomerId(@PathVariable Integer userId)
+			throws CustomerRequestException, UserException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Customer Requests Found with Customer Id " + customerId);
-		generalResponse.setData(customerRequestService.getCustomerRequestsByCustomerId(customerId));
+		generalResponse.setMessage("Customer Requests Found with Customer Id " + userId);
+		generalResponse.setData(customerRequestService.getCustomerRequestsByUserId(userId));
 
 		return ResponseEntity.ok(generalResponse);
 

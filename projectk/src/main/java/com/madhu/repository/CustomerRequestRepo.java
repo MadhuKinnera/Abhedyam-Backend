@@ -9,6 +9,6 @@ import com.madhu.entity.CustomerRequest;
 public interface CustomerRequestRepo extends JpaRepository<CustomerRequest, Integer> {
 	
 	
-	List<CustomerRequest> findByCustomerCustomerId(Integer customerId);
+	List<CustomerRequest> findByUserUserId(Integer userId);
 
 }

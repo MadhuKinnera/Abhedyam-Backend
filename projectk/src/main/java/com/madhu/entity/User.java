@@ -3,6 +3,7 @@ package com.madhu.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -38,5 +39,9 @@ public class User {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Village> villages = new ArrayList<>();
+	
+	@JsonBackReference
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private List<CustomerRequest> customerRequests = new ArrayList<>();
 
 }

@@ -28,5 +28,5 @@ public class CustomerRequest {
 	private List<String> referenceImages;
 
 	@ManyToOne
-	private Customer customer;
+	private User user;
 }

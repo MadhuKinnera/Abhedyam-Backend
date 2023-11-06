@@ -459,11 +459,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 			model.setSaleRecords(records);
 
-			List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
-
-			model.setCustomerRequests(requests);
-
-			model.setTotalCustomerRequests(requests.size());
 
 			customerResponseModels.add(model);
 
@@ -548,11 +543,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		model.setSaleRecords(records);
 
-		List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
 
-		model.setCustomerRequests(requests);
-
-		model.setTotalCustomerRequests(requests.size());
 
 		return model;
 	}
@@ -612,11 +603,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 			model.setSaleRecords(records);
 
-			List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customer.getCustomerId());
-
-			model.setCustomerRequests(requests);
-
-			model.setTotalCustomerRequests(requests.size());
 
 			customerResponseModels.add(model);
 

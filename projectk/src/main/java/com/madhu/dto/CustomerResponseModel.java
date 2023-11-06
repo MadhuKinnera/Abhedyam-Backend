@@ -26,10 +26,6 @@ public class CustomerResponseModel {
 
 	private List<Transaction> transactions;
 
-	private List<CustomerRequest> customerRequests ;
-	
-	
-	private Integer totalCustomerRequests;
 	
 	private boolean recordStatus;
 

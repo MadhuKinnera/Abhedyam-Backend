@@ -52,9 +52,7 @@ public class Customer {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
 	private List<SaleRecord> saleRecords = new ArrayList<>();
 
-	@JsonBackReference
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
-	private List<CustomerRequest> customerRequests = new ArrayList<>();
+	
 
 	@ElementCollection
 	private List<String> keywords = new ArrayList<>();

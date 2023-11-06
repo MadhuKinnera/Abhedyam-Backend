@@ -9,10 +9,11 @@ import com.madhu.dto.CustomerRequestDTO;
 import com.madhu.entity.CustomerRequest;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
+import com.madhu.exception.UserException;
 
 public interface CustomerRequestService {
 
-	CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto) throws CustomerException,CustomerRequestException,IOException;
+	CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto) throws UserException,CustomerRequestException,IOException;
 	
 	CustomerRequest updateCustomerRequest(Integer customerRequestId,CustomerRequestDTO dto) throws CustomerRequestException;
 	
@@ -20,7 +21,7 @@ public interface CustomerRequestService {
 	
 	CustomerRequest getCustomerRequestByCRId(Integer customerRequestId) throws CustomerRequestException;
 	
-	List<CustomerRequest> getCustomerRequestsByCustomerId(Integer customerId) throws CustomerException,CustomerRequestException;
+	List<CustomerRequest> getCustomerRequestsByUserId(Integer userId) throws UserException,CustomerRequestException;
 	
 
 }

@@ -14,6 +14,7 @@ import com.madhu.entity.Customer;
 import com.madhu.entity.CustomerRequest;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
+import com.madhu.exception.UserException;
 import com.madhu.repository.CustomerRepo;
 import com.madhu.repository.CustomerRequestRepo;
 import com.madhu.utils.CommonUtils;
@@ -26,21 +27,16 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 	private CustomerRequestRepo customerRequestRepo;
 
 	@Autowired
-	private CustomerRepo customerRepo;
-
-	@Autowired
 	private CommonUtils utils;
 
 	@Override
 	public CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto)
-			throws CustomerException, IOException, CustomerRequestException {
+			throws  IOException, CustomerRequestException, UserException {
 
-		Customer customer = customerRepo.findById(dto.getCustomerId())
-				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + dto.getCustomerId()));
-
+		
 		var request = new CustomerRequest();
 
-		request.setCustomer(customer);
+		request.setUser(utils.getUserFromContext());;
 		request.setMessage(dto.getMessage());
 		request.setTimestamp(LocalDateTime.now());
 
@@ -90,14 +86,14 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 	}
 
 	@Override
-	public List<CustomerRequest> getCustomerRequestsByCustomerId(Integer customerId)
-			throws CustomerException, CustomerRequestException {
+	public List<CustomerRequest> getCustomerRequestsByUserId(Integer userId)
+			throws UserException, CustomerRequestException {
 
-		List<CustomerRequest> requests = customerRequestRepo.findByCustomerCustomerId(customerId);
+		List<CustomerRequest> requests = customerRequestRepo.findByUserUserId(userId);
 		
 		
 		if (requests.isEmpty())
-			throw new CustomerRequestException("No Requests Found with Customer Id " + customerId);
+			throw new CustomerRequestException("No Requests Found with User Id " + userId);
 
 		return requests;
 	}
