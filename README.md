@@ -96,6 +96,10 @@ this app streamlines various aspects of running a personal business. It was a Te
             
 4: Hooray..! you are now able to run our project on your local machine.
 
+or 
+
+Deployed Link : https://devinebiz-production.up.railway.app/swagger-ui/index.html
+
 
 ### THANK YOU <3
 
