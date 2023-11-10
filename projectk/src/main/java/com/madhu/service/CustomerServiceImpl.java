@@ -64,11 +64,11 @@ public class CustomerServiceImpl implements CustomerService {
 		Address address = null;
 
 		customer.setUser(utils.getUserFromContext());
-		
-		
-		String imageUrl = utils.convertImageToUrl(dto.getProfileImage());
-		
-		customer.setProfileImageUrl(imageUrl);
+
+		if (dto.getProfileImage() != null) {
+			String imageUrl = utils.convertImageToUrl(dto.getProfileImage());
+			customer.setProfileImageUrl(imageUrl);
+		}
 		customer.setAge(dto.getAge());
 		customer.setCustomerName(dto.getCustomerName());
 		customer.setDescription(dto.getDescription());
@@ -261,7 +261,8 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
+			List<SaleRecord> records = recordRepo
+					.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(), utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 
@@ -428,7 +429,8 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
+			List<SaleRecord> records = recordRepo
+					.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(), utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 
@@ -458,7 +460,6 @@ public class CustomerServiceImpl implements CustomerService {
 			model.setTransactions(transactions);
 
 			model.setSaleRecords(records);
-
 
 			customerResponseModels.add(model);
 
@@ -499,7 +500,7 @@ public class CustomerServiceImpl implements CustomerService {
 			throws UserException, CustomerException {
 
 		var customer = customerRepo.findByCustomerIdAndUserUserId(customerId, utils.userId)
-				.orElseThrow(()->new CustomerException("Customer Not Found With Customer Id "+customerId));
+				.orElseThrow(() -> new CustomerException("Customer Not Found With Customer Id " + customerId));
 		var model = new CustomerResponseModel();
 
 		model.setCustomer(customer);
@@ -512,7 +513,8 @@ public class CustomerServiceImpl implements CustomerService {
 		Integer totalAmount = 0;
 		Integer totalDueAmount = 0;
 
-		List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
+		List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),
+				utils.userId);
 
 		List<Transaction> transactions = new ArrayList<>();
 
@@ -543,15 +545,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 		model.setSaleRecords(records);
 
-
-
 		return model;
 	}
 
 	@Override
 	public List<CustomerResponseModel> getCustomersByCustomerNameContaining(String customerName)
 			throws CustomerException, UserException {
-		List<Customer> customers = customerRepo.findByCustomerNameContainingAndUserUserId(customerName,utils.userId);
+		List<Customer> customers = customerRepo.findByCustomerNameContainingAndUserUserId(customerName, utils.userId);
 
 		if (customers.isEmpty())
 			throw new CustomerException(" No Customers Found with the user Id " + utils.userId);
@@ -572,7 +572,8 @@ public class CustomerServiceImpl implements CustomerService {
 			Integer totalAmount = 0;
 			Integer totalDueAmount = 0;
 
-			List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(),utils.userId);
+			List<SaleRecord> records = recordRepo
+					.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(), utils.userId);
 
 			List<Transaction> transactions = new ArrayList<>();
 
@@ -602,7 +603,6 @@ public class CustomerServiceImpl implements CustomerService {
 			model.setTransactions(transactions);
 
 			model.setSaleRecords(records);
-
 
 			customerResponseModels.add(model);
 
