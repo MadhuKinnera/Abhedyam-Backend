@@ -53,9 +53,6 @@ public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private RecordRepo recordRepo;
 
-	@Autowired
-	private CustomerRequestRepo customerRequestRepo;
-
 	@Override
 	public Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException, IOException {
 
@@ -411,7 +408,7 @@ public class CustomerServiceImpl implements CustomerService {
 		List<Customer> customers = customerRepo.findByUserUserId(utils.userId);
 
 		if (customers.isEmpty())
-			throw new CustomerException(" No Customers Found with the user Id " + utils.userId);
+			throw new CustomerException(" Customers Not Found ");
 
 		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
 
