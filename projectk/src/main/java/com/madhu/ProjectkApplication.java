@@ -13,10 +13,10 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @SpringBootApplication
 @OpenAPIDefinition(
 	    info = @Info(
-	        title = "Project-K API DOC ",
+	        title = "DevinEBiz API DOC ",
 	        version = "1.0",
-	        description = "API documentation for Project-K Application",
-	        license = @License(name = "Your License")
+	        description = "API documentation for DevinEBiz Application",
+	        license = @License(name = "License")
 	    ),
 	    servers = @Server(url = "/",description = "Default Server URL")
 	    
