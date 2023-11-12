@@ -25,6 +25,7 @@ public class UtilController {
 	public ResponseEntity<JwtResponse> uploadImageToCloudinary(@RequestParam("image") MultipartFile file)
 			throws IOException {
 		
+
 		System.out.println("Inside Upload Image ");
 
 		String res = utils.convertImageToUrl(file);
