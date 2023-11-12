@@ -143,12 +143,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product uploadProductImage(Integer productId, MultipartFile productFile)
+	public Product uploadProductImage(Integer productId, String productFile)
 			throws ProductException, IOException {
 
 		Product product = getProductByProductId(productId);
 
-		String productImageURL = utils.convertImageToUrl(productFile);
+		String productImageURL = productFile;// utils.convertImageToUrl(productFile);
 
 		product.setImageUrl(productImageURL);
 

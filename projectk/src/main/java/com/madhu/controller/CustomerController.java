@@ -31,6 +31,7 @@ import com.madhu.exception.VillageException;
 import com.madhu.service.CustomerService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.websocket.server.PathParam;
 
 
 @CrossOrigin("*")
@@ -298,11 +299,11 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/updateProfilePicture/{customerId}")
-	ResponseEntity<GeneralResponse> updateProfilePicture(@PathVariable Integer customerId,@RequestParam("image") MultipartFile file) throws UserException, IOException, CustomerException,UserException{
+	ResponseEntity<GeneralResponse> updateProfilePicture(@PathVariable Integer customerId,@RequestParam String image) throws UserException, IOException, CustomerException,UserException{
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Customer Profile Picture Updated");
-		generalResponse.setData(customerService.updateProfilePicture(customerId, file));
+		generalResponse.setData(customerService.updateProfilePicture(customerId, image));
 
 		return ResponseEntity.ok(generalResponse);
 	}

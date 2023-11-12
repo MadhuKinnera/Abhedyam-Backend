@@ -138,7 +138,7 @@ public class ProductController {
 
 	@PutMapping("/uploadProductImage/{productId}")
 	ResponseEntity<GeneralResponse> uploadProductImage(@PathVariable Integer productId,
-			@RequestParam("image") MultipartFile productFile) throws ProductException, IOException {
+			@RequestParam("image") String productFile) throws ProductException, IOException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Product Image Updated ");

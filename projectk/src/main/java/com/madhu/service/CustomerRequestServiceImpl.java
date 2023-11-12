@@ -30,13 +30,13 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 	private CommonUtils utils;
 
 	@Override
-	public CustomerRequest addCustomerRequest(List<MultipartFile> files, CustomerRequestDTO dto)
-			throws  IOException, CustomerRequestException, UserException {
+	public CustomerRequest addCustomerRequest(List<String> files, CustomerRequestDTO dto)
+			throws IOException, CustomerRequestException, UserException {
 
-		
 		var request = new CustomerRequest();
 
-		request.setUser(utils.getUserFromContext());;
+		request.setUser(utils.getUserFromContext());
+		;
 		request.setMessage(dto.getMessage());
 		request.setTimestamp(LocalDateTime.now());
 
@@ -44,11 +44,9 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 
 		List<String> refereceImagesURLs = new ArrayList<>();
 
-		for (MultipartFile file : files) {
+		for (String file : files) {
 
-			String url = utils.convertImageToUrl(file);
-
-			refereceImagesURLs.add(url);
+			refereceImagesURLs.add(file);
 
 		}
 
@@ -90,8 +88,7 @@ public class CustomerRequestServiceImpl implements CustomerRequestService {
 			throws UserException, CustomerRequestException {
 
 		List<CustomerRequest> requests = customerRequestRepo.findByUserUserId(userId);
-		
-		
+
 		if (requests.isEmpty())
 			throw new CustomerRequestException("No Requests Found with User Id " + userId);
 

@@ -63,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setUser(utils.getUserFromContext());
 
 		if (dto.getProfileImage() != null) {
-			String imageUrl = utils.convertImageToUrl(dto.getProfileImage());
+			String imageUrl = dto.getProfileImage();
 			customer.setProfileImageUrl(imageUrl);
 		}
 		customer.setAge(dto.getAge());
@@ -329,12 +329,12 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer updateProfilePicture(Integer customerId, MultipartFile file)
+	public Customer updateProfilePicture(Integer customerId, String file)
 			throws CustomerException, IOException, UserException {
 
 		Customer customer = getCustomerById(customerId);
 
-		String imageURL = utils.convertImageToUrl(file);
+		String imageURL =file;
 
 		customer.setProfileImageUrl(imageURL);
 

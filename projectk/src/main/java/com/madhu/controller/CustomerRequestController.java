@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.madhu.dto.CustomerRequestDTO;
 import com.madhu.dto.GeneralResponse;
-import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
 import com.madhu.exception.UserException;
 import com.madhu.service.CustomerRequestService;
@@ -40,7 +39,7 @@ public class CustomerRequestController {
 	private ObjectMapper mapper;
 
 	@PostMapping("/addCustomerRequest")
-	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image[]") List<MultipartFile> files,
+	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image[]") List<String> files,
 			@RequestParam("data") String dtoData) throws CustomerRequestException, IOException, UserException {
 		var generalResponse = new GeneralResponse();
 

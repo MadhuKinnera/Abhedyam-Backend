@@ -1,7 +1,6 @@
 package com.madhu.controller;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.RecordDTO;
-import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.SaleRecord;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;

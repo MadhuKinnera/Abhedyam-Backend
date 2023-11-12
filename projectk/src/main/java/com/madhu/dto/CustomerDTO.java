@@ -12,7 +12,7 @@ public class CustomerDTO {
 	
 	
 	private String customerName;
-	private MultipartFile profileImage;
+	private String profileImage;
 	private Integer age;
 	private String profession;
 	private String mobileNo;

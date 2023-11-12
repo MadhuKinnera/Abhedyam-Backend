@@ -37,7 +37,7 @@ public interface CustomerService {
 
 	Customer addKeywordsToCustomer(Integer customerId, List<String> keywords) throws CustomerException, UserException;
 
-	Customer updateProfilePicture(Integer customerId, MultipartFile file)
+	Customer updateProfilePicture(Integer customerId, String file)
 			throws UserException, IOException, CustomerException, UserException;
 
 	Customer getCustomerByPhoneNumber(String phoneNumber) throws CustomerException, UserException;

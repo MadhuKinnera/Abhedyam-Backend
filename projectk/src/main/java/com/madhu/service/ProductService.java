@@ -24,7 +24,7 @@ public interface ProductService {
 
 	Product getProductByName(String productName) throws ProductException;
 
-	Product uploadProductImage(Integer productId, MultipartFile productFile) throws ProductException, IOException;
+	Product uploadProductImage(Integer productId, String productFile) throws ProductException, IOException;
 
 	List<Product> getProducts() throws ProductException;
 	 
