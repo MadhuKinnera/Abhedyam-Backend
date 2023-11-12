@@ -21,7 +21,7 @@ public class UtilController {
 	@Autowired
 	private CommonUtils utils;
 
-	@GetMapping("/uploadImage")
+	@PostMapping("/uploadImage")
 	public ResponseEntity<JwtResponse> uploadImageToCloudinary(@RequestParam("image") MultipartFile file)
 			throws IOException {
 		
