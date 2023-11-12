@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import com.madhu.security.service.JwtAuthFilter;
 import com.madhu.security.service.JwtEntryPoint;
 
-
-
 @Configuration
 public class SecurityConfig {
 
 	@Autowired
 	private JwtEntryPoint jwtEntryPoint;
-	
+
 	@Autowired
 	private JwtAuthFilter jwtAuthFilter;
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+		http.csrf(t -> t.disable()).cors(t->t.disable());
 		
-		http.authorizeHttpRequests(t->t.anyRequest().permitAll());
-		
+
+		http.authorizeHttpRequests(t -> t.anyRequest().permitAll());
+
 //		http.authorizeHttpRequests(
 //				t -> t.requestMatchers("user/addUser", "/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll().anyRequest().authenticated());
 //
@@ -40,15 +40,12 @@ public class SecurityConfig {
 //
 //
 //		
-		http.csrf(t -> t.disable());
-//
-//
-		http.cors(t -> t.disable());
+
 //
 //		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //
 //		
-		
+
 		return http.build();
 	}
 
