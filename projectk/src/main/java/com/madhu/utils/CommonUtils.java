@@ -145,12 +145,13 @@ public class CommonUtils {
 		if (auth != null)
 			System.out.println("email " + auth.getName());
 
-		String email = null;
+		//String email = null;
+		String email = "kinneramadhu123@gmail.com";
 
-		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
-			email = auth.getName();
-		else
-			throw new UserException("User Need To Login First");
+//		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
+//			email = auth.getName();
+//		else
+//			throw new UserException("User Need To Login First");
 
 		System.out.println("The email is " + email);
 

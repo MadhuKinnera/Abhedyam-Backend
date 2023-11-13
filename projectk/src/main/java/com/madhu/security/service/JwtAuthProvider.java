@@ -40,7 +40,7 @@ public class JwtAuthProvider {
 
 	public boolean validateToken(String token, String jwtSecretKey) {
 
-		System.out.println("inside validating 40");
+		System.out.println("inside validating token");
 
 		return parseToken(token, jwtSecretKey) != null;
 
