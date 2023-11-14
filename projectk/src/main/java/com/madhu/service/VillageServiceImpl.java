@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.VillageDTO;
 import com.madhu.dto.VillageResponseModel;
 import com.madhu.entity.Address;
@@ -388,15 +389,15 @@ public class VillageServiceImpl implements VillageService {
 	}
 
 	@Override
-	public List<String> getVillageNames() throws VillageException {
+	public List<NameAndId> getVillageNames() throws VillageException {
 		var villages = getVillagesByRank();
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found");
 
-		var villageNames = villages.stream().map(v -> v.getVillageName()).collect(Collectors.toList());
+		return villages.stream().map(v -> new NameAndId(v.getVillageName(), v.getVillageId()))
+				.collect(Collectors.toList());
 
-		return villageNames;
 	}
 
 }

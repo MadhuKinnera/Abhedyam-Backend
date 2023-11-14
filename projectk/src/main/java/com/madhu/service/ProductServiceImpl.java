@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.ProductDTO;
 import com.madhu.dto.ProductResponseModel;
 import com.madhu.dto.VillageResponseDTO;
@@ -285,14 +286,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<String> getProductsName() throws ProductException {
+	public List<NameAndId> getProductsName() throws ProductException {
 
 		var products = getProducts();
 
 		if (products.isEmpty())
 			throw new ProductException("Products Not Found");
 
-		return products.stream().map(p -> p.getProductName()).collect(Collectors.toList());
+		return products.stream().map(p ->  new NameAndId(p.getProductName(),p.getProductId())).collect(Collectors.toList());
 	}
 
 }

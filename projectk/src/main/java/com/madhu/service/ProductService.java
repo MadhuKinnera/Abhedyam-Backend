@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.ProductDTO;
 import com.madhu.dto.ProductResponseModel;
 import com.madhu.entity.Product;
@@ -35,6 +36,6 @@ public interface ProductService {
 	ProductResponseModel getProductResponseModelByProductId(Integer productId)
 			throws VillageException, ProductException;
 	
-	List<String> getProductsName() throws ProductException;
+	List<NameAndId> getProductsName() throws ProductException;
 
 }

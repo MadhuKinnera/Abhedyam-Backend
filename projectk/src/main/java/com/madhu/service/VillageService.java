@@ -2,6 +2,7 @@ package com.madhu.service;
 
 import java.util.List;
 
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.VillageDTO;
 import com.madhu.dto.VillageResponseModel;
 import com.madhu.entity.Address;
@@ -37,6 +38,6 @@ public interface VillageService {
 
 	List<VillageResponseModel> getVillageWiseDataByVillageNameContaining(String villageName) throws VillageException;
 
-	List<String> getVillageNames() throws VillageException;
+	List<NameAndId> getVillageNames() throws VillageException;
 	
 }

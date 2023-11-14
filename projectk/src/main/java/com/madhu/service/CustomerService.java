@@ -9,6 +9,7 @@ import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.PlainCustomer;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
@@ -74,6 +75,6 @@ public interface CustomerService {
 
 	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException, UserException;
 
-	List<String> getCustomersName() throws CustomerException,UserException;
+	List<NameAndId> getCustomersName() throws CustomerException,UserException;
 
 }

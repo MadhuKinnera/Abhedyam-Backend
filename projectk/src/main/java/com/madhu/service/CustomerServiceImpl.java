@@ -14,6 +14,7 @@ import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
+import com.madhu.dto.NameAndId;
 import com.madhu.dto.PlainCustomer;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
@@ -547,13 +548,20 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<String> getCustomersName() throws CustomerException, UserException {
+	public List<NameAndId> getCustomersName() throws CustomerException, UserException {
 		var customers = getPlainCustomers();
 
 		if (customers.isEmpty())
 			throw new CustomerException("Customes Not Found");
 
-		return customers.stream().map(c -> c.getCustomerName()).collect(Collectors.toList());
+		var customersNames = new ArrayList<NameAndId>();
+
+		for (var c : customers) {
+			var name = new NameAndId(c.getCustomerName(), c.getCustomerId());
+			customersNames.add(name);
+		}
+
+		return customersNames;
 	}
 
 }
