@@ -238,16 +238,6 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getAllCustomerResponseModels")
-	ResponseEntity<GeneralResponse> getCustomerByRank() throws CustomerException, UserException{
-
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("All Customer Response Models Found ");
-		generalResponse.setData(customerService.getAllCustomersByRank());
-
-		return ResponseEntity.ok(generalResponse);
-	}
 
 	@GetMapping("/getCustomerResponseModels")
 	ResponseEntity<GeneralResponse> getCustomersByRankAndUserId()
@@ -316,6 +306,18 @@ public class CustomerController {
 
 		generalResponse.setMessage("Plain Customers Found");
 		generalResponse.setData(customerService.getPlainCustomers());
+
+		return ResponseEntity.ok(generalResponse);
+	}
+	
+	
+	@GetMapping("/getCustomersName")
+	ResponseEntity<GeneralResponse> getCustomersName() throws CustomerException,UserException{
+		
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Customers Name Found");
+		generalResponse.setData(customerService.getCustomersName());
 
 		return ResponseEntity.ok(generalResponse);
 	}

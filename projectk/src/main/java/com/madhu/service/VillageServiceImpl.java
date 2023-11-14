@@ -2,6 +2,7 @@ package com.madhu.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -384,6 +385,18 @@ public class VillageServiceImpl implements VillageService {
 
 		return villageWiseData;
 
+	}
+
+	@Override
+	public List<String> getVillageNames() throws VillageException {
+		var villages = getVillagesByRank();
+
+		if (villages.isEmpty())
+			throw new VillageException("Villages Not Found");
+
+		var villageNames = villages.stream().map(v -> v.getVillageName()).collect(Collectors.toList());
+
+		return villageNames;
 	}
 
 }

@@ -34,5 +34,7 @@ public interface ProductService {
 
 	ProductResponseModel getProductResponseModelByProductId(Integer productId)
 			throws VillageException, ProductException;
+	
+	List<String> getProductsName() throws ProductException;
 
 }

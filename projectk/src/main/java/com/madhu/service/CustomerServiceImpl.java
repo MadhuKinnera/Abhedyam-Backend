@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -235,69 +236,6 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<CustomerResponseModel> getAllCustomersByRank() throws CustomerException {
-
-		List<Customer> customers = customerRepo.findAll();
-
-		if (customers.isEmpty())
-			throw new CustomerException(" No Customers Found ");
-
-		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
-
-		for (Customer customer : customers) {
-
-			CustomerResponseModel model = new CustomerResponseModel();
-
-			model.setCustomer(customer);
-			model.setCustomerFlag(customer.getFlag());
-			model.setDescription(customer.getDescription());
-
-			List<Product> products = new ArrayList<>();
-
-			Integer totalProducts = 0;
-			Integer totalAmount = 0;
-			Integer totalDueAmount = 0;
-
-			List<SaleRecord> records = recordRepo
-					.findByCustomerCustomerIdAndCustomerUserUserId(customer.getCustomerId(), utils.userId);
-
-			List<Transaction> transactions = new ArrayList<>();
-
-			for (SaleRecord record : records) {
-				Product product = record.getProduct();
-				products.add(product);
-				totalProducts += record.getQuantity();
-				totalAmount += record.getTotalAmount();
-				totalDueAmount += record.getDueAmount();
-
-				transactions.addAll(record.getTransactions());
-
-			}
-
-			model.setProducts(products);
-
-			model.setRecordStatus(totalProducts != 0);
-
-			model.setTotalProducts(totalProducts);
-
-			model.setTotalAmount(totalAmount);
-
-			model.setTotalRemaininAmount(totalDueAmount);
-
-			model.setTotalPaidAmount(totalAmount - totalDueAmount);
-
-			model.setTransactions(transactions);
-
-			model.setSaleRecords(records);
-
-			customerResponseModels.add(model);
-
-		}
-
-		return customerResponseModels;
-	}
-
-	@Override
 	public Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException {
 
 		Customer customer = new Customer();
@@ -334,7 +272,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Customer customer = getCustomerById(customerId);
 
-		String imageURL =file;
+		String imageURL = file;
 
 		customer.setProfileImageUrl(imageURL);
 
@@ -606,6 +544,16 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 
 		return customerResponseModels;
+	}
+
+	@Override
+	public List<String> getCustomersName() throws CustomerException, UserException {
+		var customers = getPlainCustomers();
+
+		if (customers.isEmpty())
+			throw new CustomerException("Customes Not Found");
+
+		return customers.stream().map(c -> c.getCustomerName()).collect(Collectors.toList());
 	}
 
 }

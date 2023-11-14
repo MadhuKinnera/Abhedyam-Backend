@@ -63,7 +63,6 @@ public interface CustomerService {
 
 	Address getAddressOfCustomer(Integer customerId) throws AddressException, CustomerException, UserException;
 
-	List<CustomerResponseModel> getAllCustomersByRank() throws CustomerException, UserException, UserException;
 
 	List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException;
 
@@ -74,5 +73,7 @@ public interface CustomerService {
 			throws UserException, CustomerException;
 
 	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException, UserException;
+
+	List<String> getCustomersName() throws CustomerException,UserException;
 
 }

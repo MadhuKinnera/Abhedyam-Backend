@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.ProductDTO;
@@ -143,6 +142,16 @@ public class ProductController {
 
 		generalResponse.setMessage("Product Image Updated ");
 		generalResponse.setData(productService.uploadProductImage(productId, productFile));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getProductsName")
+	ResponseEntity<GeneralResponse> getProductsName() throws ProductException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Products Name Found");
+		generalResponse.setData(productService.getProductsName());
 
 		return ResponseEntity.ok(generalResponse);
 	}

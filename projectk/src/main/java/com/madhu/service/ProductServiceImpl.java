@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.ProductDTO;
 import com.madhu.dto.ProductResponseModel;
@@ -39,7 +39,8 @@ public class ProductServiceImpl implements ProductService {
 		product.setDescription(dto.getDescription());
 		product.setSellingPrice(dto.getSellingPrice());
 		product.setProductName(dto.getProductName());
-		product.setImageUrl(dto.getImageUrl());;
+		product.setImageUrl(dto.getImageUrl());
+		;
 
 		product.setUser(utils.getUserFromContext());
 
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getProductByProductId(Integer productId) throws ProductException {
 
-		return productRepo.findByProductIdAndUserUserId(productId,utils.userId)
+		return productRepo.findByProductIdAndUserUserId(productId, utils.userId)
 				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
 
 	}
@@ -144,8 +145,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product uploadProductImage(Integer productId, String productFile)
-			throws ProductException, IOException {
+	public Product uploadProductImage(Integer productId, String productFile) throws ProductException, IOException {
 
 		Product product = getProductByProductId(productId);
 
@@ -213,21 +213,21 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getProducts() throws ProductException {
-		
+
 		List<Product> products = productRepo.findByUserUserId(utils.userId);
-		
-		if(products.isEmpty())
+
+		if (products.isEmpty())
 			throw new ProductException("No Products Found ");
-		
+
 		return products;
 	}
 
 	@Override
 	public List<ProductResponseModel> getProductsContainingProductName(String productName) throws ProductException {
-		
+
 		List<ProductResponseModel> productResponseModels = new ArrayList<>();
 
-		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName,utils.userId);
+		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, utils.userId);
 
 		if (products.isEmpty())
 			throw new ProductException(Constants.NO_PRODUCTS_FOUND);
@@ -282,6 +282,17 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return productResponseModels;
-	} 
+	}
+
+	@Override
+	public List<String> getProductsName() throws ProductException {
+
+		var products = getProducts();
+
+		if (products.isEmpty())
+			throw new ProductException("Products Not Found");
+
+		return products.stream().map(p -> p.getProductName()).collect(Collectors.toList());
+	}
 
 }

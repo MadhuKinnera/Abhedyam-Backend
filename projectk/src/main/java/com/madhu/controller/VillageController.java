@@ -1,5 +1,7 @@
 package com.madhu.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -125,10 +127,9 @@ public class VillageController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
-	
+
 	@GetMapping("/getVillageWiseData")
-	ResponseEntity<GeneralResponse> getVillageWiseData() throws VillageException{
+	ResponseEntity<GeneralResponse> getVillageWiseData() throws VillageException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Found Village Wise Data ");
@@ -138,27 +139,35 @@ public class VillageController {
 	}
 
 	@GetMapping("/getVillageWiseDataByVillageId/{villageId}")
-	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageId(@PathVariable Integer villageId) throws VillageException{
+	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageId(@PathVariable Integer villageId)
+			throws VillageException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Village Wise Data Found With Village Id "+villageId );
+		generalResponse.setMessage("Village Wise Data Found With Village Id " + villageId);
 		generalResponse.setData(villageService.getVillageWiseDataByVillageId(villageId));
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
+
 	@GetMapping("/getVillageWiseDataByVillageName/{villageName}")
-	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageName(@PathVariable String villageName) throws VillageException{
+	ResponseEntity<GeneralResponse> getVillageWiseDataByVillageName(@PathVariable String villageName)
+			throws VillageException {
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Village Wise Data Found With Village Name "+villageName );
+		generalResponse.setMessage("Village Wise Data Found With Village Name " + villageName);
 		generalResponse.setData(villageService.getVillageWiseDataByVillageNameContaining(villageName));
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
-	
 
-	
-	
+	@GetMapping("/getVillageNames")
+	ResponseEntity<GeneralResponse> getVillageNames() throws VillageException {
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Village Names Found ");
+		generalResponse.setData(villageService.getVillageNames());
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
 }
