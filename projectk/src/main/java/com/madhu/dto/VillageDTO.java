@@ -10,6 +10,7 @@ public class VillageDTO {
 	private String district;
 	private String state;
 	private Integer pincode;
+	private String imageUrl;
 
 	private Integer productGoal;
 

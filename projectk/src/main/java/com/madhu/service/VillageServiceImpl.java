@@ -49,6 +49,7 @@ public class VillageServiceImpl implements VillageService {
 		village.setPincode(dto.getPincode());
 		village.setProductGoal(dto.getProductGoal());
 		village.setState(dto.getState());
+		village.setImageUrl(dto.getImageUrl());
 
 		return villageRepo.save(village);
 	}

@@ -25,6 +25,7 @@ public class Village {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer villageId;
 	private String villageName;
+	private String imageUrl;
 	private String mandal;
 	private String district;
 	private String state;
