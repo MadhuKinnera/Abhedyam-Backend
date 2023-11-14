@@ -29,22 +29,17 @@ public class SecurityConfig {
 		http.csrf(t -> t.disable()).cors(t->t.disable());
 		
 
-		http.authorizeHttpRequests(t -> t.anyRequest().permitAll());
+		//http.authorizeHttpRequests(t -> t.anyRequest().permitAll());
 
-//		http.authorizeHttpRequests(
-//				t -> t.requestMatchers("user/addUser", "/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll().anyRequest().authenticated());
-//
-//		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-//		
-//		http.exceptionHandling(e -> e.authenticationEntryPoint(jwtEntryPoint));
-//
-//
-//		
+		http.authorizeHttpRequests(
+				t -> t.requestMatchers("user/addUser", "/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll().anyRequest().authenticated());
 
-//
-//		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//
-//		
+		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		
+		http.exceptionHandling(e -> e.authenticationEntryPoint(jwtEntryPoint));
+
+		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		
 
 		return http.build();
 	}
