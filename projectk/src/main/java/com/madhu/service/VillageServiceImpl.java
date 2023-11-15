@@ -1,6 +1,7 @@
 package com.madhu.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -216,6 +217,9 @@ public class VillageServiceImpl implements VillageService {
 			villageWiseData.add(villageData);
 
 		}
+
+		Collections.sort(villageWiseData,
+				(v1, v2) -> Integer.compare(v2.getTotalProductSellCount(), v1.getTotalProductSellCount()));
 
 		return villageWiseData;
 

@@ -2,6 +2,7 @@ package com.madhu.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,6 +142,9 @@ public class ProductServiceImpl implements ProductService {
 			productResponseModels.add(productResponse);
 
 		}
+
+		Collections.sort(productResponseModels,
+				(p1, p2) -> Integer.compare(p2.getProductSellCount(), p1.getProductSellCount()));
 
 		return productResponseModels;
 	}
@@ -293,7 +297,8 @@ public class ProductServiceImpl implements ProductService {
 		if (products.isEmpty())
 			throw new ProductException("Products Not Found");
 
-		return products.stream().map(p ->  new NameAndId(p.getProductName(),p.getProductId())).collect(Collectors.toList());
+		return products.stream().map(p -> new NameAndId(p.getProductName(), p.getProductId()))
+				.collect(Collectors.toList());
 	}
 
 }

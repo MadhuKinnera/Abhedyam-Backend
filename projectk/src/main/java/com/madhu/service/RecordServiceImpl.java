@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,6 +318,8 @@ public class RecordServiceImpl implements RecordService {
 
 		if (records.isEmpty())
 			throw new RecordException(Constants.RECORDS_NOT_FOUND);
+
+		Collections.sort(records, (r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
 
 		for (var record : records) {
 

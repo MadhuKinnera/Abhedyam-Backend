@@ -3,6 +3,7 @@ package com.madhu.service;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -76,7 +77,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setFlag(Color.GREEN);
 		customer.setProfession(dto.getProfession());
 		customer.setMobileNo(dto.getMobileNo());
-		
+
 		var keywords = dto.getKeywords();
 		customer.setKeywords(keywords);
 
@@ -437,6 +438,8 @@ public class CustomerServiceImpl implements CustomerService {
 			customerResponseModels.add(model);
 
 		}
+
+		Collections.sort(customerResponseModels, (c1, c2) -> Integer.compare(c2.getTotalAmount(), c1.getTotalAmount()));
 
 		return customerResponseModels;
 	}
