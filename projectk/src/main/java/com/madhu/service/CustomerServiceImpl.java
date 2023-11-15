@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +76,9 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setFlag(Color.GREEN);
 		customer.setProfession(dto.getProfession());
 		customer.setMobileNo(dto.getMobileNo());
-
-		customer.setKeywords(dto.getKeywords());
+		
+		var keywords = dto.getKeywords();
+		customer.setKeywords(keywords);
 
 		if (dto.getAddressDto() != null) {
 			address = new Address();
@@ -93,7 +95,42 @@ public class CustomerServiceImpl implements CustomerService {
 			customer.setAddress(address);
 		}
 
+		var customerCode = getCustomerCode(dto);
+
+		customer.setCustomerCode(customerCode);
+
 		return customerRepo.save(customer);
+
+	}
+
+	private String getCustomerCode(CustomerDTO customerDto) throws UserException {
+
+		var user = utils.getUserFromContext();
+
+		var userName = user.getFullName();
+
+		if (userName == null)
+			userName = "USER";
+
+		var customerName = customerDto.getCustomerName();
+
+		if (customerName == null)
+			customerName = "CUSTOMER";
+
+		var villageName = customerDto.getAddressDto().getVillageName();
+
+		if (villageName == null)
+			villageName = "VILLAGE";
+
+		var uuid = UUID.randomUUID().toString();
+
+		if (uuid.length() > 10) {
+			uuid = uuid.substring(2, 9);
+		}
+
+		var customerCode = userName.substring(0, 3) + customerName.subSequence(0, 3) + uuid;
+
+		return customerCode;
 
 	}
 

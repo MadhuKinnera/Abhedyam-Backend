@@ -37,6 +37,8 @@ public class Customer {
 	private String email;
 	private String profileImageUrl;
 	private String description;
+	
+	private String customerCode;
 
 	@Enumerated(EnumType.STRING)
 	private Color flag;
