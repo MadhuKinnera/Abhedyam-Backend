@@ -317,14 +317,14 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRecordsByRecordIdOrCustomerNameOrProdutName/{recordId}/{customerName}/{productName}")
+	@GetMapping("/getRecordsByRecordIdOrCustomerNameOrProductName/{recordId}/{customerName}/{productName}")
 	ResponseEntity<GeneralResponse> getRecordsContainingRecordIdOrCustomerNameOrProductName(
 			@PathVariable Integer recordId, @PathVariable String customerName, @PathVariable String productName)
 			throws RecordException {
 
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Record Response Models Found In Search " + recordId + customerName + productName);
+		generalResponse.setMessage("Record Response Models Found In Search " + recordId +" " + customerName+" " + productName);
 		generalResponse.setData(recordService.getRecordsContainingRecordIdOrCustomerNameOrProductName(recordId,
 				customerName, productName));
 
