@@ -79,6 +79,8 @@ public interface RecordService {
 	
 	RecordResponseModel getRecordResponseModelByrecordId(Integer recordId) throws RecordException;
 	
+	List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,String customerName,String productName) throws RecordException;
+	
 	
 	
 }

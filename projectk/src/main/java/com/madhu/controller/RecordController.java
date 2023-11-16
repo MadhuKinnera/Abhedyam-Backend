@@ -1,6 +1,7 @@
 package com.madhu.controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.GeneralResponse;
 import com.madhu.dto.RecordDTO;
+import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.SaleRecord;
 import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
@@ -311,6 +313,20 @@ public class RecordController {
 
 		generalResponse.setMessage("Record Response Model Found By Record Id " + recordId);
 		generalResponse.setData(recordService.getRecordResponseModelByrecordId(recordId));
+
+		return ResponseEntity.ok(generalResponse);
+	}
+
+	@GetMapping("/getRecordsByRecordIdOrCustomerNameOrProdutName/{recordId}/{customerName}/{productName}")
+	ResponseEntity<GeneralResponse> getRecordsContainingRecordIdOrCustomerNameOrProductName(
+			@PathVariable Integer recordId, @PathVariable String customerName, @PathVariable String productName)
+			throws RecordException {
+
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Record Response Models Found In Search " + recordId + customerName + productName);
+		generalResponse.setData(recordService.getRecordsContainingRecordIdOrCustomerNameOrProductName(recordId,
+				customerName, productName));
 
 		return ResponseEntity.ok(generalResponse);
 	}

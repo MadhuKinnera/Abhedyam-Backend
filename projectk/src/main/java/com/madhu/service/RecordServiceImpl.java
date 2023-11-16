@@ -350,4 +350,33 @@ public class RecordServiceImpl implements RecordService {
 		return recordResponseModel;
 	}
 
+	@Override
+	public List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,String customerName,String productName)
+			throws RecordException {
+		
+		var recordResponseModels = new ArrayList<RecordResponseModel>();
+		
+		List<SaleRecord> records = recordRepo.findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(utils.userId, recordId, customerName, productName);
+		
+		if (records.isEmpty())
+			throw new RecordException(Constants.RECORDS_NOT_FOUND);
+
+		Collections.sort(records, (r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
+
+		for (var record : records) {
+
+			var recordResponseModel = new RecordResponseModel();
+			recordResponseModel.setSaleRecord(record);
+			recordResponseModel.setCustomer(record.getCustomer());
+			recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
+
+			recordResponseModels.add(recordResponseModel);
+
+		}
+
+		return recordResponseModels;
+	
+		
+	}
+
 }

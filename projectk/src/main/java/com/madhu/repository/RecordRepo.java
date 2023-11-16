@@ -36,6 +36,8 @@ public interface RecordRepo extends JpaRepository<SaleRecord, Integer> {
 	
 	List<SaleRecord> findByCustomerUserUserId(Integer userId);
 	
+	List<SaleRecord> findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(Integer userId,Integer recordId,String customerName,String productName);
+	
 	Optional<SaleRecord> findByCustomerUserUserIdAndRecordId(Integer userId,Integer recordId);
 	
 	

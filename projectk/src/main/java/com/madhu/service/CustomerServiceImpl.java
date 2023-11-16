@@ -530,7 +530,7 @@ public class CustomerServiceImpl implements CustomerService {
 		List<Customer> customers = customerRepo.findByCustomerNameContainingAndUserUserId(customerName, utils.userId);
 
 		if (customers.isEmpty())
-			throw new CustomerException(" No Customers Found with the user Id " + utils.userId);
+			throw new CustomerException(" Customers Not Found with Name "+customerName + utils.userId);
 
 		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
 
