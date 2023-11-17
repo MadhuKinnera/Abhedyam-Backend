@@ -14,11 +14,11 @@ import io.jsonwebtoken.security.Keys;
 public class JwtAuthProvider {
 
 	private String jwtSecretKey = "sIoVC8OFOgmxbk9XRYtY2zMKXuYXBGL2d3x1IV37";
-	// private String jwtSecretKey = "12345678123456781234567812345678";
+
 
 	private Long jwtExpiration = 7 * 24 * 60 * 60 * 1000L;
 
-	public Claims parseToken(String token, String jwtSecretKey) {
+	public Claims parseToken(String token) {
 
 		System.out.println("The jwt secret key in parsing token is " + jwtSecretKey);
 
@@ -42,14 +42,14 @@ public class JwtAuthProvider {
 
 		System.out.println("inside validating token");
 
-		return parseToken(token, jwtSecretKey) != null;
+		return parseToken(token) != null;
 
 	}
 
 	// getUsername from the token
-	public String getUsernameFromToken(String token, String jwtSecretKey) {
+	public String getUsernameFromToken(String token) {
 
-		Claims claims = parseToken(token, jwtSecretKey);
+		Claims claims = parseToken(token);
 
 		if (claims != null) {
 

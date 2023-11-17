@@ -27,7 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private LoadUserImpl loadUser;
 
 
-	private String jwtSecretKey = "12345678123456781234567812345678";
+	private String jwtSecretKey = "sIoVC8OFOgmxbk9XRYtY2zMKXuYXBGL2d3x1IV37";
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 				System.out.println("token validated");
 
-				String email = jwtProvider.getUsernameFromToken(token, jwtSecretKey);
+				String email = jwtProvider.getUsernameFromToken(token);
 
 				// loaduser by username
 
