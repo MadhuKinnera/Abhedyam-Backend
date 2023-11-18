@@ -9,6 +9,7 @@ public class PlainCustomer {
 	
 	private Integer customerId;
 	private String customerName;
+	private String customerCode;
 	private Integer age;
 	private String profession;
 	private String mobileNo;

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
+import com.madhu.dto.CustomerPersonalDto;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
 import com.madhu.dto.NameAndId;
@@ -465,6 +466,7 @@ public class CustomerServiceImpl implements CustomerService {
 			p.setMobileNo(c.getMobileNo());
 			p.setProfession(c.getProfession());
 			p.setProfileImageUrl(c.getProfileImageUrl());
+			p.setCustomerCode(c.getCustomerCode());
 			plainCustomers.add(p);
 		});
 
@@ -530,7 +532,7 @@ public class CustomerServiceImpl implements CustomerService {
 		List<Customer> customers = customerRepo.findByCustomerNameContainingAndUserUserId(customerName, utils.userId);
 
 		if (customers.isEmpty())
-			throw new CustomerException(" Customers Not Found with Name "+customerName + utils.userId);
+			throw new CustomerException(" Customers Not Found with Name " + customerName + utils.userId);
 
 		List<CustomerResponseModel> customerResponseModels = new ArrayList<>();
 
@@ -602,6 +604,82 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 
 		return customersNames;
+	}
+
+	@Override
+	public CustomerPersonalDto getCustomerPersonalDetails(String customerCode) throws CustomerException {
+
+		Customer customer = customerRepo.findByCustomerCode(customerCode)
+				.orElseThrow(() -> new CustomerException("Invalid Customer Code " + customerCode));
+
+		var customerPersonalDto = new CustomerPersonalDto();
+
+		customer.setDescription(null);
+		customer.setFlag(null);
+		customer.setKeywords(null);
+
+		customerPersonalDto.setCustomer(customer);
+
+		var user = customer.getUser();
+
+		customerPersonalDto.setCreditorName(user.getFullName());
+		customerPersonalDto.setCreditorPhoneNumber(user.getPhoneNumber());
+		customerPersonalDto.setCreditorQRImageUrl(user.getQrImageUrl());
+
+		var records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
+
+		customerPersonalDto.setSaleRecords(records);
+
+		var totalDueAmount = records.stream().mapToInt(r -> r.getDueAmount().intValue()).sum();
+
+		customerPersonalDto.setRecordStatus(totalDueAmount > 0);
+
+		var totalAmount = records.stream().mapToInt(SaleRecord::getTotalAmount).sum();
+
+		List<String> productNames = new ArrayList<>();
+
+		List<Transaction> transactions = new ArrayList<>();
+
+		var totalProducts = 0;
+
+		for (SaleRecord record : records) {
+			Product product = record.getProduct();
+
+			product.setBuyedPrice(null);
+			product.setDescription(null);
+			product.setProductId(null);
+
+			productNames.add(product.getProductName());
+			totalProducts += record.getQuantity();
+
+			List<Transaction> tempTransactions = record.getTransactions();
+
+			transactions.addAll(tempTransactions);
+
+		}
+
+		customerPersonalDto.setProductNames(productNames);
+
+		customerPersonalDto.setRecordStatus(totalProducts != 0);
+
+		customerPersonalDto.setTotalProducts(totalProducts);
+
+		customerPersonalDto.setTotalAmount(totalAmount);
+
+		customerPersonalDto.setTotalRemaininAmount(totalDueAmount);
+
+		customerPersonalDto.setTotalPaidAmount(totalAmount - totalDueAmount);
+
+		customerPersonalDto.setTransactions(transactions);
+
+		customerPersonalDto.setTotalTransactions(transactions.size());
+
+		customerPersonalDto.setSaleRecords(records);
+
+		customerPersonalDto.setTotalRecords(records.size());
+
+		return customerPersonalDto;
+
 	}
 
 }

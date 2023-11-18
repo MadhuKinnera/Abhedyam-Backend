@@ -33,7 +33,6 @@ import com.madhu.service.CustomerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.websocket.server.PathParam;
 
-
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
@@ -69,7 +68,7 @@ public class CustomerController {
 
 	@PutMapping("/updateAddress/{customerId}")
 	ResponseEntity<GeneralResponse> updateAddressToACustomer(@RequestBody AddressDTO dto,
-			@PathVariable Integer customerId) throws CustomerException, UserException{
+			@PathVariable Integer customerId) throws CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Customer Address Updated ");
@@ -80,7 +79,7 @@ public class CustomerController {
 
 	@PutMapping("/udpateFlag/{customerId}/{flag}")
 	ResponseEntity<GeneralResponse> updateFlagOfACustomer(@PathVariable Integer customerId, @PathVariable Color flag)
-			throws CustomerException, UserException{
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -91,7 +90,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/getCustomer/{customerId}")
-	ResponseEntity<GeneralResponse> getCustomer(@PathVariable Integer customerId) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> getCustomer(@PathVariable Integer customerId)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -103,7 +103,7 @@ public class CustomerController {
 
 	@PutMapping("/updateCustomer/{customerId}")
 	ResponseEntity<GeneralResponse> updateCustomer(@PathVariable Integer customerId, @RequestBody Customer customer)
-			throws CustomerException, UserException{
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -114,7 +114,8 @@ public class CustomerController {
 	}
 
 	@DeleteMapping("/deleteCustomer/{customerId}")
-	ResponseEntity<GeneralResponse> deleteCustomer(@PathVariable Integer customerId) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> deleteCustomer(@PathVariable Integer customerId)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 		generalResponse.setMessage("Customer Deleted Successfully with customer Id " + customerId);
@@ -125,7 +126,7 @@ public class CustomerController {
 
 	@GetMapping("/getCustomerByPhone/{phoneNumber}")
 	ResponseEntity<GeneralResponse> getCustomerByPhoneNumber(@PathVariable String phoneNumber)
-			throws CustomerException, UserException{
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -136,7 +137,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/getCustomerByEmail/{email}")
-	ResponseEntity<GeneralResponse> getCustomerByEmail(@PathVariable String email) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> getCustomerByEmail(@PathVariable String email)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -147,7 +149,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/getCustomerByKeyword/{keyword}")
-	ResponseEntity<GeneralResponse> getCusstomersByKeyword(@PathVariable String keyword) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> getCusstomersByKeyword(@PathVariable String keyword)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -195,7 +198,7 @@ public class CustomerController {
 
 	@GetMapping("/getAddress/{customerId}")
 	ResponseEntity<GeneralResponse> getAddressOfCustomer(@PathVariable Integer customerId)
-			throws AddressException, CustomerException, UserException{
+			throws AddressException, CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Customer Address Found ");
@@ -217,7 +220,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/getAllCustomersGreaterThanAge/{age}")
-	ResponseEntity<GeneralResponse> getAllCustomerAgeGreaterThan(@PathVariable Integer age) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> getAllCustomerAgeGreaterThan(@PathVariable Integer age)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -228,7 +232,8 @@ public class CustomerController {
 	}
 
 	@GetMapping("/getAllCustomersLessThanAge/{age}")
-	ResponseEntity<GeneralResponse> getAllCustomerAgeLessThan(@PathVariable Integer age) throws CustomerException, UserException{
+	ResponseEntity<GeneralResponse> getAllCustomerAgeLessThan(@PathVariable Integer age)
+			throws CustomerException, UserException {
 
 		var generalResponse = new GeneralResponse();
 
@@ -238,12 +243,10 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-
 	@GetMapping("/getCustomerResponseModels")
-	ResponseEntity<GeneralResponse> getCustomersByRankAndUserId()
-			throws CustomerException, UserException {
+	ResponseEntity<GeneralResponse> getCustomersByRankAndUserId() throws CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
-		
+
 		System.out.println("Inside get customers rank controller method");
 
 		generalResponse.setMessage("Customer Response Models  Found ");
@@ -251,30 +254,30 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
+
 	@GetMapping("/getCustomerResponseModelByCustomerId/{customerId}")
-	ResponseEntity<GeneralResponse> getCustomerResponseModelByCustomerId(@PathVariable Integer customerId)throws UserException,CustomerException{
-		
+	ResponseEntity<GeneralResponse> getCustomerResponseModelByCustomerId(@PathVariable Integer customerId)
+			throws UserException, CustomerException {
+
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Customer Response Model Found By Customer Id "+customerId);
+		generalResponse.setMessage("Customer Response Model Found By Customer Id " + customerId);
 		generalResponse.setData(customerService.getCustomerResponseModelByCustomerId(customerId));
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
-	
+
 	@GetMapping("/getCustomersByCustomerNameContains/{customerName}")
 	ResponseEntity<GeneralResponse> getCustomersByCustomerNameContaining(@PathVariable String customerName)
-			throws CustomerException, UserException{
-		
+			throws CustomerException, UserException {
+
 		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Customer Response Model Found By Customer Name "+customerName);
+		generalResponse.setMessage("Customer Response Model Found By Customer Name " + customerName);
 		generalResponse.setData(customerService.getCustomersByCustomerNameContaining(customerName));
 
 		return ResponseEntity.ok(generalResponse);
-		
+
 	}
 
 	@PostMapping("/addFirstTimeCustomer")
@@ -287,9 +290,10 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
+
 	@PutMapping("/updateProfilePicture/{customerId}")
-	ResponseEntity<GeneralResponse> updateProfilePicture(@PathVariable Integer customerId,@RequestParam String image) throws UserException, IOException, CustomerException,UserException{
+	ResponseEntity<GeneralResponse> updateProfilePicture(@PathVariable Integer customerId, @RequestParam String image)
+			throws UserException, IOException, CustomerException, UserException {
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Customer Profile Picture Updated");
@@ -297,11 +301,10 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
 
 	@GetMapping("/getPlainCustomers")
-	ResponseEntity<GeneralResponse> getPlainCustomers() throws UserException{
-		
+	ResponseEntity<GeneralResponse> getPlainCustomers() throws UserException {
+
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Plain Customers Found");
@@ -309,11 +312,10 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
-	
+
 	@GetMapping("/getCustomersName")
-	ResponseEntity<GeneralResponse> getCustomersName() throws CustomerException,UserException{
-		
+	ResponseEntity<GeneralResponse> getCustomersName() throws CustomerException, UserException {
+
 		var generalResponse = new GeneralResponse();
 
 		generalResponse.setMessage("Customers Name Found");
@@ -321,9 +323,17 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
-	
-	
-	
+
+	@GetMapping("/getCustomerPersonalInformation/{customerCode}")
+	ResponseEntity<GeneralResponse> getCustomerPersonalInformation(@PathVariable String customerCode)
+			throws CustomerException {
+
+		var generalResponse = new GeneralResponse();
+
+		generalResponse.setMessage("Customer Personal Details");
+		generalResponse.setData(customerService.getCustomerPersonalDetails(customerCode));
+
+		return ResponseEntity.ok(generalResponse);
+	}
 
 }

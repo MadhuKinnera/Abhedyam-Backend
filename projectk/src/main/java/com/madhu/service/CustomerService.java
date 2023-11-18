@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
+import com.madhu.dto.CustomerPersonalDto;
 import com.madhu.dto.CustomerResponseModel;
 import com.madhu.dto.FirstCustomerDTO;
 import com.madhu.dto.NameAndId;
@@ -22,7 +23,7 @@ import com.madhu.exception.VillageException;
 
 public interface CustomerService {
 
-	Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException,IOException;
+	Customer addCustomer(CustomerDTO dto) throws CustomerException, UserException, IOException;
 
 	Customer getCustomerById(Integer customerId) throws CustomerException, UserException;
 
@@ -64,7 +65,6 @@ public interface CustomerService {
 
 	Address getAddressOfCustomer(Integer customerId) throws AddressException, CustomerException, UserException;
 
-
 	List<CustomerResponseModel> getCustomersByRank() throws CustomerException, UserException;
 
 	List<CustomerResponseModel> getCustomersByCustomerNameContaining(String customerName)
@@ -75,6 +75,8 @@ public interface CustomerService {
 
 	Customer addFirstCustomer(FirstCustomerDTO firstCustomer) throws VillageException, ProductException, UserException;
 
-	List<NameAndId> getCustomersName() throws CustomerException,UserException;
+	List<NameAndId> getCustomersName() throws CustomerException, UserException;
+
+	CustomerPersonalDto getCustomerPersonalDetails(String customerCode) throws CustomerException;
 
 }
