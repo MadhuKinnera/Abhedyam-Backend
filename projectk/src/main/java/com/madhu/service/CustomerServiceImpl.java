@@ -641,9 +641,9 @@ public class CustomerServiceImpl implements CustomerService {
 		for (SaleRecord record : records) {
 			Product product = record.getProduct();
 
-			product.setBuyedPrice(null);
+			product.setBuyedPrice(0);
 			product.setDescription(null);
-			product.setProductId(null);
+			product.setProductId(0);
 
 			productNames.add(product.getProductName());
 			totalProducts += record.getQuantity();
