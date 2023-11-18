@@ -7,18 +7,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.CustomerRequestDTO;
-import com.madhu.entity.Customer;
 import com.madhu.entity.CustomerRequest;
-import com.madhu.exception.CustomerException;
 import com.madhu.exception.CustomerRequestException;
 import com.madhu.exception.UserException;
-import com.madhu.repository.CustomerRepo;
 import com.madhu.repository.CustomerRequestRepo;
 import com.madhu.utils.CommonUtils;
-import com.madhu.utils.Constants;
 
 @Service
 public class CustomerRequestServiceImpl implements CustomerRequestService {

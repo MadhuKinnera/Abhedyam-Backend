@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
@@ -21,7 +19,6 @@ import com.madhu.dto.NameAndId;
 import com.madhu.dto.PlainCustomer;
 import com.madhu.entity.Address;
 import com.madhu.entity.Customer;
-import com.madhu.entity.CustomerRequest;
 import com.madhu.entity.Product;
 import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
@@ -33,7 +30,6 @@ import com.madhu.exception.ProductException;
 import com.madhu.exception.UserException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.CustomerRepo;
-import com.madhu.repository.CustomerRequestRepo;
 import com.madhu.repository.ProductRepo;
 import com.madhu.repository.RecordRepo;
 import com.madhu.repository.VillageRepo;
@@ -615,7 +611,7 @@ public class CustomerServiceImpl implements CustomerService {
 		var customerPersonalDto = new CustomerPersonalDto();
 
 		customer.setDescription(null);
-		customer.setFlag(null);
+		customer.setFlag(Color.GREEN);
 		customer.setKeywords(null);
 
 		customerPersonalDto.setCustomer(customer);

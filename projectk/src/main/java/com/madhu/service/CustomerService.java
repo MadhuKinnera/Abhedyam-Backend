@@ -3,8 +3,6 @@ package com.madhu.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.madhu.dto.AddressDTO;
 import com.madhu.dto.CustomerDTO;
 import com.madhu.dto.CustomerPersonalDto;
