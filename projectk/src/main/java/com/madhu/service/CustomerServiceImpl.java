@@ -612,7 +612,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		customer.setDescription(null);
 		customer.setFlag(Color.GREEN);
-		customer.setKeywords(null);
+		customer.setKeywords(new ArrayList<String>());
 
 		customerPersonalDto.setCustomer(customer);
 
