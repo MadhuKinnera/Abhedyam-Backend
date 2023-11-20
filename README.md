@@ -97,6 +97,11 @@ this app streamlines various aspects of running a personal business. It was a Te
             
 4: Hooray..! you are now able to run our project on your local machine.
 
+                   OR
+
+
+1. Click on https://devinebiz-production.up.railway.app/swagger-ui/index.html
+2. use "kinneramadhu123@gmail.com" as email and "madhu" as password to access the application
 
 ### THANK YOU <3
 
