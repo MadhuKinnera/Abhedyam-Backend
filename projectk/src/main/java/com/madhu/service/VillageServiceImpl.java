@@ -313,7 +313,7 @@ public class VillageServiceImpl implements VillageService {
 		System.out.println("The user id is " + utils.userId);
 
 		if (villages.isEmpty())
-			throw new VillageException("No Villages Found ");
+			throw new VillageException("Villages Not Found with Name " + villageName);
 
 		for (Village v : villages) {
 

@@ -351,15 +351,17 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,String customerName,String productName)
-			throws RecordException {
-		
+	public List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,
+			String customerName, String productName) throws RecordException {
+
 		var recordResponseModels = new ArrayList<RecordResponseModel>();
-		
-		List<SaleRecord> records = recordRepo.findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(utils.userId, recordId, customerName, productName);
-		
+
+		List<SaleRecord> records = recordRepo
+				.findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(
+						utils.userId, recordId, customerName, productName);
+
 		if (records.isEmpty())
-			throw new RecordException(Constants.RECORDS_NOT_FOUND);
+			throw new RecordException("Records Not Found with Keyword Or Id " + productName);
 
 		Collections.sort(records, (r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
 
@@ -375,8 +377,7 @@ public class RecordServiceImpl implements RecordService {
 		}
 
 		return recordResponseModels;
-	
-		
+
 	}
 
 }

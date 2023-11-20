@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,17 +26,18 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 
+	//@Column(unique = true)
 	private String email;
-	
+
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private String password;
 	private String fullName;
-	
+
 	private String phoneNumber;
-	
+
 	private String qrImageUrl;
 	private String profileImageUrl;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Customer> customers = new ArrayList<>();
 
@@ -44,7 +46,7 @@ public class User {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Village> villages = new ArrayList<>();
-	
+
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<CustomerRequest> customerRequests = new ArrayList<>();

@@ -235,7 +235,7 @@ public class ProductServiceImpl implements ProductService {
 		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, utils.userId);
 
 		if (products.isEmpty())
-			throw new ProductException(Constants.NO_PRODUCTS_FOUND);
+			throw new ProductException("Products Not Found with Name " + productName);
 
 		for (var p : products) {
 
