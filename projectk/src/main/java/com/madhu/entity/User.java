@@ -34,6 +34,7 @@ public class User {
 	private String phoneNumber;
 	
 	private String qrImageUrl;
+	private String profileImageUrl;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Customer> customers = new ArrayList<>();

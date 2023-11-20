@@ -621,6 +621,8 @@ public class CustomerServiceImpl implements CustomerService {
 		customerPersonalDto.setCreditorName(user.getFullName());
 		customerPersonalDto.setCreditorPhoneNumber(user.getPhoneNumber());
 		customerPersonalDto.setCreditorQRImageUrl(user.getQrImageUrl());
+		customerPersonalDto.setCreditorProfileImageUrl(user.getProfileImageUrl());
+		
 
 		var records = recordRepo.findByCustomerCustomerId(customer.getCustomerId());
 

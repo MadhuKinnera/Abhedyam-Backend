@@ -12,4 +12,6 @@ public class UserDTO {
 	private String phoneNumber;
 	
 	private String qrImageUrl;
+	
+	private String profileImageUrl;
 }

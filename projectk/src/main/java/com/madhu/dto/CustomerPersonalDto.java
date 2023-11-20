@@ -17,6 +17,8 @@ public class CustomerPersonalDto {
 
 	private String creditorPhoneNumber;
 	
+	private String creditorProfileImageUrl;
+	
 	private String creditorQRImageUrl;
 
 	private Integer totalRecords;
