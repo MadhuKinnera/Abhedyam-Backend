@@ -1,5 +1,5 @@
 
-# DevineEBiz(Personal Bussiness Management App)
+# Abhedyam(Personal Inventory & Bussiness Management App)
 
 
 ---
