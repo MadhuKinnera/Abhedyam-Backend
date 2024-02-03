@@ -1,75 +1,71 @@
 package com.madhu.security.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.madhu.dto.JwtResponse;
-import com.madhu.entity.User;
-import com.madhu.exception.UserException;
-import com.madhu.repository.UserRepo;
 import com.madhu.security.dto.LoginRequest;
-import com.madhu.security.service.JwtAuthProvider;
-import com.madhu.security.service.LoadUserImpl;
-import com.madhu.utils.CommonUtils;
+import com.madhu.security.service.JwtHelper;
+
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
 	@Autowired
-	private JwtAuthProvider jwtAuthProvider;
+	private UserDetailsService userDetailsService;
+
+
+	private AuthenticationManager manager;
 
 	@Autowired
-	private LoadUserImpl loadUser;
+	private JwtHelper helper;
 
-	@Autowired
-	private UserRepo uRepo;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
-	
-	@Autowired
-	private CommonUtils utils;
+	private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 	@GetMapping("/login")
-	public JwtResponse loginHandler(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request)
-			throws UserException {
+	public ResponseEntity<JwtResponse> login(@io.swagger.v3.oas.annotations.parameters.RequestBody LoginRequest request) {
+		
+		logger.info("Inside Login"+request);
+		
 
-		String email = request.getEmail();
+		if (manager != null)
+			this.doAuthenticate(request.getEmail(), request.getPassword());
 
-		UserDetails userDetails = loadUser.loadUserByUsername(email);
+		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+		String token = this.helper.generateToken(userDetails);
 
-		System.out.println("user loaded " + userDetails);
+//        JwtResponse response = JwtResponse.builder()
+//                .jwtToken(token)
+//                .username(userDetails.getUsername()).build();
 
-		if (!passwordEncoder.matches(request.getPassword(), userDetails.getPassword())) {
-			return new JwtResponse("Password Not Matched try madhu");
+		JwtResponse response = new JwtResponse(token);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	private void doAuthenticate(String email, String password) throws BadCredentialsException {
+
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, password);
+		try {
+			manager.authenticate(authentication);
+
+		} catch (BadCredentialsException e) {
+			throw new BadCredentialsException(" Invalid Username or Password  !!");
 		}
 
-		User user = uRepo.findByEmail(email).orElseThrow(() -> new UserException("User Not Found with Email " + email));
-
-		System.out.println("setting common utils user id to "+user.getUserId());
-	
-		utils.userId = user.getUserId();
-	
-		System.out.println("generating jwt token");
-
-		String jwt = jwtAuthProvider.generateToken(email);
-
-		System.out.println("the token is " + jwt);
-		
-		
-
-		return new JwtResponse(jwt);
 	}
 
-	@GetMapping("/hello")
-	public JwtResponse hello() {
-		return new JwtResponse("Hello Madhu");
-	}
-
+	
 }

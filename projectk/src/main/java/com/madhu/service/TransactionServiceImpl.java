@@ -47,6 +47,7 @@ public class TransactionServiceImpl implements TransactionService {
 		transaction.setDescription(dto.getDescription());
 		transaction.setSaleRecord(record);
 		transaction.setTimestamp(LocalDateTime.now());
+		transaction.setModeOfPayment(dto.getModeOfPayment());
 
 		record.setDueAmount(record.getDueAmount() - dto.getAmount());
 

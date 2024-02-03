@@ -29,11 +29,11 @@ public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer customerId;
+	
 	private String customerName;
 	private Integer age;
 	private String profession;
 	private String mobileNo;
-	@Column(unique = true)
 	private String email;
 	private String profileImageUrl;
 	private String description;

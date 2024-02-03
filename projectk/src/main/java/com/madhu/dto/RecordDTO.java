@@ -18,5 +18,6 @@ public class RecordDTO {
 	private Integer customerId;
 	
 	private Integer productId;
+	
 
 }

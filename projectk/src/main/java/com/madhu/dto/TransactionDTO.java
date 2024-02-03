@@ -8,6 +8,8 @@ public class TransactionDTO {
 	private Integer amount;
 
 	private String description;
+	
+	private String modeOfPayment;
 
 	private Integer recordId;
 

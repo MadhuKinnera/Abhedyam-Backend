@@ -22,6 +22,7 @@ import com.madhu.exception.VillageException;
 import com.madhu.repository.ProductRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
+import com.madhu.utils.UserInfo;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -31,6 +32,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private CommonUtils utils;
+	
+	@Autowired
+	private UserInfo userInfo;
 
 	@Override
 	public Product addProduct(ProductDTO dto) throws ProductException, UserException {
@@ -42,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setSellingPrice(dto.getSellingPrice());
 		product.setProductName(dto.getProductName());
 		product.setImageUrl(dto.getImageUrl());
-		;
+		
 
 		product.setUser(utils.getUserFromContext());
 
@@ -52,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getProductByProductId(Integer productId) throws ProductException {
 
-		return productRepo.findByProductIdAndUserUserId(productId, utils.userId)
+		return productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
 				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
 
 	}
@@ -80,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getProductByName(String productName) throws ProductException {
 
-		return productRepo.findByProductNameAndUserUserId(productName, utils.userId)
+		return productRepo.findByProductNameAndUserUserId(productName, userInfo.getUserId())
 				.orElseThrow(() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + productName));
 	}
 
@@ -89,7 +93,9 @@ public class ProductServiceImpl implements ProductService {
 
 		List<ProductResponseModel> productResponseModels = new ArrayList<>();
 
-		List<Product> products = productRepo.findByUserUserId(utils.userId);
+		List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
+		
+		System.out.println(products.size()+" Products Found and user id "+userInfo.getUserId());
 
 		if (products.isEmpty())
 			throw new ProductException(Constants.NO_PRODUCTS_FOUND);
@@ -166,7 +172,7 @@ public class ProductServiceImpl implements ProductService {
 	public ProductResponseModel getProductResponseModelByProductId(Integer productId)
 			throws VillageException, ProductException {
 
-		Product product = productRepo.findByProductIdAndUserUserId(productId, utils.userId)
+		Product product = productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
 				.orElseThrow(() -> new ProductException("Product Not Found with Product Id " + productId));
 
 		var productResponse = new ProductResponseModel();
@@ -219,7 +225,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<Product> getProducts() throws ProductException {
 
-		List<Product> products = productRepo.findByUserUserId(utils.userId);
+		List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
 
 		if (products.isEmpty())
 			throw new ProductException("No Products Found ");
@@ -232,7 +238,7 @@ public class ProductServiceImpl implements ProductService {
 
 		List<ProductResponseModel> productResponseModels = new ArrayList<>();
 
-		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, utils.userId);
+		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, userInfo.getUserId());
 
 		if (products.isEmpty())
 			throw new ProductException("Products Not Found with Name " + productName);

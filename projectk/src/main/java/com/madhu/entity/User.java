@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -26,7 +27,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer userId;
 
-	//@Column(unique = true)
+	@Column(unique = true)
 	private String email;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
@@ -38,15 +39,19 @@ public class User {
 	private String qrImageUrl;
 	private String profileImageUrl;
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Customer> customers = new ArrayList<>();
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Product> products = new ArrayList<>();
 
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<Village> villages = new ArrayList<>();
 
+	@JsonIgnore
 	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private List<CustomerRequest> customerRequests = new ArrayList<>();

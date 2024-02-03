@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +25,7 @@ public class Village {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer villageId;
+	@Column(unique = true)
 	private String villageName;
 	private String imageUrl;
 	private String mandal;

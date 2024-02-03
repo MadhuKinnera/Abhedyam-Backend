@@ -18,7 +18,6 @@ public class CustomerDTO {
 	private String description;
 	
 	
-
 	private AddressDTO addressDto;
 
 	private List<String> keywords = new ArrayList<>();

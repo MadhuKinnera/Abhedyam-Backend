@@ -23,6 +23,7 @@ public class Transaction {
 	private LocalDateTime timestamp;
 	private Integer amount;
 	private String description;
+	private String modeOfPayment;
 
 	@ManyToOne
 	@JsonBackReference

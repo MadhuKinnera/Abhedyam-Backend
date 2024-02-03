@@ -10,36 +10,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.madhu.security.service.JwtAuthFilter;
-import com.madhu.security.service.JwtEntryPoint;
+import com.madhu.security.service.JwtAuthenticationEntryPoint;
+import com.madhu.security.service.JwtAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
 	@Autowired
-	private JwtEntryPoint jwtEntryPoint;
-
+	private JwtAuthenticationEntryPoint point;
 	@Autowired
-	private JwtAuthFilter jwtAuthFilter;
+	private JwtAuthenticationFilter filter;
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf(t -> t.disable()).cors(t->t.disable());
-		
-
-		//http.authorizeHttpRequests(t -> t.anyRequest().permitAll());
-
-		http.authorizeHttpRequests(
-				t -> t.requestMatchers("user/**", "/auth/**","/swagger-ui/**","/v3/api-docs/**","customer/getCustomerPersonalInformation/*","cloudinary/*").permitAll().anyRequest().authenticated());
-
-		http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-		
-		http.exceptionHandling(e -> e.authenticationEntryPoint(jwtEntryPoint));
-
-		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		
-
+		http.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(t -> t
+						.requestMatchers("user/**", "/auth/**", "/swagger-ui/**", "/v3/api-docs/**",
+								"customer/getCustomerPersonalInformation/*", "cloudinary/*")
+						.permitAll().anyRequest().authenticated())
+				.exceptionHandling(ex -> ex.authenticationEntryPoint(point))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+		http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
 

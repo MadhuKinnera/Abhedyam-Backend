@@ -158,7 +158,7 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getVillageNames")
+	@GetMapping("/getVillagesName")
 	ResponseEntity<GeneralResponse> getVillageNames() throws VillageException {
 		var generalResponse = new GeneralResponse();
 

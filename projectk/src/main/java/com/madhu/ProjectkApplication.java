@@ -13,9 +13,9 @@ import io.swagger.v3.oas.annotations.servers.Server;
 @SpringBootApplication
 @OpenAPIDefinition(
 	    info = @Info(
-	        title = "DevinEBiz API DOC ",
+	        title = "Abhedyam API DOC ",
 	        version = "1.0",
-	        description = "API documentation for DevinEBiz Application",
+	        description = "API documentation for Abhedyam Application",
 	        license = @License(name = "License")
 	    ),
 	    servers = @Server(url = "/",description = "Default Server URL")

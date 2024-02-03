@@ -11,6 +11,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,7 +66,13 @@ public class CommonUtils {
 	@Autowired
 	private Cloudinary cloudinary;
 
-	public Integer userId;
+	//public Integer userId;
+	
+	
+	
+
+	@Autowired
+	private UserInfo userInfo;
 
 	private static final String ALGORITHM = "AES";
 
@@ -80,11 +87,11 @@ public class CommonUtils {
 	}
 
 	public boolean isVillageExistByName(String villageName) {
-		return villageRepo.findByVillageNameAndUserUserId(villageName, userId).isPresent();
+		return villageRepo.findByVillageNameAndUserUserId(villageName, userInfo.getUserId()).isPresent();
 	}
 
 	public boolean isPincodeExist(Integer pincode) {
-		return !villageRepo.findByPincodeAndUserUserId(pincode, userId).isEmpty();
+		return !villageRepo.findByPincodeAndUserUserId(pincode, userInfo.getUserId()).isEmpty();
 	}
 
 	public boolean isRecordExist(Integer recordId) {
@@ -100,7 +107,7 @@ public class CommonUtils {
 	}
 
 	public boolean isProductExist(Integer productId) {
-		return productRepo.findByProductIdAndUserUserId(productId, userId).isPresent();
+		return productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId()).isPresent();
 	}
 
 	public boolean isRemainderExist(Integer remainderId) {
@@ -113,66 +120,65 @@ public class CommonUtils {
 
 	public boolean isAuthorizedForCustomer(Integer customerId) throws CustomerException, UserException {
 
-		return customerRepo.findByCustomerIdAndUserUserId(customerId, userId).isPresent();
+		return customerRepo.findByCustomerIdAndUserUserId(customerId, userInfo.getUserId()).isPresent();
 
 	}
 
 	public boolean isAuthorizedForProduct(Integer productId) throws UserException, ProductException {
 
-		return productRepo.findByProductIdAndUserUserId(productId, userId).isPresent();
+		return productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId()).isPresent();
 
 	}
 
 	public boolean isAuthorizedForVillage(Integer villageId) throws UserException, VillageException {
 
-		return villageRepo.findByVillageIdAndUserUserId(villageId, userId).isPresent();
+		return villageRepo.findByVillageIdAndUserUserId(villageId, userInfo.getUserId()).isPresent();
 
 	}
 
 	public User getUserFromContext() throws UserException {
 
-		// get user from context
-		User user = null;
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		System.out.println("auth object is " + auth);
-
-		if (auth != null)
-			System.out.println("principal " + auth.getPrincipal());
-
-		if (auth != null)
-			System.out.println("email " + auth.getName());
-
-		//String email = null;
-		String email = "kinneramadhu123@gmail.com";
-
-//		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//
+//		
+//		String email = null;
+//		
+//		System.out.println("auth object is " + auth);
+//
+//		if (auth != null)
+//			System.out.println("principal " + auth.getPrincipal());
+//
+//		if (auth != null)
+//			System.out.println("email " + auth.getName());
+//
+//	
+//		// String email = "kinneramadhu123@gmail.com";
+//
+//		if(auth!=null)
 //			email = auth.getName();
-//		else
-//			throw new UserException("User Need To Login First");
+//
+////		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
+////			email = auth.getName();
+////		else
+////			throw new UserException("User Need To Login First");
+//
+//		System.out.println("The email is " + email);
+//
+//		User user = userRepo.findByEmail(email)
+//				.orElseThrow(() -> new UserException("User Not LoggedIn "));
+//
+//		System.out.println("The user is " + user);
 
-		System.out.println("The email is " + email);
-
-		Optional<User> opt = userRepo.findByEmail(email);
-
-		if (opt.isPresent())
-			user = opt.get();
-
-		System.out.println("The user is " + user);
-
-		return user;
+		return userInfo.getUser();
 
 	}
 
 	public Integer getUserIdFromContext() throws UserException {
 
 		User user = getUserFromContext();
+		System.out.println("The User is id" + user.getUserId() + " email " + user.getEmail());
 
-		if (user != null)
-			return user.getUserId();
-
-		return -1;
+		return user.getUserId();
 	}
 
 	@SuppressWarnings("rawtypes")

@@ -23,6 +23,9 @@ import com.madhu.repository.CustomerRepo;
 import com.madhu.repository.VillageRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
+import com.madhu.utils.UserInfo;
+
+import jakarta.annotation.PostConstruct;
 
 @Service
 public class VillageServiceImpl implements VillageService {
@@ -35,6 +38,10 @@ public class VillageServiceImpl implements VillageService {
 
 	@Autowired
 	private CustomerRepo customerRepo;
+	
+	@Autowired
+	private UserInfo userInfo;
+
 
 	@Override
 	public Village addVillage(VillageDTO dto) throws VillageException, UserException {
@@ -87,9 +94,9 @@ public class VillageServiceImpl implements VillageService {
 	@Override
 	public List<Village> getVillagesByRank() throws VillageException {
 
-		List<Village> villages = villageRepo.findByUserUserId(utils.userId);
+		List<Village> villages = villageRepo.findByUserUserId(userInfo.getUserId());
 
-		System.out.println("the user id is " + utils.userId);
+		System.out.println("the user id is " + userInfo.getUserId());
 
 		if (villages.isEmpty())
 			throw new VillageException("No Villages Found ");
@@ -111,14 +118,14 @@ public class VillageServiceImpl implements VillageService {
 	@Override
 	public Village getVillageByCustomerName(String customerName) throws CustomerException, VillageException {
 
-		return villageRepo.findTopByAddressesCustomerCustomerNameAndUserUserId(customerName, utils.userId)
+		return villageRepo.findTopByAddressesCustomerCustomerNameAndUserUserId(customerName, userInfo.getUserId())
 				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Name " + customerName));
 	}
 
 	@Override
 	public List<Village> getVillagesByPincode(Integer pincode) throws VillageException {
 
-		List<Village> villages = villageRepo.findByPincodeAndUserUserId(pincode, utils.userId);
+		List<Village> villages = villageRepo.findByPincodeAndUserUserId(pincode, userInfo.getUserId());
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found with Pincode " + pincode);
@@ -129,7 +136,7 @@ public class VillageServiceImpl implements VillageService {
 
 	@Override
 	public Village getVillageByCustomerId(Integer customerId) throws CustomerException, VillageException {
-		return villageRepo.findByAddressesCustomerCustomerIdAndUserUserId(customerId, utils.userId)
+		return villageRepo.findByAddressesCustomerCustomerIdAndUserUserId(customerId, userInfo.getUserId())
 				.orElseThrow(() -> new CustomerException(" Village Not Found with the Customer Id " + customerId));
 	}
 
@@ -138,9 +145,9 @@ public class VillageServiceImpl implements VillageService {
 
 		var villageWiseData = new ArrayList<VillageResponseModel>();
 
-		var villages = villageRepo.findByUserUserId(utils.userId);
+		var villages = villageRepo.findByUserUserId(userInfo.getUserId());
 
-		System.out.println("The user id is " + utils.userId);
+		System.out.println("The user id is " + userInfo.getUserId());
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found ");
@@ -149,7 +156,7 @@ public class VillageServiceImpl implements VillageService {
 
 			var villageData = new VillageResponseModel();
 
-			var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(v.getVillageId(), utils.userId);
+			var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(v.getVillageId(), userInfo.getUserId());
 
 			villageData.setTotalCustomersCount(customers.size());
 
@@ -233,7 +240,7 @@ public class VillageServiceImpl implements VillageService {
 		var village = villageRepo.findById(villageId)
 				.orElseThrow(() -> new VillageException("Village Not Found with Village Id " + villageId));
 
-		var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, utils.userId);
+		var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(villageId, userInfo.getUserId());
 
 		villageData.setTotalCustomersCount(customers.size());
 
@@ -308,9 +315,9 @@ public class VillageServiceImpl implements VillageService {
 
 		var villageWiseData = new ArrayList<VillageResponseModel>();
 
-		var villages = villageRepo.findByVillageNameContainingAndUserUserId(villageName, utils.userId);
+		var villages = villageRepo.findByVillageNameContainingAndUserUserId(villageName, userInfo.getUserId());
 
-		System.out.println("The user id is " + utils.userId);
+		System.out.println("The user id is " + userInfo.getUserId());
 
 		if (villages.isEmpty())
 			throw new VillageException("Villages Not Found with Name " + villageName);
@@ -319,7 +326,7 @@ public class VillageServiceImpl implements VillageService {
 
 			var villageData = new VillageResponseModel();
 
-			var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(v.getVillageId(), utils.userId);
+			var customers = customerRepo.findByAddressVillageVillageIdAndUserUserId(v.getVillageId(), userInfo.getUserId());
 
 			villageData.setTotalCustomersCount(customers.size());
 
