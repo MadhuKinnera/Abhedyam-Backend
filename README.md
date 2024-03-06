@@ -86,7 +86,7 @@ this app streamlines various aspects of running a personal business. It was a Te
 <h3> STEPS</h3>
 1: clone our Project into your machine Locally.<br>
    &nbsp; &nbsp; &nbsp; - open any terminal <br>
-    &nbsp; &nbsp; &nbsp; -git clone https://github.com/MadhuKinnera/DevinEBiz.git
+    &nbsp; &nbsp; &nbsp; -git clone https://github.com/MadhuKinnera/Abhedyam-Backend.git
     <br>
     <br>
 
