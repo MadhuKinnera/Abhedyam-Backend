@@ -11,7 +11,7 @@
 
 # Description
 
-DevineBiz is a comprehensive and innovative Android application designed to empower small-scale entrepreneurs, 
+Abhedyam Backend is a comprehensive and innovative Android application designed to empower small-scale entrepreneurs, 
 particularly those operating in rural and community-centric settings.
 With a primary focus on improving business management and customer relationships,
 this app streamlines various aspects of running a personal business. It was a Team collaborative project.
