@@ -74,10 +74,33 @@ this app streamlines various aspects of running a personal business. It was a Te
 
 
 ### Some Mobile App Screens
-[![customers.jpg](https://i.postimg.cc/5NqqvYGG/customers.jpg)](https://postimg.cc/jL27Y5RQ)
-[![customer-detail.jpg](https://i.postimg.cc/vmDWpPBF/customer-detail.jpg)](https://postimg.cc/zLZbhFK0)
-[![add-customer.jpg](https://i.postimg.cc/ZnNHXwwK/add-customer.jpg)](https://postimg.cc/T5RnDJ8Z)
-[![products.jpg](https://i.postimg.cc/qR327zy1/products.jpg)](https://postimg.cc/zbqytDdh)
+
+
+[![add-customer.jpg](https://i.postimg.cc/5tgY1F3B/customers.jpg)](https://postimg.cc/T5RnDJ8Z)
+[![customers.jpg](https://i.postimg.cc/63Q7Q5jD/products.jpg)](https://postimg.cc/jL27Y5RQ)
+
+[![add-customer.jpg](https://i.postimg.cc/pT1m5b3y/records.jpg)](https://postimg.cc/T5RnDJ8Z)
+[![products.jpg](https://i.postimg.cc/gjXnvtPs/villages.jpg)](https://postimg.cc/zbqytDdh)
+
+
+[![customers.jpg](https://i.postimg.cc/W1MqWyqf/customerdetail1.jpg)](https://postimg.cc/jL27Y5RQ)
+[![customer-detail.jpg](https://i.postimg.cc/xdnJWPKj/customerdetail2.jpg)](https://postimg.cc/zLZbhFK0)
+
+[![products.jpg](https://i.postimg.cc/Y92Fmx9D/productdetail1.jpg)](https://postimg.cc/zbqytDdh)
+
+[![customer-detail.jpg](https://i.postimg.cc/Hs8y5nYm/recorddetail1.jpg)](https://postimg.cc/zLZbhFK0)
+
+[![products.jpg](https://i.postimg.cc/BnW1C3bK/villagedetail1.jpg)](https://postimg.cc/zbqytDdh)
+[![add-customer.jpg](https://i.postimg.cc/BbrtN5S0/villagedetail2.jpg)](https://postimg.cc/T5RnDJ8Z)
+
+
+
+
+
+
+
+
+
 
 
 ### How To Run Our Project In Your Machine
@@ -100,7 +123,7 @@ this app streamlines various aspects of running a personal business. It was a Te
                    OR
 
 
-1. Click on https://devinebiz-production.up.railway.app/swagger-ui/index.html
+1. Click on http://3.7.2.129:8080/swagger-ui/index.html#/
 2. use "kinneramadhu123@gmail.com" as email and "madhu" as password to access the application
 
 ### THANK YOU <3
