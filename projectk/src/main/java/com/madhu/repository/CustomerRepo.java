@@ -13,8 +13,6 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
 	Optional<Customer> findByEmailAndUserUserId(String email, Integer userId);
 
-	List<Customer> findByKeywordsContainingAndUserUserId(String keyword, Integer UserId);
-
 	Optional<Customer> findByAddressAddressIdAndUserUserId(Integer addressId, Integer userId);
 
 	List<Customer> findByAddressVillageVillageIdAndUserUserId(Integer villageId, Integer userId);
@@ -22,10 +20,6 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 	List<Customer> findByAddressVillageVillageNameAndUserUserId(String villageName, Integer userId);
 
 	List<Customer> findByAddressVillagePincodeAndUserUserId(Integer pincode, Integer userId);
-
-	List<Customer> findByAgeGreaterThanAndUserUserId(int age, Integer userId);
-
-	List<Customer> findByAgeLessThanAndUserUserId(int age, Integer userId);
 
 	List<Customer> findByUserUserId(Integer userId);
 

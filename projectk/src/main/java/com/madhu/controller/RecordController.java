@@ -32,13 +32,13 @@ import jakarta.transaction.TransactionalException;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/record")
+@RequestMapping("/records")
 public class RecordController {
 
 	@Autowired
 	private RecordService recordService;
 
-	@PostMapping("/addRecord")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addRecordHandler(@RequestBody RecordDTO saleRecord)
 			throws RecordException, CustomerException, ProductException {
 		var generalResponse = new GeneralResponse();
@@ -49,7 +49,7 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateRecord/{recordId}")
+	@PutMapping("/{recordId}")
 	ResponseEntity<GeneralResponse> updateRecordHandler(@PathVariable Integer recordId,
 			@RequestBody SaleRecord saleRecord) throws RecordException {
 		var generalResponse = new GeneralResponse();
@@ -60,7 +60,7 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRecord/{recordId}")
+	@GetMapping("/{recordId}")
 	ResponseEntity<GeneralResponse> getRecordByRecordIdHandler(@PathVariable Integer recordId) throws RecordException {
 		var generalResponse = new GeneralResponse();
 
@@ -70,7 +70,7 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRecords/{customerId}")
+	@GetMapping("/getRecordsByCustomerId/{customerId}")
 	ResponseEntity<GeneralResponse> getRecordsByCustomerIdHandler(@PathVariable Integer customerId)
 			throws CustomerException, RecordException {
 		var generalResponse = new GeneralResponse();
@@ -81,7 +81,7 @@ public class RecordController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRecords")
+	@GetMapping
 	ResponseEntity<GeneralResponse> getRecordsByRankHandler() throws RecordException {
 		var generalResponse = new GeneralResponse();
 
@@ -93,7 +93,7 @@ public class RecordController {
 
 	// ======================================
 
-	@DeleteMapping("/deleteRecord/{recordId}")
+	@DeleteMapping("/{recordId}")
 	ResponseEntity<GeneralResponse> deleteRecordByRecordId(@PathVariable Integer recordId) throws RecordException {
 		var generalResponse = new GeneralResponse();
 
@@ -176,17 +176,6 @@ public class RecordController {
 
 		generalResponse.setMessage("Records Found By District " + district);
 		generalResponse.setData(recordService.getRecordsByDistrict(district));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@GetMapping("/getRecordsByCustomerId/{customerId}")
-	ResponseEntity<GeneralResponse> getRecordsByCustomerId(@PathVariable Integer customerId)
-			throws CustomerException, RecordException {
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Records Found By Customer Id  " + customerId);
-		generalResponse.setData(recordService.getRecordsByCustomerId(customerId));
 
 		return ResponseEntity.ok(generalResponse);
 	}

@@ -29,13 +29,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/remainder")
+@RequestMapping("/remainders")
 public class RemainderController {
 
 	@Autowired
 	private RemainderService remainderService;
 
-	@PostMapping("/addRemainder")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addRemainder(@RequestBody RemainderDTO remainder)
 			throws RemainderException, RecordException {
 		var generalResponse = new GeneralResponse();
@@ -46,7 +46,7 @@ public class RemainderController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getRemainder/{remainderId}")
+	@GetMapping("/{remainderId}")
 	ResponseEntity<GeneralResponse> getRemainderById(@PathVariable Integer remainderId) throws RemainderException {
 		var generalResponse = new GeneralResponse();
 
@@ -56,7 +56,7 @@ public class RemainderController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateRemainder/{remainderId}")
+	@PutMapping("/{remainderId}")
 	ResponseEntity<GeneralResponse> updateRemainder(@PathVariable Integer remainderId, @RequestBody Remainder remainder)
 			throws RemainderException {
 		var generalResponse = new GeneralResponse();
@@ -67,7 +67,7 @@ public class RemainderController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteRemainder/{remainderId}")
+	@DeleteMapping("/{remainderId}")
 	ResponseEntity<GeneralResponse> deleteRemainderById(@PathVariable Integer remainderId) throws RemainderException {
 		var generalResponse = new GeneralResponse();
 

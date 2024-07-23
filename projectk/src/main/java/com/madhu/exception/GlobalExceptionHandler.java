@@ -1,5 +1,6 @@
 package com.madhu.exception;
 
+import com.madhu.dto.GeneralResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,13 +9,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.madhu.dto.GeneralResponse;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(UserException.class)
 	ResponseEntity<GeneralResponse> userExceptionHandler(UserException e, WebRequest req) {
+
+		var err = new GeneralResponse();
+
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
+		err.setMessage(e.getMessage());
+		err.setData(req.getDescription(false));
+
+		return new ResponseEntity<>(err, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(OccasionException.class)
+	ResponseEntity<GeneralResponse> occasionExceptionHandler(OccasionException e, WebRequest req) {
 
 		var err = new GeneralResponse();
 

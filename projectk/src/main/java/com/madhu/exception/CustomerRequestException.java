@@ -1,16 +1,8 @@
 package com.madhu.exception;
 
-public class CustomerRequestException  extends Exception{
-	
+import lombok.AllArgsConstructor;
 
-	private static final long serialVersionUID = 495080092093495378L;
-
-	public CustomerRequestException() {
-	}
-	
-	public CustomerRequestException(String msg) {
-		super(msg);
-	}
-	
-
+@AllArgsConstructor
+public class CustomerRequestException extends Exception {
+    private String msg;
 }

@@ -1,11 +1,17 @@
 package com.madhu.controller;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.madhu.dto.AddressDTO;
+import com.madhu.dto.CustomerDTO;
+import com.madhu.dto.GeneralResponse;
+import com.madhu.entity.Customer;
+import com.madhu.exception.AddressException;
+import com.madhu.exception.CustomerException;
+import com.madhu.exception.UserException;
+import com.madhu.exception.VillageException;
+import com.madhu.service.CustomerService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,31 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.madhu.dto.AddressDTO;
-import com.madhu.dto.CustomerDTO;
-import com.madhu.dto.FirstCustomerDTO;
-import com.madhu.dto.GeneralResponse;
-import com.madhu.entity.Customer;
-import com.madhu.enums.Color;
-import com.madhu.exception.AddressException;
-import com.madhu.exception.CustomerException;
-import com.madhu.exception.ProductException;
-import com.madhu.exception.UserException;
-import com.madhu.exception.VillageException;
-import com.madhu.service.CustomerService;
+import java.io.IOException;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-@CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
 
-	@PostMapping("/addCustomer")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addCustomer(@RequestBody CustomerDTO customer)
 			throws CustomerException, UserException, IOException {
 
@@ -53,16 +46,6 @@ public class CustomerController {
 
 	}
 
-	@PutMapping("/addKeywords/{customerId}")
-	ResponseEntity<GeneralResponse> addKeywordsToCustomer(@PathVariable Integer customerId,
-			@RequestBody List<String> keywords) throws CustomerException, UserException {
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customer Added ");
-		generalResponse.setData(customerService.addKeywordsToCustomer(customerId, keywords));
-
-		return ResponseEntity.ok(generalResponse);
-	}
 
 	@PutMapping("/updateAddress/{customerId}")
 	ResponseEntity<GeneralResponse> updateAddressToACustomer(@RequestBody AddressDTO dto,
@@ -75,19 +58,8 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/udpateFlag/{customerId}/{flag}")
-	ResponseEntity<GeneralResponse> updateFlagOfACustomer(@PathVariable Integer customerId, @PathVariable Color flag)
-			throws CustomerException, UserException {
 
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customer Flag Updated to " + flag);
-		generalResponse.setData(customerService.updateFlagOfACustomer(customerId, flag));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@GetMapping("/getCustomer/{customerId}")
+	@GetMapping("/{customerId}")
 	ResponseEntity<GeneralResponse> getCustomer(@PathVariable Integer customerId)
 			throws CustomerException, UserException {
 
@@ -99,7 +71,7 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateCustomer/{customerId}")
+	@PutMapping("/{customerId}")
 	ResponseEntity<GeneralResponse> updateCustomer(@PathVariable Integer customerId, @RequestBody Customer customer)
 			throws CustomerException, UserException {
 
@@ -111,7 +83,7 @@ public class CustomerController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteCustomer/{customerId}")
+	@DeleteMapping("/{customerId}")
 	ResponseEntity<GeneralResponse> deleteCustomer(@PathVariable Integer customerId)
 			throws CustomerException, UserException {
 
@@ -142,18 +114,6 @@ public class CustomerController {
 
 		generalResponse.setMessage("Customer Found  with customer Email " + email);
 		generalResponse.setData(customerService.getCustomerByEmail(email));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@GetMapping("/getCustomerByKeyword/{keyword}")
-	ResponseEntity<GeneralResponse> getCusstomersByKeyword(@PathVariable String keyword)
-			throws CustomerException, UserException {
-
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customers Found  with  Keyword " + keyword);
-		generalResponse.setData(customerService.getCustomersByKeyword(keyword));
 
 		return ResponseEntity.ok(generalResponse);
 	}
@@ -194,17 +154,6 @@ public class CustomerController {
 
 	}
 
-	@GetMapping("/getAddress/{customerId}")
-	ResponseEntity<GeneralResponse> getAddressOfCustomer(@PathVariable Integer customerId)
-			throws AddressException, CustomerException, UserException {
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customer Address Found ");
-		generalResponse.setData(customerService.getAddressOfCustomer(customerId));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
 	@GetMapping("/getCustomerByPincode/{pincode}")
 	ResponseEntity<GeneralResponse> getCustomerByAdressPincode(@PathVariable Integer pincode)
 			throws CustomerException, VillageException, UserException {
@@ -213,30 +162,6 @@ public class CustomerController {
 
 		generalResponse.setMessage("Customer Found  with customer Pincode " + pincode);
 		generalResponse.setData(customerService.getCustomersByAddressPincode(pincode));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@GetMapping("/getAllCustomersGreaterThanAge/{age}")
-	ResponseEntity<GeneralResponse> getAllCustomerAgeGreaterThan(@PathVariable Integer age)
-			throws CustomerException, UserException {
-
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customer Found  with customer age greater than " + age);
-		generalResponse.setData(customerService.getAllCustomersAgeGreaterThan(age));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@GetMapping("/getAllCustomersLessThanAge/{age}")
-	ResponseEntity<GeneralResponse> getAllCustomerAgeLessThan(@PathVariable Integer age)
-			throws CustomerException, UserException {
-
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("Customer Found  with customer age less than " + age);
-		generalResponse.setData(customerService.getAllCustomersAgeLessThan(age));
 
 		return ResponseEntity.ok(generalResponse);
 	}
@@ -276,17 +201,6 @@ public class CustomerController {
 
 		return ResponseEntity.ok(generalResponse);
 
-	}
-
-	@PostMapping("/addFirstTimeCustomer")
-	ResponseEntity<GeneralResponse> addFistCustomerHandler(@RequestBody FirstCustomerDTO firstCustomer)
-			throws VillageException, ProductException, UserException {
-		var generalResponse = new GeneralResponse();
-
-		generalResponse.setMessage("First Customer Added ");
-		generalResponse.setData(customerService.addFirstCustomer(firstCustomer));
-
-		return ResponseEntity.ok(generalResponse);
 	}
 
 	@PutMapping("/updateProfilePicture/{customerId}")

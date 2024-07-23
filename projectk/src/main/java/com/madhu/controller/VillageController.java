@@ -26,13 +26,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/village")
+@RequestMapping("/villages")
 public class VillageController {
 
 	@Autowired
 	private VillageService villageService;
 
-	@PostMapping("/addVillage")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addVillage(@RequestBody VillageDTO village) throws VillageException, UserException {
 		var generalResponse = new GeneralResponse();
 
@@ -42,7 +42,7 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getVillage/{villageId}")
+	@GetMapping("/{villageId}")
 	ResponseEntity<GeneralResponse> getVillageByVillageId(@PathVariable Integer villageId) throws VillageException {
 		var generalResponse = new GeneralResponse();
 
@@ -52,7 +52,7 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateVillage/{villageId}")
+	@PutMapping("/{villageId}")
 	ResponseEntity<GeneralResponse> updateVillage(@PathVariable Integer villageId, @RequestBody Village village)
 			throws VillageException {
 		var generalResponse = new GeneralResponse();
@@ -63,7 +63,7 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteVillage/{villageId}")
+	@DeleteMapping("/{villageId}")
 	ResponseEntity<GeneralResponse> deleteVillage(@PathVariable Integer villageId) throws VillageException {
 		var generalResponse = new GeneralResponse();
 
@@ -73,7 +73,7 @@ public class VillageController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getVillages")
+	@GetMapping
 	ResponseEntity<GeneralResponse> getVillagesByRank() throws VillageException {
 		var generalResponse = new GeneralResponse();
 

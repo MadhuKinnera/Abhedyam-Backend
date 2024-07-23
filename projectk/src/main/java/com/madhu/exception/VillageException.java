@@ -1,13 +1,8 @@
 package com.madhu.exception;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class VillageException extends Exception {
-
-	private static final long serialVersionUID = 3748154194352006328L;
-
-	public VillageException() {
-	}
-
-	public VillageException(String msg) {
-		super(msg);
-	}
+    private String msg;
 }
