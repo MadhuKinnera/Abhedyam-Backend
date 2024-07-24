@@ -1,17 +1,9 @@
 package com.madhu.exception;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class TransactionException extends Exception {
-	
-	
-	private static final long serialVersionUID = -7764826516156454128L;
-
-
-	public TransactionException() {
-	}
-	
-
-	public TransactionException(String msg) {
-		super(msg);
-	}
+	private String msg;
 	
 }

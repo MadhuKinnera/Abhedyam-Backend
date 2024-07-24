@@ -137,40 +137,7 @@ public class CommonUtils {
 	}
 
 	public User getUserFromContext() throws UserException {
-
-//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//
-//		
-//		String email = null;
-//		
-//		System.out.println("auth object is " + auth);
-//
-//		if (auth != null)
-//			System.out.println("principal " + auth.getPrincipal());
-//
-//		if (auth != null)
-//			System.out.println("email " + auth.getName());
-//
-//	
-//		// String email = "kinneramadhu123@gmail.com";
-//
-//		if(auth!=null)
-//			email = auth.getName();
-//
-////		if (auth != null && !(auth instanceof AnonymousAuthenticationToken))
-////			email = auth.getName();
-////		else
-////			throw new UserException("User Need To Login First");
-//
-//		System.out.println("The email is " + email);
-//
-//		User user = userRepo.findByEmail(email)
-//				.orElseThrow(() -> new UserException("User Not LoggedIn "));
-//
-//		System.out.println("The user is " + user);
-
 		return userInfo.getUser();
-
 	}
 
 	public Integer getUserIdFromContext() throws UserException {

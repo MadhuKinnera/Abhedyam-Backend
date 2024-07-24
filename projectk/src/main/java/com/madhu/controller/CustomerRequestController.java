@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/customerRequest")
+@RequestMapping("/customerRequests")
 public class CustomerRequestController {
 
 	@Autowired
@@ -37,7 +37,7 @@ public class CustomerRequestController {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@PostMapping("/addCustomerRequest")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addCustomerRequest(@RequestParam("image[]") List<String> files,
 			@RequestParam("data") String dtoData) throws CustomerRequestException, IOException, UserException {
 		var generalResponse = new GeneralResponse();
@@ -50,7 +50,7 @@ public class CustomerRequestController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateCustomerRequest/{customerRequestId}")
+	@PutMapping("/{customerRequestId}")
 	ResponseEntity<GeneralResponse> updateCustomerRequest(@PathVariable Integer customerRequestId,
 			@RequestBody CustomerRequestDTO dto) throws CustomerRequestException {
 
@@ -62,7 +62,7 @@ public class CustomerRequestController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteCustomerRequest/{customerRequestId}")
+	@DeleteMapping("/{customerRequestId}")
 	ResponseEntity<GeneralResponse> deleteCustomerRequest(@PathVariable Integer customerRequestId)
 			throws CustomerRequestException {
 
@@ -74,7 +74,7 @@ public class CustomerRequestController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getCustomerRequestByCustomerRequestId/{customerRequestId}")
+	@GetMapping("/{customerRequestId}")
 	ResponseEntity<GeneralResponse> getCustomerRequestByCRId(@PathVariable Integer customerRequestId)
 			throws CustomerRequestException {
 		var generalResponse = new GeneralResponse();

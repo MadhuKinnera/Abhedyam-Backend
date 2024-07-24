@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 	
 	@Autowired
@@ -31,7 +31,7 @@ public class UserController {
 	
 	
 
-	@PostMapping("/addUser")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addUser(@RequestBody UserDTO dto) throws Exception {
 
 		var generalResponse = new GeneralResponse();
@@ -42,7 +42,7 @@ public class UserController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteUser/{userId}")
+	@DeleteMapping("/{userId}")
 	ResponseEntity<GeneralResponse> deleteUser(@PathVariable Integer userId) throws UserException {
 		
 		var generalResponse = new GeneralResponse();
@@ -65,7 +65,7 @@ public class UserController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getUser/{userId}")
+	@GetMapping("/{userId}")
 	ResponseEntity<GeneralResponse> getUserById(Integer userId) throws UserException {
 
 		var generalResponse = new GeneralResponse();
@@ -76,7 +76,7 @@ public class UserController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getUsers")
+	@GetMapping
 	ResponseEntity<GeneralResponse> getAllUsers() throws UserException {
 
 		var generalResponse = new GeneralResponse();

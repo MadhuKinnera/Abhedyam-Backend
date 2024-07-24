@@ -28,13 +28,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
 	@Autowired
 	private ProductService productService;
 
-	@PostMapping("/addProduct")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addProductHandler(@RequestBody ProductDTO product)
 			throws ProductException, UserException {
 
@@ -46,7 +46,7 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getProductByProductId/{productId}")
+	@GetMapping("/{productId}")
 	ResponseEntity<GeneralResponse> getProductByProductIdHandler(@PathVariable Integer productId)
 			throws ProductException {
 		var generalResponse = new GeneralResponse();
@@ -57,7 +57,7 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateProduct/{productId}")
+	@PutMapping("/{productId}")
 	ResponseEntity<GeneralResponse> updateProductHandler(@PathVariable Integer productId, @RequestBody Product product)
 			throws ProductException {
 		var generalResponse = new GeneralResponse();
@@ -68,7 +68,7 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteProduct/{productId}")
+	@DeleteMapping("/{productId}")
 	ResponseEntity<GeneralResponse> deleteProduct(@PathVariable Integer productId) throws ProductException {
 		var generalResponse = new GeneralResponse();
 
@@ -89,7 +89,7 @@ public class ProductController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getProducts")
+	@GetMapping
 	ResponseEntity<GeneralResponse> getProducts() throws ProductException {
 
 		var generalResponse = new GeneralResponse();

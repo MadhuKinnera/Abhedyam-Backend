@@ -19,6 +19,5 @@ public interface CustomerRequestService {
 	CustomerRequest getCustomerRequestByCRId(Integer customerRequestId) throws CustomerRequestException;
 	
 	List<CustomerRequest> getCustomerRequestsByUserId(Integer userId) throws UserException,CustomerRequestException;
-	
 
 }

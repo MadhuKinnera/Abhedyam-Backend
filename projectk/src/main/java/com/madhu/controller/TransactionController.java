@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,14 +26,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/transactions")
 public class TransactionController {
 
 	@Autowired
 	private TransactionService transactionService;
 
 	
-	@PostMapping("/addTransaction")
+	@PostMapping
 	ResponseEntity<GeneralResponse> addTransaction(@RequestBody TransactionDTO transaction) throws TransactionException, RecordException {
 		var generalResponse = new GeneralResponse();
 
@@ -42,7 +43,7 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getTransaction/{transactionId}")
+	@GetMapping("/{transactionId}")
 	ResponseEntity<GeneralResponse> getTransactionById(@PathVariable Integer transactionId) throws TransactionException {
 
 		var generalResponse = new GeneralResponse();
@@ -52,18 +53,9 @@ public class TransactionController {
 
 		return ResponseEntity.ok(generalResponse);
 	}
-	
 
-	ResponseEntity<GeneralResponse> updateTransaction(Integer transactionId,Transaction transaction) throws TransactionException{
-		var generalResponse = new GeneralResponse();
 
-		generalResponse.setMessage("Transaction Updated By Id "+transactionId);
-		generalResponse.setData(transactionService.updateTransaction(transactionId, transaction));
-
-		return ResponseEntity.ok(generalResponse);
-	}
-
-	@DeleteMapping("/deleteTransaction/{transactionId}")
+	@DeleteMapping("/{transactionId}")
 	ResponseEntity<GeneralResponse> deleteTransactioById(@PathVariable Integer transactionId) throws TransactionException{
 		var generalResponse = new GeneralResponse();
 
@@ -95,7 +87,7 @@ public class TransactionController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getTransactions")
+	@GetMapping
 	ResponseEntity<GeneralResponse> getAllTransactionsByRank() throws TransactionException {
 		var generalResponse = new GeneralResponse();
 

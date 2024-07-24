@@ -1,14 +1,8 @@
 package com.madhu.exception;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class RemainderException extends Exception {
-
-
-	private static final long serialVersionUID = -5827461119812730835L;
-
-	public RemainderException() {
-	}
-
-	public RemainderException(String msg) {
-		super(msg);
-	}
+	private String message;
 }

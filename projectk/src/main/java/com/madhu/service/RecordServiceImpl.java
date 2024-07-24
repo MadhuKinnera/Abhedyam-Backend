@@ -1,14 +1,5 @@
 package com.madhu.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.madhu.dto.RecordDTO;
 import com.madhu.dto.RecordResponseModel;
 import com.madhu.entity.Address;
@@ -18,7 +9,6 @@ import com.madhu.entity.Remainder;
 import com.madhu.entity.SaleRecord;
 import com.madhu.entity.Transaction;
 import com.madhu.entity.Village;
-import com.madhu.exception.AddressException;
 import com.madhu.exception.CustomerException;
 import com.madhu.exception.ProductException;
 import com.madhu.exception.RecordException;
@@ -26,362 +16,370 @@ import com.madhu.exception.RemainderException;
 import com.madhu.exception.TransactionException;
 import com.madhu.exception.VillageException;
 import com.madhu.repository.CustomerRepo;
+import com.madhu.repository.OccasionRepo;
 import com.madhu.repository.ProductRepo;
 import com.madhu.repository.RecordRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 import com.madhu.utils.UserInfo;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RecordServiceImpl implements RecordService {
 
-	@Autowired
-	private RecordRepo recordRepo;
+    @Autowired
+    private RecordRepo recordRepo;
+    @Autowired
+    private CustomerRepo customerRepo;
 
-	@Autowired
-	private CustomerRepo customerRepo;
+    @Autowired
+    private ProductRepo productRepo;
 
-	@Autowired
-	private ProductRepo productRepo;
+    @Autowired
+    private CommonUtils utils;
+    @Autowired
+    private OccasionRepo occasionRepo;
 
-	@Autowired
-	private CommonUtils utils;
-	
-	@Autowired
-	private UserInfo userInfo;
+    @Autowired
+    private UserInfo userInfo;
 
-	@Override
-	public SaleRecord addRecord(RecordDTO dto) throws RecordException, ProductException, CustomerException {
+    @Override
+    public SaleRecord addRecord(RecordDTO dto) throws RecordException, ProductException, CustomerException {
 
-		var saleRecord = new SaleRecord();
+        var saleRecord = new SaleRecord();
 
-		Product product = productRepo.findById(dto.getProductId())
-				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + dto.getProductId()));
+        Product product = productRepo.findById(dto.getProductId())
+                .orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + dto.getProductId()));
 
-		Customer customer = customerRepo.findById(dto.getCustomerId())
-				.orElseThrow(() -> new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + dto.getCustomerId()));
+        Customer customer = customerRepo.findById(dto.getCustomerId())
+                .orElseThrow(() -> new CustomerException(Constants.CUSTOMER_ID_NOT_FOUND + dto.getCustomerId()));
 
-		saleRecord.setCustomer(customer);
-		saleRecord.setProduct(product);
+        saleRecord.setCustomer(customer);
+        saleRecord.setProduct(product);
+        saleRecord.setQuantity((dto.getQuantity() == null || dto.getQuantity() == 0) ? 1 : dto.getQuantity());
 
-		saleRecord.setQuantity((dto.getQuantity() == null || dto.getQuantity() == 0) ? 1 : dto.getQuantity());
+        saleRecord.setTotalAmount((dto.getTotalAmount() == null || dto.getTotalAmount() == 0)
+                ? product.getSellingPrice() * (dto.getQuantity() == 0 ? 1 : dto.getQuantity())
+                : dto.getTotalAmount() * dto.getQuantity());
 
-		saleRecord.setTotalAmount((dto.getTotalAmount() == null || dto.getTotalAmount() == 0)
-				? product.getSellingPrice() * (dto.getQuantity() == 0 ? 1 : dto.getQuantity())
-				: dto.getTotalAmount() * dto.getQuantity());
+        saleRecord.setStartDate(LocalDate.now());
+        saleRecord.setTimestamp(LocalDateTime.now());
+        saleRecord.setDueAmount(saleRecord.getTotalAmount());
+        var occasion = occasionRepo.findById(dto.getOccasionId())
+                .orElseThrow(() -> new RecordException("No Occasion Found with id " + dto.getOccasionId()));
+        saleRecord.setOccasion(occasion);
+        saleRecord.setEndDate(dto.getEndDate());
+        saleRecord.setDescription(dto.getDescription());
+        return recordRepo.save(saleRecord);
+    }
 
-		saleRecord.setStartDate(LocalDate.now());
-		saleRecord.setTimestamp(LocalDateTime.now());
+    @Override
+    public SaleRecord updateRecord(Integer recordId, SaleRecord saleRecord) throws RecordException {
 
-		saleRecord.setDueAmount(saleRecord.getTotalAmount());
+        if (!utils.isRecordExist(recordId))
+            throw new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId);
 
-		saleRecord.setOccasion(dto.getOccasion());
-		saleRecord.setEndDate(dto.getEndDate());
+        return recordRepo.save(saleRecord);
+    }
 
-		saleRecord.setDescription(dto.getDescription());
+    @Override
+    public SaleRecord getRecordByRecordId(Integer recordId) throws RecordException {
 
-		return recordRepo.save(saleRecord);
-	}
+        return recordRepo.findById(recordId)
+                .orElseThrow(() -> new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId));
+    }
 
-	@Override
-	public SaleRecord updateRecord(Integer recordId, SaleRecord saleRecord) throws RecordException {
+    @Override
+    public List<SaleRecord> getRecordByCustomerId(Integer customerId) throws RecordException {
 
-		if (!utils.isRecordExist(recordId))
-			throw new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId);
+        List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customerId, userInfo.getUserId());
 
-		return recordRepo.save(saleRecord);
-	}
+        if (records.isEmpty())
+            throw new RecordException(Constants.NO_RECORDS_FOUND_WITH_CUSTOMER_ID + customerId);
 
-	@Override
-	public SaleRecord getRecordByRecordId(Integer recordId) throws RecordException {
+        return records;
 
-		return recordRepo.findById(recordId)
-				.orElseThrow(() -> new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId));
-	}
+    }
 
-	@Override
-	public List<SaleRecord> getRecordByCustomerId(Integer customerId) throws CustomerException, RecordException {
+    @Override
+    public List<SaleRecord> getRecordRecordResponseByRank() throws RecordException {
 
-		List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customerId, userInfo.getUserId());
+        List<SaleRecord> records = recordRepo.findAll();
 
-		if (records.isEmpty())
-			throw new RecordException(Constants.NO_RECORDS_FOUND_WITH_CUSTOMER_ID + customerId);
+        if (records.isEmpty())
+            throw new RecordException("No Records Found ");
 
-		return records;
+        return records;
+    }
 
-	}
+    @Override
+    public SaleRecord deleteRecordByRecordId(Integer recordId) throws RecordException {
+        SaleRecord record = getRecordByRecordId(recordId);
+        recordRepo.delete(record);
+        return record;
+    }
 
-	@Override
-	public List<SaleRecord> getRecordRecordResponseByRank() throws RecordException {
+    @Override
+    public List<SaleRecord> getRecordsByVillageId(Integer villageId) throws VillageException {
+        List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageIdAndCustomerUserUserId(villageId,
+                userInfo.getUserId());
 
-		List<SaleRecord> records = recordRepo.findAll();
+        if (records.isEmpty())
+            throw new VillageException("No Records Found with Village Id " + villageId);
 
-		if (records.isEmpty())
-			throw new RecordException("No Records Found ");
+        return records;
+    }
 
-		return records;
-	}
+    @Override
+    public List<SaleRecord> getRecordsByVillageName(String villageName) throws VillageException {
+        List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageNameAndCustomerUserUserId(villageName,
+                userInfo.getUserId());
 
-	@Override
-	public SaleRecord deleteRecordByRecordId(Integer recordId) throws RecordException {
-		SaleRecord record = getRecordByRecordId(recordId);
-		recordRepo.delete(record);
-		return record;
-	}
+        if (records.isEmpty())
+            throw new VillageException("No Records Found with Village Name " + villageName);
 
-	@Override
-	public List<SaleRecord> getRecordsByVillageId(Integer villageId) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageIdAndCustomerUserUserId(villageId,
-				userInfo.getUserId());
+        return records;
+    }
 
-		if (records.isEmpty())
-			throw new VillageException("No Records Found with Village Id " + villageId);
+    @Override
+    public List<SaleRecord> getRecordsByMandal(String mandal) throws VillageException {
+        List<SaleRecord> records = recordRepo.findByCustomerAddressVillageMandalAndCustomerUserUserId(mandal,
+                userInfo.getUserId());
 
-		return records;
-	}
+        if (records.isEmpty())
+            throw new VillageException("No Records Found with Mandal  " + mandal);
 
-	@Override
-	public List<SaleRecord> getRecordsByVillageName(String villageName) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageVillageNameAndCustomerUserUserId(villageName,
-				userInfo.getUserId());
+        return records;
+    }
 
-		if (records.isEmpty())
-			throw new VillageException("No Records Found with Village Name " + villageName);
+    @Override
+    public List<SaleRecord> getRecordsByPincode(Integer pincode) throws VillageException {
+        List<SaleRecord> records = recordRepo.findByCustomerAddressVillagePincodeAndCustomerUserUserId(pincode,
+                userInfo.getUserId());
 
-		return records;
-	}
+        if (records.isEmpty())
+            throw new VillageException("No Records Found with Pincode " + pincode);
 
-	@Override
-	public List<SaleRecord> getRecordsByMandal(String mandal) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageMandalAndCustomerUserUserId(mandal,
-				userInfo.getUserId());
+        return records;
+    }
 
-		if (records.isEmpty())
-			throw new VillageException("No Records Found with Mandal  " + mandal);
+    @Override
+    public List<SaleRecord> getRecordsByDistrict(String district) throws VillageException {
+        List<SaleRecord> records = recordRepo.findByCustomerAddressVillageDistrictAndCustomerUserUserId(district,
+                userInfo.getUserId());
 
-		return records;
-	}
+        if (records.isEmpty())
+            throw new VillageException("No Records Found with District " + district);
 
-	@Override
-	public List<SaleRecord> getRecordsByPincode(Integer pincode) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerAddressVillagePincodeAndCustomerUserUserId(pincode,
-				userInfo.getUserId());
+        return records;
+    }
 
-		if (records.isEmpty())
-			throw new VillageException("No Records Found with Pincode " + pincode);
+    @Override
+    public List<SaleRecord> getRecordsByCustomerId(Integer customerId) throws CustomerException {
 
-		return records;
-	}
+        List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customerId, userInfo.getUserId());
 
-	@Override
-	public List<SaleRecord> getRecordsByDistrict(String district) throws VillageException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerAddressVillageDistrictAndCustomerUserUserId(district,
-				userInfo.getUserId());
+        if (records.isEmpty())
+            throw new CustomerException("No Records Found with Customer Id " + customerId);
 
-		if (records.isEmpty())
-			throw new VillageException("No Records Found with District " + district);
+        return records;
 
-		return records;
-	}
+    }
 
-	@Override
-	public List<SaleRecord> getRecordsByCustomerId(Integer customerId) throws CustomerException, RecordException {
+    @Override
+    public List<Transaction> getTransactionsByRecordId(Integer recordId) throws RecordException, TransactionException {
 
-		List<SaleRecord> records = recordRepo.findByCustomerCustomerIdAndCustomerUserUserId(customerId, userInfo.getUserId());
+        SaleRecord record = getRecordByRecordId(recordId);
 
-		if (records.isEmpty())
-			throw new CustomerException("No Records Found with Customer Id " + customerId);
+        if (record.getTransactions().isEmpty())
+            throw new TransactionException("No Transactions Found with Record Id " + recordId);
 
-		return records;
+        return record.getTransactions();
 
-	}
+    }
 
-	@Override
-	public List<Transaction> getTransactionsByRecordId(Integer recordId) throws RecordException, TransactionException {
+    @Override
+    public List<SaleRecord> getRecordsByProductId(Integer productId) throws RecordException {
+        List<SaleRecord> records = recordRepo.findByProductProductIdAndCustomerUserUserId(productId, userInfo.getUserId());
 
-		SaleRecord record = getRecordByRecordId(recordId);
+        if (records.isEmpty())
+            throw new RecordException("No Records Found with Product Id " + productId);
 
-		if (record.getTransactions().isEmpty())
-			throw new TransactionException("No Transactions Found with Record Id " + recordId);
+        return records;
 
-		return record.getTransactions();
+    }
 
-	}
+    @Override
+    public List<SaleRecord> getRecordsByProductName(String productName) throws RecordException {
+        List<SaleRecord> records = recordRepo.findByProductProductNameAndCustomerUserUserId(productName, userInfo.getUserId());
 
-	@Override
-	public List<SaleRecord> getRecordsByProductId(Integer productId) throws RecordException, ProductException {
-		List<SaleRecord> records = recordRepo.findByProductProductIdAndCustomerUserUserId(productId, userInfo.getUserId());
+        if (records.isEmpty())
+            throw new RecordException("No Records Found with Product Name " + productName);
 
-		if (records.isEmpty())
-			throw new RecordException("No Records Found with Product Id " + productId);
+        return records;
+    }
 
-		return records;
+    @Override
+    public List<Remainder> getRemaindersByRecordId(Integer recordId) throws RemainderException, RecordException {
+        SaleRecord record = getRecordByRecordId(recordId);
 
-	}
+        if (record.getRemainders().isEmpty())
+            throw new RemainderException("No Transactions Found with Record Id " + recordId);
 
-	@Override
-	public List<SaleRecord> getRecordsByProductName(String productName) throws RecordException, ProductException {
-		List<SaleRecord> records = recordRepo.findByProductProductNameAndCustomerUserUserId(productName, userInfo.getUserId());
+        return record.getRemainders();
+    }
 
-		if (records.isEmpty())
-			throw new RecordException("No Records Found with Product Name " + productName);
+    @Override
+    public List<SaleRecord> getRecordsByEmail(String email) throws CustomerException {
 
-		return records;
-	}
+        List<SaleRecord> records = recordRepo.findByCustomerEmailAndCustomerUserUserId(email, userInfo.getUserId());
 
-	@Override
-	public List<Remainder> getRemaindersByRecordId(Integer recordId) throws RemainderException, RecordException {
-		SaleRecord record = getRecordByRecordId(recordId);
+        if (records.isEmpty())
+            throw new CustomerException("No Records Found with Customer Email " + email);
 
-		if (record.getRemainders().isEmpty())
-			throw new RemainderException("No Transactions Found with Record Id " + recordId);
+        return records;
 
-		return record.getRemainders();
-	}
+    }
 
-	@Override
-	public List<SaleRecord> getRecordsByEmail(String email) throws CustomerException, RecordException {
+    @Override
+    public List<SaleRecord> getRecordsByCustomerName(String name) throws CustomerException {
+        List<SaleRecord> records = recordRepo.findByCustomerCustomerNameAndCustomerUserUserId(name, userInfo.getUserId());
 
-		List<SaleRecord> records = recordRepo.findByCustomerEmailAndCustomerUserUserId(email, userInfo.getUserId());
+        if (records.isEmpty())
+            throw new CustomerException("No Records Found with Customer Name " + name);
 
-		if (records.isEmpty())
-			throw new CustomerException("No Records Found with Customer Email " + email);
+        return records;
+    }
 
-		return records;
+    @Override
+    public Village getVillageByRecordId(Integer recordId) throws RecordException {
 
-	}
+        SaleRecord record = getRecordByRecordId(recordId);
 
-	@Override
-	public List<SaleRecord> getRecordsByCustomerName(String name) throws CustomerException, RecordException {
-		List<SaleRecord> records = recordRepo.findByCustomerCustomerNameAndCustomerUserUserId(name, userInfo.getUserId());
+        return record.getCustomer().getAddress().getVillage();
+    }
 
-		if (records.isEmpty())
-			throw new CustomerException("No Records Found with Customer Name " + name);
+    @Override
+    public Address getAddressByRecordId(Integer recordId) throws RecordException {
+        SaleRecord record = getRecordByRecordId(recordId);
 
-		return records;
-	}
+        return record.getCustomer().getAddress();
+    }
 
-	@Override
-	public Village getVillageByRecordId(Integer recordId) throws VillageException, RecordException {
+    @Override
+    public Product getProductByRecordId(Integer recordId) throws RecordException {
+        SaleRecord record = getRecordByRecordId(recordId);
 
-		SaleRecord record = getRecordByRecordId(recordId);
+        return record.getProduct();
+    }
 
-		return record.getCustomer().getAddress().getVillage();
-	}
+    @Override
+    public List<SaleRecord> getRecordsBetweenStartDateTimeStamps(LocalDate fromDate, LocalDate toDate)
+            throws CustomerException {
+        List<SaleRecord> records = recordRepo.findByStartDateBetweenAndCustomerUserUserId(fromDate, toDate,
+                userInfo.getUserId());
 
-	@Override
-	public Address getAddressByRecordId(Integer recordId) throws AddressException, RecordException {
-		SaleRecord record = getRecordByRecordId(recordId);
+        if (records.isEmpty())
+            throw new CustomerException("No Records Found from" + fromDate + " and " + toDate);
 
-		return record.getCustomer().getAddress();
-	}
+        return records;
+    }
 
-	@Override
-	public Product getProductByRecordId(Integer recordId) throws ProductException, RecordException {
-		SaleRecord record = getRecordByRecordId(recordId);
+    @Override
+    public List<SaleRecord> getRecordsBetweenEndDateTimeStamps(LocalDate fromDate, LocalDate toDate)
+            throws CustomerException {
+        List<SaleRecord> records = recordRepo.findByEndDateBetweenAndCustomerUserUserId(fromDate, toDate, userInfo.getUserId());
 
-		return record.getProduct();
-	}
+        if (records.isEmpty())
+            throw new CustomerException("No Records Found from" + fromDate + " and " + toDate);
 
-	@Override
-	public List<SaleRecord> getRecordsBetweenStartDateTimeStamps(LocalDate fromDate, LocalDate toDate)
-			throws CustomerException, RecordException {
-		List<SaleRecord> records = recordRepo.findByStartDateBetweenAndCustomerUserUserId(fromDate, toDate,
-				userInfo.getUserId());
+        return records;
+    }
 
-		if (records.isEmpty())
-			throw new CustomerException("No Records Found from" + fromDate + " and " + toDate);
+    @Override
+    public Customer getCustomerByRecordId(Integer recordId) throws RecordException {
+        SaleRecord record = getRecordByRecordId(recordId);
 
-		return records;
-	}
+        return record.getCustomer();
+    }
 
-	@Override
-	public List<SaleRecord> getRecordsBetweenEndDateTimeStamps(LocalDate fromDate, LocalDate toDate)
-			throws CustomerException, RecordException {
-		List<SaleRecord> records = recordRepo.findByEndDateBetweenAndCustomerUserUserId(fromDate, toDate, userInfo.getUserId());
+    @Override
+    public List<RecordResponseModel> getRecordResponseModels() throws RecordException {
 
-		if (records.isEmpty())
-			throw new CustomerException("No Records Found from" + fromDate + " and " + toDate);
+        var recordResponseModels = new ArrayList<RecordResponseModel>();
 
-		return records;
-	}
+        List<SaleRecord> records = recordRepo.findByCustomerUserUserId(userInfo.getUserId());
 
-	@Override
-	public Customer getCustomerByRecordId(Integer recordId) throws RecordException {
-		SaleRecord record = getRecordByRecordId(recordId);
+        if (records.isEmpty())
+            throw new RecordException(Constants.RECORDS_NOT_FOUND);
 
-		return record.getCustomer();
-	}
+        records.sort((r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
 
-	@Override
-	public List<RecordResponseModel> getRecordResponseModels() throws RecordException {
+        for (var record : records) {
 
-		var recordResponseModels = new ArrayList<RecordResponseModel>();
+            var recordResponseModel = new RecordResponseModel();
+            recordResponseModel.setSaleRecord(record);
+            recordResponseModel.setCustomer(record.getCustomer());
+            recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
 
-		List<SaleRecord> records = recordRepo.findByCustomerUserUserId(userInfo.getUserId());
+            recordResponseModels.add(recordResponseModel);
 
-		if (records.isEmpty())
-			throw new RecordException(Constants.RECORDS_NOT_FOUND);
+        }
 
-		Collections.sort(records, (r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
+        return recordResponseModels;
 
-		for (var record : records) {
+    }
 
-			var recordResponseModel = new RecordResponseModel();
-			recordResponseModel.setSaleRecord(record);
-			recordResponseModel.setCustomer(record.getCustomer());
-			recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
+    @Override
+    public RecordResponseModel getRecordResponseModelByrecordId(Integer recordId) throws RecordException {
 
-			recordResponseModels.add(recordResponseModel);
+        var record = recordRepo.findByCustomerUserUserIdAndRecordId(userInfo.getUserId(), recordId)
+                .orElseThrow(() -> new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId));
 
-		}
+        var recordResponseModel = new RecordResponseModel();
+        recordResponseModel.setSaleRecord(record);
+        recordResponseModel.setCustomer(record.getCustomer());
+        recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
 
-		return recordResponseModels;
+        return recordResponseModel;
+    }
 
-	}
+    @Override
+    public List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,
+                                                                                             String customerName, String productName) throws RecordException {
 
-	@Override
-	public RecordResponseModel getRecordResponseModelByrecordId(Integer recordId) throws RecordException {
+        var recordResponseModels = new ArrayList<RecordResponseModel>();
 
-		var record = recordRepo.findByCustomerUserUserIdAndRecordId(userInfo.getUserId(), recordId)
-				.orElseThrow(() -> new RecordException(Constants.RECORD_ID_NOT_FOUND + recordId));
+        List<SaleRecord> records = recordRepo
+                .findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(
+                        userInfo.getUserId(), recordId, customerName, productName);
 
-		var recordResponseModel = new RecordResponseModel();
-		recordResponseModel.setSaleRecord(record);
-		recordResponseModel.setCustomer(record.getCustomer());
-		recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
+        if (records.isEmpty())
+            throw new RecordException("Records Not Found with Keyword Or Id " + productName);
 
-		return recordResponseModel;
-	}
+        records.sort((r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
 
-	@Override
-	public List<RecordResponseModel> getRecordsContainingRecordIdOrCustomerNameOrProductName(Integer recordId,
-			String customerName, String productName) throws RecordException {
+        for (var record : records) {
 
-		var recordResponseModels = new ArrayList<RecordResponseModel>();
+            var recordResponseModel = new RecordResponseModel();
+            recordResponseModel.setSaleRecord(record);
+            recordResponseModel.setCustomer(record.getCustomer());
+            recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
 
-		List<SaleRecord> records = recordRepo
-				.findByCustomerUserUserIdAndRecordIdOrCustomerCustomerNameIgnoreCaseContainingOrProductProductNameIgnoreCaseContaining(
-						userInfo.getUserId(), recordId, customerName, productName);
+            recordResponseModels.add(recordResponseModel);
 
-		if (records.isEmpty())
-			throw new RecordException("Records Not Found with Keyword Or Id " + productName);
+        }
 
-		Collections.sort(records, (r1, r2) -> Integer.compare(r2.getDueAmount(), r1.getDueAmount()));
+        return recordResponseModels;
 
-		for (var record : records) {
-
-			var recordResponseModel = new RecordResponseModel();
-			recordResponseModel.setSaleRecord(record);
-			recordResponseModel.setCustomer(record.getCustomer());
-			recordResponseModel.setVillage(record.getCustomer().getAddress().getVillage());
-
-			recordResponseModels.add(recordResponseModel);
-
-		}
-
-		return recordResponseModels;
-
-	}
+    }
 
 }

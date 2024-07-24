@@ -19,16 +19,15 @@ import com.madhu.service.AddressService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-@CrossOrigin("*")
 @SecurityRequirement(name = "scheme1")
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/addresses")
 public class AddressController {
 
 	@Autowired
 	private AddressService addressService;
 
-	@PostMapping("/addAddress")
+	@PostMapping
 	public ResponseEntity<GeneralResponse> addAddressHandler(@RequestBody Address address) {
 
 		var generalResponse = new GeneralResponse();
@@ -39,7 +38,7 @@ public class AddressController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@PutMapping("/updateAddress/{addressId}")
+	@PutMapping("/{addressId}")
 	public ResponseEntity<GeneralResponse> updateAddressHandler(@PathVariable Integer addressId,@RequestBody Address address) throws AddressException {
 
 		var generalResponse = new GeneralResponse();
@@ -50,7 +49,7 @@ public class AddressController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@DeleteMapping("/deleteAddress/{addressId}")
+	@DeleteMapping("/{addressId}")
 	public ResponseEntity<GeneralResponse> deleteAddressHandler(@PathVariable Integer addressId)
 			throws AddressException {
 
@@ -62,7 +61,7 @@ public class AddressController {
 		return ResponseEntity.ok(generalResponse);
 	}
 
-	@GetMapping("/getAddress/{addressId}")
+	@GetMapping("/{addressId}")
 	public ResponseEntity<GeneralResponse> getAddressHandler(@PathVariable Integer addressId) throws AddressException {
 
 		var generalResponse = new GeneralResponse();

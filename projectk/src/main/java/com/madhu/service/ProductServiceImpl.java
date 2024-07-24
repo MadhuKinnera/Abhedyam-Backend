@@ -1,16 +1,5 @@
 package com.madhu.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.madhu.dto.NameAndId;
 import com.madhu.dto.ProductDTO;
 import com.madhu.dto.ProductResponseModel;
@@ -23,288 +12,295 @@ import com.madhu.repository.ProductRepo;
 import com.madhu.utils.CommonUtils;
 import com.madhu.utils.Constants;
 import com.madhu.utils.UserInfo;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@AllArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
 
-	@Autowired
-	private ProductRepo productRepo;
+    private final ProductRepo productRepo;
 
-	@Autowired
-	private CommonUtils utils;
-	
-	@Autowired
-	private UserInfo userInfo;
+    private final CommonUtils utils;
 
-	@Override
-	public Product addProduct(ProductDTO dto) throws ProductException, UserException {
+    private final UserInfo userInfo;
 
-		var product = new Product();
+    @Override
+    public Product addProduct(ProductDTO dto) throws ProductException, UserException {
 
-		product.setBuyedPrice(dto.getBuyedPrice());
-		product.setDescription(dto.getDescription());
-		product.setSellingPrice(dto.getSellingPrice());
-		product.setProductName(dto.getProductName());
-		product.setImageUrl(dto.getImageUrl());
-		
+        var product = new Product();
 
-		product.setUser(utils.getUserFromContext());
+        product.setBuyedPrice(dto.getBuyedPrice());
+        product.setDescription(dto.getDescription());
+        product.setSellingPrice(dto.getSellingPrice());
+        product.setProductName(dto.getProductName());
+        product.setImageUrl(dto.getImageUrl());
 
-		return productRepo.save(product);
-	}
 
-	@Override
-	public Product getProductByProductId(Integer productId) throws ProductException {
+        product.setUser(utils.getUserFromContext());
 
-		return productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
-				.orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
+        return productRepo.save(product);
+    }
 
-	}
+    @Override
+    public Product getProductByProductId(Integer productId) throws ProductException {
 
-	@Override
-	public Product updateProduct(Integer productId, Product product) throws ProductException {
+        return productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
+                .orElseThrow(() -> new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId));
 
-		if (!utils.isProductExist(productId))
-			throw new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId);
+    }
 
-		return productRepo.save(product);
+    @Override
+    public Product updateProduct(Integer productId, Product product) throws ProductException {
 
-	}
+        if (!utils.isProductExist(productId))
+            throw new ProductException(Constants.PRODUCT_ID_NOT_FOUND + productId);
 
-	@Override
-	public Product deleteProduct(Integer productId) throws ProductException {
+        return productRepo.save(product);
 
-		Product product = getProductByProductId(productId);
+    }
 
-		productRepo.delete(product);
+    @Override
+    public Product deleteProduct(Integer productId) throws ProductException {
 
-		return product;
-	}
+        Product product = getProductByProductId(productId);
 
-	@Override
-	public Product getProductByName(String productName) throws ProductException {
+        productRepo.delete(product);
 
-		return productRepo.findByProductNameAndUserUserId(productName, userInfo.getUserId())
-				.orElseThrow(() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + productName));
-	}
+        return product;
+    }
 
-	@Override
-	public List<ProductResponseModel> getProductResponseModels() throws VillageException, ProductException {
+    @Override
+    public Product getProductByName(String productName) throws ProductException {
 
-		List<ProductResponseModel> productResponseModels = new ArrayList<>();
+        return productRepo.findByProductNameAndUserUserId(productName, userInfo.getUserId())
+                .orElseThrow(() -> new ProductException(Constants.PRODUCT_NAME_NOT_FOUND + productName));
+    }
 
-		List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
-		
-		System.out.println(products.size()+" Products Found and user id "+userInfo.getUserId());
+    @Override
+    public List<ProductResponseModel> getProductResponseModels() throws VillageException, ProductException {
 
-		if (products.isEmpty())
-			throw new ProductException(Constants.NO_PRODUCTS_FOUND);
+        List<ProductResponseModel> productResponseModels = new ArrayList<>();
 
-		for (var p : products) {
+        List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
 
-			var productResponse = new ProductResponseModel();
+        System.out.println(products.size() + " Products Found and user id " + userInfo.getUserId());
 
-			productResponse.setProduct(p);
+        if (products.isEmpty())
+            throw new ProductException(Constants.NO_PRODUCTS_FOUND);
 
-			int productSellCount = 0;
+        for (var p : products) {
 
-			int totalSelledAmount = 0;
+            var productResponse = new ProductResponseModel();
 
-			int totalPendingAmount = 0;
+            productResponse.setProduct(p);
 
-			Map<String, Integer> villageMap = new HashMap<String, Integer>();
+            int productSellCount = 0;
 
-			for (var r : p.getSaleRecords()) {
-				productSellCount += r.getQuantity();
-				totalSelledAmount += r.getTotalAmount();
-				totalPendingAmount += r.getDueAmount();
+            int totalSelledAmount = 0;
 
-				var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
+            int totalPendingAmount = 0;
 
-				var productQuantity = r.getQuantity();
+            Map<String, Integer> villageMap = new HashMap<String, Integer>();
 
-				villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
-			}
+            for (var r : p.getSaleRecords()) {
+                productSellCount += r.getQuantity();
+                totalSelledAmount += r.getTotalAmount();
+                totalPendingAmount += r.getDueAmount();
 
-			productResponse.setPendingAmount(totalPendingAmount);
-			productResponse.setTotalSelledAmount(totalSelledAmount);
-			productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
-			productResponse.setProductSellCount(productSellCount);
+                var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
 
-			var villageWiseDto = new ArrayList<VillageResponseDTO>();
+                var productQuantity = r.getQuantity();
 
-			for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
+                villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
+            }
 
-				var villageDto = new VillageResponseDTO();
+            productResponse.setPendingAmount(totalPendingAmount);
+            productResponse.setTotalSelledAmount(totalSelledAmount);
+            productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
+            productResponse.setProductSellCount(productSellCount);
 
-				villageDto.setVillageName(villageWiseMap.getKey());
-				villageDto.setCount(villageWiseMap.getValue());
+            var villageWiseDto = new ArrayList<VillageResponseDTO>();
 
-				villageWiseDto.add(villageDto);
-			}
+            for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
 
-			productResponse.setVillageWiseCount(villageWiseDto);
+                var villageDto = new VillageResponseDTO();
 
-			productResponseModels.add(productResponse);
+                villageDto.setVillageName(villageWiseMap.getKey());
+                villageDto.setCount(villageWiseMap.getValue());
 
-		}
+                villageWiseDto.add(villageDto);
+            }
 
-		Collections.sort(productResponseModels,
-				(p1, p2) -> Integer.compare(p2.getProductSellCount(), p1.getProductSellCount()));
+            productResponse.setVillageWiseCount(villageWiseDto);
 
-		return productResponseModels;
-	}
+            productResponseModels.add(productResponse);
 
-	@Override
-	public Product uploadProductImage(Integer productId, String productFile) throws ProductException, IOException {
+        }
 
-		Product product = getProductByProductId(productId);
+        productResponseModels.sort((p1, p2) -> Integer.compare(p2.getProductSellCount(), p1.getProductSellCount()));
 
-		String productImageURL = productFile;// utils.convertImageToUrl(productFile);
+        return productResponseModels;
+    }
 
-		product.setImageUrl(productImageURL);
+    @Override
+    public Product uploadProductImage(Integer productId, String productFile) throws ProductException, IOException {
 
-		return productRepo.save(product);
+        Product product = getProductByProductId(productId);
 
-	}
+        String productImageURL = productFile;// utils.convertImageToUrl(productFile);
 
-	@Override
-	public ProductResponseModel getProductResponseModelByProductId(Integer productId)
-			throws VillageException, ProductException {
+        product.setImageUrl(productImageURL);
 
-		Product product = productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
-				.orElseThrow(() -> new ProductException("Product Not Found with Product Id " + productId));
+        return productRepo.save(product);
 
-		var productResponse = new ProductResponseModel();
+    }
 
-		productResponse.setProduct(product);
+    @Override
+    public ProductResponseModel getProductResponseModelByProductId(Integer productId)
+            throws ProductException {
 
-		int productSellCount = 0;
+        Product product = productRepo.findByProductIdAndUserUserId(productId, userInfo.getUserId())
+                .orElseThrow(() -> new ProductException("Product Not Found with Product Id " + productId));
 
-		int totalSelledAmount = 0;
+        var productResponse = new ProductResponseModel();
 
-		int totalPendingAmount = 0;
+        productResponse.setProduct(product);
 
-		Map<String, Integer> villageMap = new HashMap<String, Integer>();
+        int productSellCount = 0;
 
-		for (var r : product.getSaleRecords()) {
-			productSellCount += r.getQuantity();
-			totalSelledAmount += r.getTotalAmount();
-			totalPendingAmount += r.getDueAmount();
+        int totalSelledAmount = 0;
 
-			var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
+        int totalPendingAmount = 0;
 
-			var productQuantity = r.getQuantity();
+        Map<String, Integer> villageMap = new HashMap<String, Integer>();
 
-			villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
-		}
+        for (var r : product.getSaleRecords()) {
+            productSellCount += r.getQuantity();
+            totalSelledAmount += r.getTotalAmount();
+            totalPendingAmount += r.getDueAmount();
 
-		productResponse.setPendingAmount(totalPendingAmount);
-		productResponse.setTotalSelledAmount(totalSelledAmount);
-		productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
-		productResponse.setProductSellCount(productSellCount);
+            var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
 
-		var villageWiseDto = new ArrayList<VillageResponseDTO>();
+            var productQuantity = r.getQuantity();
 
-		for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
+            villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
+        }
 
-			var villageDto = new VillageResponseDTO();
+        productResponse.setPendingAmount(totalPendingAmount);
+        productResponse.setTotalSelledAmount(totalSelledAmount);
+        productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
+        productResponse.setProductSellCount(productSellCount);
 
-			villageDto.setVillageName(villageWiseMap.getKey());
-			villageDto.setCount(villageWiseMap.getValue());
+        var villageWiseDto = new ArrayList<VillageResponseDTO>();
 
-			villageWiseDto.add(villageDto);
-		}
+        for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
 
-		productResponse.setVillageWiseCount(villageWiseDto);
+            var villageDto = new VillageResponseDTO();
 
-		return productResponse;
+            villageDto.setVillageName(villageWiseMap.getKey());
+            villageDto.setCount(villageWiseMap.getValue());
 
-	}
+            villageWiseDto.add(villageDto);
+        }
 
-	@Override
-	public List<Product> getProducts() throws ProductException {
+        productResponse.setVillageWiseCount(villageWiseDto);
 
-		List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
+        return productResponse;
 
-		if (products.isEmpty())
-			throw new ProductException("No Products Found ");
+    }
 
-		return products;
-	}
+    @Override
+    public List<Product> getProducts() throws ProductException {
 
-	@Override
-	public List<ProductResponseModel> getProductsContainingProductName(String productName) throws ProductException {
+        List<Product> products = productRepo.findByUserUserId(userInfo.getUserId());
 
-		List<ProductResponseModel> productResponseModels = new ArrayList<>();
+        if (products.isEmpty())
+            throw new ProductException("No Products Found ");
 
-		List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, userInfo.getUserId());
+        return products;
+    }
 
-		if (products.isEmpty())
-			throw new ProductException("Products Not Found with Name " + productName);
+    @Override
+    public List<ProductResponseModel> getProductsContainingProductName(String productName) throws ProductException {
 
-		for (var p : products) {
+        List<ProductResponseModel> productResponseModels = new ArrayList<>();
 
-			var productResponse = new ProductResponseModel();
+        List<Product> products = productRepo.findByProductNameContainingAndUserUserId(productName, userInfo.getUserId());
 
-			productResponse.setProduct(p);
+        if (products.isEmpty())
+            throw new ProductException("Products Not Found with Name " + productName);
 
-			int productSellCount = 0;
+        for (var p : products) {
 
-			int totalSelledAmount = 0;
+            var productResponse = new ProductResponseModel();
 
-			int totalPendingAmount = 0;
+            productResponse.setProduct(p);
 
-			Map<String, Integer> villageMap = new HashMap<String, Integer>();
+            int productSellCount = 0;
 
-			for (var r : p.getSaleRecords()) {
-				productSellCount += r.getQuantity();
-				totalSelledAmount += r.getTotalAmount();
-				totalPendingAmount += r.getDueAmount();
+            int totalSelledAmount = 0;
 
-				var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
+            int totalPendingAmount = 0;
 
-				var productQuantity = r.getQuantity();
+            Map<String, Integer> villageMap = new HashMap<String, Integer>();
 
-				villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
-			}
+            for (var r : p.getSaleRecords()) {
+                productSellCount += r.getQuantity();
+                totalSelledAmount += r.getTotalAmount();
+                totalPendingAmount += r.getDueAmount();
 
-			productResponse.setPendingAmount(totalPendingAmount);
-			productResponse.setTotalSelledAmount(totalSelledAmount);
-			productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
-			productResponse.setProductSellCount(productSellCount);
+                var villageName = r.getCustomer().getAddress().getVillage().getVillageName();
 
-			var villageWiseDto = new ArrayList<VillageResponseDTO>();
+                var productQuantity = r.getQuantity();
 
-			for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
+                villageMap.put(villageName, villageMap.getOrDefault(villageName, 0) + productQuantity);
+            }
 
-				var villageDto = new VillageResponseDTO();
+            productResponse.setPendingAmount(totalPendingAmount);
+            productResponse.setTotalSelledAmount(totalSelledAmount);
+            productResponse.setCollectedAmount(totalSelledAmount - totalPendingAmount);
+            productResponse.setProductSellCount(productSellCount);
 
-				villageDto.setVillageName(villageWiseMap.getKey());
-				villageDto.setCount(villageWiseMap.getValue());
+            var villageWiseDto = new ArrayList<VillageResponseDTO>();
 
-				villageWiseDto.add(villageDto);
-			}
+            for (Map.Entry<String, Integer> villageWiseMap : villageMap.entrySet()) {
 
-			productResponse.setVillageWiseCount(villageWiseDto);
+                var villageDto = new VillageResponseDTO();
 
-			productResponseModels.add(productResponse);
+                villageDto.setVillageName(villageWiseMap.getKey());
+                villageDto.setCount(villageWiseMap.getValue());
 
-		}
+                villageWiseDto.add(villageDto);
+            }
 
-		return productResponseModels;
-	}
+            productResponse.setVillageWiseCount(villageWiseDto);
 
-	@Override
-	public List<NameAndId> getProductsName() throws ProductException {
+            productResponseModels.add(productResponse);
 
-		var products = getProducts();
+        }
 
-		if (products.isEmpty())
-			throw new ProductException("Products Not Found");
+        return productResponseModels;
+    }
 
-		return products.stream().map(p -> new NameAndId(p.getProductName(), p.getProductId()))
-				.collect(Collectors.toList());
-	}
+    @Override
+    public List<NameAndId> getProductsName() throws ProductException {
+
+        var products = getProducts();
+
+        if (products.isEmpty())
+            throw new ProductException("Products Not Found");
+
+        return products.stream().map(p -> new NameAndId(p.getProductName(), p.getProductId()))
+                .collect(Collectors.toList());
+    }
 
 }
